@@ -6,8 +6,11 @@ import { Text, SafeAreaView, Image, StyleSheet, View, Button } from 'react-nativ
 const Index = () => {
   const router = useRouter();
 
-  const handleClick = () => {
+  const handleRegister = () => {
     router.push(`/onboarding`)
+  }
+  const handleLogin = () => {
+    router.replace(`homepage`)
   }
 
   return (
@@ -25,8 +28,8 @@ const Index = () => {
           <Text style={styles.header}>Welcome</Text>
         </View>
         <View style={styles.buttonContainer}>
-          <Button style={styles.buttonStyle} title="Login" onPress={() => handleClick()}/>
-          <Button style={styles.buttonStyle} title="Register" />
+          <Button style={styles.buttonStyle} title="Login" onPress={() => handleLogin()}/>
+          <Button style={styles.buttonStyle} title="Register" onPress={() => handleRegister()}/>
           <Text style={styles.textAccount}>Don't have an account yet? <Text>Register for free!</Text></Text>
         </View>
       </View>

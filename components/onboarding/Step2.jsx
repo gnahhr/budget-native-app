@@ -3,12 +3,14 @@ import { View, Text, TextInput, Pressable } from 'react-native'
 import { Icon } from '@rneui/themed';
 import styles from './styles';
 
-const Step2 = () => {
+const Step2 = ({setBudget, nextStep, prevStep}) => {
   const [ totalBudget, setTotalBudget ] = useState(0);
-  const [ numInput, onChangeNumInput ] = useState("0");
+  const [ numInput, onChangeNumInput ] = useState(0);
 
   const totalBudgetHandler = () => {
-    setTotalBudget(numInput);
+    const total = Number(numInput);
+    setBudget(total)
+    setTotalBudget(total);
   };
 
   return (
@@ -24,18 +26,16 @@ const Step2 = () => {
           style={styles.input}
           onChangeText={onChangeNumInput}
           onSubmitEditing={() => totalBudgetHandler()}
+          placeholder='0'
           value={numInput}
           keyboardType="numeric"
         />
         
         <View style={[styles.center, styles.buttonWrapper, styles.navWrapper]}>
-          <Pressable>
+          <Pressable onPress={prevStep}>
             <Text style={[styles.textCenter, styles.smallButton, styles.whiteText]}>Back</Text>
           </Pressable>
-          <Pressable>
-            <Text style={[styles.textCenter, styles.smallButton, styles.whiteText]}>SUGGESTION</Text>
-          </Pressable>
-          <Pressable>
+          <Pressable onPress={nextStep}>
             <Text style={[styles.textCenter, styles.smallButton, styles.whiteText]}>Next</Text>
           </Pressable>
         </View>

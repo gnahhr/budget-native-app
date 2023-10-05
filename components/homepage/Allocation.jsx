@@ -3,22 +3,7 @@ import { View, Image, Text, StyleSheet, TextInput } from 'react-native'
 import { Icon } from '@rneui/themed';
 
 
-const Allocation = ({category, curAllocation, icon, allocationHandler, checkExceeding}) => {
-  const [ allocation, onChangeAllocation ] = useState(0);
-
-  const onChangeHandler = () => {
-    if (checkExceeding(curAllocation, allocation)) {
-      if (!allocationHandler(category, allocation)) {
-        onChangeAllocation(curAllocation);
-      }
-    } else {
-      onChangeAllocation(curAllocation);
-    }
-  }
-
-  useEffect(() => {
-    onChangeAllocation(curAllocation);
-  }, [curAllocation])
+const Allocation = ({category}) => {
 
   return (
     <View style={styles.main}>
@@ -29,18 +14,9 @@ const Allocation = ({category, curAllocation, icon, allocationHandler, checkExce
           style={styles.iconStyle}
           />
       <View>
-        <Text style={[styles.topText, styles.whiteText]}>{category}</Text>
-        <View style={styles.sideBySide}>
-          <Text style={[styles.bottomText, styles.whiteText]}>Php. </Text>
-          <TextInput
-            placeholder="0"
-            value={allocation}
-            inputMode='numeric'
-            onChangeText={onChangeAllocation}
-            onSubmitEditing={onChangeHandler}
-            style={[styles.bottomText, styles.whiteText]} />
-        </View>
-        
+        <Text style={[styles.topText, styles.whiteText]}>{category.name}</Text>
+        <Text style={[styles.bottomText, styles.whiteText]}>Php. {category.expenses} / Php. {category.allocation}</Text>
+        {/* indicator */}
       </View>
     </View>
   )

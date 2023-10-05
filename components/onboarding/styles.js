@@ -8,6 +8,9 @@ const styles = StyleSheet.create({
   budgetMargin: {
     marginTop: 32,
   },
+  containItem: {
+    width: '80%',
+  },
   center: {
     alignSelf: 'center',
   },
@@ -19,6 +22,10 @@ const styles = StyleSheet.create({
   textBold: {
     fontWeight: 'bold',
     fontSize: 29,
+  },
+  textMediumBold: {
+    fontWeight: 'bold',
+    fontSize: 18,
   },
   textWhite: {
     color: '#ffffff',
@@ -96,7 +103,17 @@ const styles = StyleSheet.create({
     justifySelf: 'flex-end',
     width: 325,
     justifyContent: 'space-between',
-  }
+  },
+  categoryWrapper: {
+    width: "70%",
+    alignSelf: 'center',
+    backgroundColor: '#5cafc9',
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 8,
+    borderRadius: 8,
+    margin: 4
+  },
 })
 
 export default styles;

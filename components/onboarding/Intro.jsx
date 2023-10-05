@@ -5,11 +5,11 @@ import { Icon } from '@rneui/themed';
 import Setup1 from '../../assets/images/setup1.png';
 import styles from './styles';
 
-const Intro = () => {
+const Intro = ({nextStep}) => {
   return (
     <View>
       <View style={styles.main}>
-        <Image source={Setup1} style={styles.centerImage}/>
+        <Image source={Setup1} style={styles.center}/>
         <Text style={[styles.textBold, styles.textCenter]}>Allocate your funds with us accordingly.</Text>
       </View>
       
@@ -18,7 +18,7 @@ const Intro = () => {
           name='chevron-up'
           type='font-awesome'
           color='#21abe5'
-          onPress={() => console.log('hello')} />
+          onPress={nextStep}/>
         <Text style={[styles.textBold, styles.textCenter, styles.textWhite ]}>Set your budget.</Text>
       </View>
     </View>
