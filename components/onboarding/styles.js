@@ -23,6 +23,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 29,
   },
+  textHighlight: {
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    alignSelf: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
   textMediumBold: {
     fontWeight: 'bold',
     fontSize: 18,

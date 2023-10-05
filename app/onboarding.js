@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Stack, useRouter } from 'expo-router';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { SafeAreaView, StyleSheet, Pressable } from 'react-native';
 import { useStorageState } from '../hooks/useStorageState';
 
 import Intro from '../components/onboarding/Intro';
@@ -14,6 +14,7 @@ import CloseIco from '../assets/icons/X.png';
 
 const Onboarding = () => {
   const [[isLoading, data], setData] = useStorageState('user');
+  const router = useRouter();
 
   // Add States of Needs-Savings-Wants-Total Budget-ExpenseAllocation
   const [ step, setStep ] = useState(0);
@@ -49,6 +50,10 @@ const Onboarding = () => {
     setTotalBudget(totalBudget);
   }
 
+  const handleClose = () => {
+    router.replace("/") 
+  }
+
   return (
     <SafeAreaView style={styles.main}>
 
@@ -60,7 +65,9 @@ const Onboarding = () => {
             <CustomIcon imageUrl={LogoS}/>
           ),
           headerRight: () => (
-            <CustomIcon imageUrl={CloseIco} size={15}/>
+            <Pressable onPress={() => handleClose()}>
+              <CustomIcon imageUrl={CloseIco} size={15}/>
+            </Pressable>
           ),
           headerTitle: "",
         }}

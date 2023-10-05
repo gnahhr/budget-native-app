@@ -195,7 +195,7 @@ const Step3 = ({totalBudget, prevStep, setAllocations}) => {
 
       <View style={[styles.blueDrawer, styles.blueDrawerExpanded, styles.blueDrawerExpandedAllocation]}>
         <Text style={[styles.textCenter, styles.textWhite]}>EXPENSE ALLOCATION</Text>
-        {tabData[activeTab].ratio > 0 && <Text style={styles.textCenter}>{totalBudget * (tabData[activeTab].ratio/100)}</Text>}
+        {tabData[activeTab].ratio > 0 && <Text style={[styles.textCenter, styles.textWhite, styles.textMediumBold, styles.textHighlight]}>{totalBudget * (tabData[activeTab].ratio/100)}</Text>}
         <ScrollView style={[styles.center, styles.containItem]}>
           {tabData[activeTab].state.filter(x => x.toggled).length > 0 ? 
             <>

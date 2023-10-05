@@ -10,7 +10,8 @@ import Money from '../../components/homepage/Money';
 
 const HomepageIndex = () => {
   const [[isLoading, data], setData] = useStorageState('user');
-  const { wantAllocations, needAllocations, savingAllocations, totalBudget } = JSON.parse(data);
+  const [ parsedData, setParsedData ] = useState({});
+  const { wantAllocations, needAllocations, savingAllocations, totalBudget } = JSON.parse(parsedData);
 
   const [ activeTab, setActiveTab ] = useState("Needs");
   const tabs = ['Needs', 'Savings', 'Wants'];
@@ -26,6 +27,11 @@ const HomepageIndex = () => {
     }
   }
   
+  useEffect(() => {
+    const parsed = JSON.parse(data);
+    setParsedData(parsed);
+  }, [])
+
   return (
     <SafeAreaView style={{backgroundColor: '#ffffff'}}>
       <Tabs.Screen 
@@ -59,7 +65,7 @@ const HomepageIndex = () => {
             <Text style={{position: 'absolute', alignSelf: 'center', marginTop: 50}}>Hatdog</Text>
           </View>
           <View style={styles.moneyWrapper}>
-            <Money currency={totalBudget} subText="Remaining budget" onClickHandler={() => console.log('yey')}/>
+            <Money currency={0} subText="Remaining budget" onClickHandler={() => console.log('yey')}/>
             <Money currency={0} subText="Total Expenses"/>
           </View>
         </View>
