@@ -3,43 +3,55 @@ import { Tabs } from 'expo-router';
 import { View, SafeAreaView, Text, StyleSheet, Pressable, ScrollView } from 'react-native'
 import { useStorageState } from '../../hooks/useStorageState';
 
-import CustomIcon from '../../components/common/CustomIcon';
-import LogoS from '../../assets/logos/logo-s.png';
 import AnimatedProgressWheel from 'react-native-progress-wheel';
+import CustomIcon from '../../components/common/CustomIcon';
+import HomeAllocation from '../../components/homepage/HomeAllocation';
 import Money from '../../components/homepage/Money';
+import AddExpenses from '../../components/modals/AddExpenses';
+
+import LogoS from '../../assets/logos/logo-s.png';
 
 const HomepageIndex = () => {
   const [[isLoading, data], setData] = useStorageState('user');
+  const [ isEModalOpen, setIsEModalOpen ] = useState(false);
   const [ parsedData, setParsedData ] = useState({});
-  const { wantAllocations, needAllocations, savingAllocations, totalBudget } = JSON.parse(parsedData);
 
   const [ activeTab, setActiveTab ] = useState("Needs");
   const tabs = ['Needs', 'Savings', 'Wants'];
   const tabData = {
     'Needs': {
-      data: needAllocations
+      data: parsedData.needAllocations
     },
     'Savings': {
-      data: savingAllocations
+      data: parsedData.savingAllocations
     },
     'Wants': {
-      data: wantAllocations
+      data: parsedData.wantAllocations
     }
+  }
+
+  const expenseModalToggle = () => {
+    setIsEModalOpen(true);
+  }
+
+  const addExpenseHandler = () => {
+
   }
   
   useEffect(() => {
-    const parsed = JSON.parse(data);
-    setParsedData(parsed);
-  }, [])
+    if (!isLoading) {
+      setParsedData(JSON.parse(data));
+    }
+  }, [isLoading])
 
   return (
-    <SafeAreaView style={{backgroundColor: '#ffffff'}}>
+    <SafeAreaView style={{backgroundColor: '#f3f3f7'}}>
       <Tabs.Screen 
         options={{
           headerStyle: { backgroundColor: "white" },
           headerShadowVisible: false,
           headerLeft: () => (
-            <CustomIcon imageUrl={LogoS}/>
+            <CustomIcon imageUrl={LogoS} />
           ),
           headerTitle: "",
         }}
@@ -62,10 +74,10 @@ const HomepageIndex = () => {
               progress={25}
               backgroundColor={'#c3ece8'}
             />
-            <Text style={{position: 'absolute', alignSelf: 'center', marginTop: 50}}>Hatdog</Text>
+            <Text style={{position: 'absolute', alignSelf: 'center', marginTop: 70}}>Hatdog</Text>
           </View>
           <View style={styles.moneyWrapper}>
-            <Money currency={0} subText="Remaining budget" onClickHandler={() => console.log('yey')}/>
+            <Money currency={parsedData.totalBudget} subText="Remaining budget" onClickHandler={() => console.log('yey')}/>
             <Money currency={0} subText="Total Expenses"/>
           </View>
         </View>
@@ -86,10 +98,18 @@ const HomepageIndex = () => {
           }
           )}
       </View> 
-      <ScrollView style={styles.container}>
-        {tabData[activeTab].data.map(data => <Text key={data.name}>{data.name} - {data.expenses}/{data.allocation}</Text>)}
+      <ScrollView style={[styles.container, styles.scrollHeight]}>
+        {tabData[activeTab].data && tabData[activeTab].data.map(data => <HomeAllocation key={data.name} category={data}/>)}
       </ScrollView>
-      
+      <View style={[styles.bottomButtonWrapper]}>
+        <Pressable>
+          <Text style={[styles.boldText, styles.italics, styles.button, styles.whiteText]}>Edit Categories</Text>
+        </Pressable>
+        <Pressable onPress={() => expenseModalToggle()}>
+          <Text style={[styles.boldText, styles.italics, styles.button, styles.whiteText]}>Add Expenses</Text>
+        </Pressable>
+      </View>
+      <AddExpenses categoryList={tabData[activeTab].data} isModalVisible={isEModalOpen} setModalVisible={setIsEModalOpen} onAddExpense={() => console.log('yey')}/>
     </SafeAreaView>
   )
 }
@@ -97,6 +117,9 @@ const HomepageIndex = () => {
 const styles = StyleSheet.create({
   grayText: {
     color: '#5f5f5f',
+  },
+  whiteText: {
+    color: '#ffffff',
   },
   normalText: {
     fontSize: 19,
@@ -117,7 +140,10 @@ const styles = StyleSheet.create({
   },
   container: {
     width: '90%',
-    alignSelf: 'center'
+    alignSelf: 'center',
+  },
+  scrollHeight: {
+    height: '36%',
   },
   flexRow: {
     flexDirection: 'row',
@@ -132,6 +158,18 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: 'center',
     padding: 8,
+  },
+  bottomButtonWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 24,
+    gap: 24,
+  },
+  button: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: '#11588b',
+    borderRadius: 4,
   }
 });
 

@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
   topText: {
     fontSize: 16,
     fontWeight: 700,
+    alignSelf: 'flex-start',
     borderBottomColor: "#ffffff",
     borderBottomWidth: 1,
   },

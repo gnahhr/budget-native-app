@@ -1,32 +1,46 @@
 const savingsCategories = [
   {
-    name: 'Time-Deposit',
+    name: 'Emergency Fund',
     allocation: 0,
     expenses: 0,
     toggled: false,
     icon: ""
   },
   {
-    name: 'Investment',
+    name: 'Retirement',
     allocation: 0,
     expenses: 0,
     toggled: false,
     icon: ""
   },
-  {
-    name: 'Insurance',
-    allocation: 0,
-    expenses: 0,
-    toggled: false,
-    icon: ""
-  },
-  {
-    name: 'Cash Savings',
-    allocation: 0,
-    expenses: 0,
-    toggled: false,
-    icon: ""
-  },
+  // {
+  //   name: 'Time-Deposit',
+  //   allocation: 0,
+  //   expenses: 0,
+  //   toggled: false,
+  //   icon: ""
+  // },
+  // {
+  //   name: 'Investment',
+  //   allocation: 0,
+  //   expenses: 0,
+  //   toggled: false,
+  //   icon: ""
+  // },
+  // {
+  //   name: 'Insurance',
+  //   allocation: 0,
+  //   expenses: 0,
+  //   toggled: false,
+  //   icon: ""
+  // },
+  // {
+  //   name: 'Cash Savings',
+  //   allocation: 0,
+  //   expenses: 0,
+  //   toggled: false,
+  //   icon: ""
+  // },
 ]
 
 const needsCategories = [
