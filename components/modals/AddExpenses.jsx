@@ -6,7 +6,8 @@ import { AntDesign } from '@expo/vector-icons';
 
 const AddExpenses = ({categoryList, isModalVisible, setModalVisible, onAddExpense}) => {
   const [ categoryState, setCategoryState ] = useState(categoryList);
-
+  const [ amount, setAmount ] = useState(amount);
+  const [ note, setNote ] = useState("");
   // Drop Down States
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
@@ -14,6 +15,10 @@ const AddExpenses = ({categoryList, isModalVisible, setModalVisible, onAddExpens
 
   const toggleModal = () => {
     setModalVisible(false);
+  };
+
+  const addExpenseHandler = () => {
+    onAddExpense(value, amount, note);
   };
 
   useEffect(() => {
@@ -58,11 +63,11 @@ const AddExpenses = ({categoryList, isModalVisible, setModalVisible, onAddExpens
               </View>
               <View>
                 <Text style={[styles.textBold]}>Note</Text>
-                <TextInput placeholder='Enter Note Expenses'/>
+                <TextInput placeholder='Enter Note Expenses' value={note} onChangeText={setNote}/>
               </View>
               <View>
                 <Text style={[styles.textBold]}>Amount</Text>
-                <TextInput placeholder='Php. 00' keyboardType="numeric" />
+                <TextInput placeholder='Php. 00' keyboardType="numeric" onChangeText={setAmount}/>
               </View>
             </View>
           </View>
@@ -72,7 +77,7 @@ const AddExpenses = ({categoryList, isModalVisible, setModalVisible, onAddExpens
             <Text style={[styles.textCenter]}>June 03, 2023 01:09 AM</Text>
           </View>
 
-          <Pressable style={[styles.buttonStyle]}>
+          <Pressable style={[styles.buttonStyle]} onPress={() => addExpenseHandler()}>
             <Text style={[styles.textCenter, styles.textWhite]}>Add Expense</Text>
           </Pressable>
         </View>

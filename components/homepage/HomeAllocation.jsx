@@ -3,15 +3,25 @@ import { View, Image, Text, StyleSheet, TextInput } from 'react-native'
 import { Icon } from '@rneui/themed';
 
 
-const HomeAllocation = ({category}) => {
+const HomeAllocation = ({category, expenses}) => {
   const [ indiStyle, setIndiStyle ] = useState([styles.indicatorStyle]);
+  const [ expense, setExpense ] = useState(0);
+
 
   useEffect(()=> {
-    if (category.expenses > category.allocation) {
+    if (expense > category.allocation) {
       setIndiStyle([...indiStyle, styles.indicatorRed])
     } else {
       setIndiStyle([...indiStyle, styles.indicatorGreen])
     }
+  }, [expense])
+
+  useEffect(() => {
+    expenses.map((expense) => {
+      if (expense.category === category.name) {
+        setExpense(expense.amount);
+      }
+    })
   }, [])
 
   return (
@@ -25,7 +35,7 @@ const HomeAllocation = ({category}) => {
             />
         <View style={{flex: 1}}>
           <Text style={[styles.topText]}>{category.name}</Text>
-          <Text style={[styles.bottomText]}>Php. {category.expenses} / Php. {category.allocation}</Text>
+          <Text style={[styles.bottomText]}>Php. {expense} / Php. {category.allocation}</Text>
         </View>
       </View>
       <View style={[indiStyle]} />

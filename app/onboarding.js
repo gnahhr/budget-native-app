@@ -2,18 +2,21 @@ import React, { useState, useEffect } from 'react'
 import { Stack, useRouter } from 'expo-router';
 import { SafeAreaView, StyleSheet, Pressable } from 'react-native';
 import { useStorageState } from '../hooks/useStorageState';
+import { allocateBudget } from '../api/budget';
 
 import Intro from '../components/onboarding/Intro';
 import Step1 from '../components/onboarding/Step1';
 import Step2 from '../components/onboarding/Step2';
 import Step3 from '../components/onboarding/Step3';
+import Summary from '../components/onboarding/Summary';
 
 import CustomIcon from '../components/common/CustomIcon';
 import LogoS from '../assets/logos/logo-s.png';
 import CloseIco from '../assets/icons/X.png';
 
 const Onboarding = () => {
-  const [[isLoading, data], setData] = useStorageState('user');
+  const [[isUserLoading, user], setUser] = useStorageState('user');
+  const [[isDataLoading, data], setData] = useStorageState('data');
   const router = useRouter();
 
   // Add States of Needs-Savings-Wants-Total Budget-ExpenseAllocation
@@ -24,17 +27,30 @@ const Onboarding = () => {
   const [ allocations, setAllocations ] = useState([]);
 
   const allocationHandler = (allocations) => {
-    const Store = {
+    setAllocations({
       budgetPlan,
+      totalBudget,
+      ...allocations,
+    })
+  }
+
+  async function saveAllocation() {
+    const payload = {
+      email: JSON.parse(user).email,
       totalBudget,
       ...allocations,
     }
 
-    setData(JSON.stringify(Store));
-  }
+    setData(JSON.stringify(payload));
+    const allocation = await allocateBudget(payload);
+    
+    if (allocation?.statusCode === 200) {
+      router.replace("/homepage");
+    }
+  };
 
   const nextStepHandler = () => {
-    if (step < 3) setStep(step + 1);
+    if (step < 4) setStep(step + 1);
   }
 
   const prevStepHandler = () => {
@@ -77,6 +93,7 @@ const Onboarding = () => {
       {step === 1 && <Step1 prevStep={prevStepHandler} setBudgetPlan={budgetPlanHandler}/>}
       {step === 2 && <Step2 prevStep={prevStepHandler} setBudget={totalBudgetHandler} nextStep={nextStepHandler}/>}
       {step === 3 && <Step3 prevStep={prevStepHandler} totalBudget={totalBudget} nextStep={nextStepHandler} setAllocations={allocationHandler}/>}
+      {step === 4 && <Summary prevStep={prevStepHandler} totalBudget={totalBudget} initialAllocation={allocations} setAllocations={saveAllocation}/>}
 
     </SafeAreaView>
   )

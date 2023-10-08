@@ -1,20 +1,44 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text, SafeAreaView, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { Tabs } from 'expo-router';
 import { Entypo } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import CustomIcon from '../../components/common/CustomIcon';
-
+import { getExpenses } from '../../api/expenses';
+import { useAuth } from '../../context/auth';
 import LogoS from '../../assets/logos/logo-s.png';
-
-const dummyData = {
-  
-}
+import formatExpenses from '../../utils/formatExpenses';
+import { formatDate } from '../../utils/dateFunctions';
 
 const History = () => { 
   const [ activeTab, setActiveTab ] = useState('Daily');
-
+  const [ userData, setUserData ] = useState(null);
+  const [ transactions, setTransactions ] = useState([]);
+  const [ totalExpenses, setTotalExpenses ] = useState(0);
   const tabs = ['Daily', 'Weekly', 'Monthly', 'Yearly']
+
+  const { user } = useAuth();
+
+  async function expensesHandler(email) {
+    const data = await getExpenses(email, activeTab);
+    const response = data.response;
+
+    const formattedTransactions = formatExpenses(response);
+
+    setTransactions(formattedTransactions);
+
+    const totalExpenses = formattedTransactions.map(item => {
+      return item.transactions.reduce((sum, curVal) => sum + curVal.amount, 0);
+    })
+
+    setTotalExpenses(totalExpenses);
+  }
+
+  useEffect(() => {
+    const userParse = JSON.parse(user);
+    setUserData(userParse);
+    expensesHandler(userParse.email);
+  }, [])
 
   return (
     <SafeAreaView>
@@ -42,7 +66,7 @@ const History = () => {
               if (tab === activeTab) {tabStyle = {...tabStyle, fontWeight: 700}}
 
               return (
-                <Pressable key={tab}>
+                <Pressable key={tab} onPress={() => setActiveTab(tab)}>
                   <Text style={tabStyle}>{tab}</Text>
                 </Pressable>
               )
@@ -57,75 +81,25 @@ const History = () => {
         </View>
 
         <Text style={{textAlign: 'center', color: '#969a9f', fontSize: 14, fontWeight: '700'}}>Total Expenses</Text>
-        <Text style={{textAlign: 'center', color: '#e74b4b', fontSize: 22, fontWeight: '700'}}>Php. 800.00</Text>
+        <Text style={{textAlign: 'center', color: '#e74b4b', fontSize: 22, fontWeight: '700'}}>Php. {totalExpenses}.00</Text>
       </View>
 
       <ScrollView style={[styles.headerWrapper, styles.noPadding]}>
         <View>
-          <Text style={styles.historyDate}>Today</Text>
-          <View style={styles.historyItem}>
-            <Text style={styles.historyCategory}>Food</Text>
-            <Text>-Php. 800.00</Text>
-          </View>
-          <View style={styles.historyItem}>
-            <Text style={styles.historyCategory}>Food</Text>
-            <Text>-Php. 800.00</Text>
-          </View>
-        </View>
-        <View>
-          <Text style={styles.historyDate}>Today</Text>
-          <View style={styles.historyItem}>
-            <Text style={styles.historyCategory}>Food</Text>
-            <Text>-Php. 800.00</Text>
-          </View>
-          <View style={styles.historyItem}>
-            <Text style={styles.historyCategory}>Food</Text>
-            <Text>-Php. 800.00</Text>
-          </View>
-        </View>
-        <View>
-          <Text style={styles.historyDate}>Today</Text>
-          <View style={styles.historyItem}>
-            <Text style={styles.historyCategory}>Food</Text>
-            <Text>-Php. 800.00</Text>
-          </View>
-          <View style={styles.historyItem}>
-            <Text style={styles.historyCategory}>Food</Text>
-            <Text>-Php. 800.00</Text>
-          </View>
-        </View>
-        <View>
-          <Text style={styles.historyDate}>Today</Text>
-          <View style={styles.historyItem}>
-            <Text style={styles.historyCategory}>Food</Text>
-            <Text>-Php. 800.00</Text>
-          </View>
-          <View style={styles.historyItem}>
-            <Text style={styles.historyCategory}>Food</Text>
-            <Text>-Php. 800.00</Text>
-          </View>
-        </View>
-        <View>
-          <Text style={styles.historyDate}>Today</Text>
-          <View style={styles.historyItem}>
-            <Text style={styles.historyCategory}>Food</Text>
-            <Text>-Php. 800.00</Text>
-          </View>
-          <View style={styles.historyItem}>
-            <Text style={styles.historyCategory}>Food</Text>
-            <Text>-Php. 800.00</Text>
-          </View>
-        </View>
-        <View>
-          <Text style={styles.historyDate}>Today</Text>
-          <View style={styles.historyItem}>
-            <Text style={styles.historyCategory}>Food</Text>
-            <Text>-Php. 800.00</Text>
-          </View>
-          <View style={styles.historyItem}>
-            <Text style={styles.historyCategory}>Food</Text>
-            <Text>-Php. 800.00</Text>
-          </View>
+          {/* <Text style={styles.historyDate}>Today</Text> */}
+          {transactions.map(transaction => {
+            return (
+              <>
+                <Text style={styles.historyDate}>{transaction.date}</Text>
+                {transaction.transactions.map((item) => 
+                  <View style={styles.historyItem}>
+                    <Text style={styles.historyCategory}>{item.category}</Text>
+                    <Text>-Php. {item.amount}</Text>
+                  </View>
+                )}
+              </>
+            )
+          })}
         </View>
       </ScrollView>
     </SafeAreaView>

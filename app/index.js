@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Logo from '../assets/logos/logo.png';
 import { Stack, useRouter } from 'expo-router';
 import { Text, SafeAreaView, Image, StyleSheet, View, Button } from 'react-native';
@@ -7,10 +7,10 @@ const Index = () => {
   const router = useRouter();
 
   const handleRegister = () => {
-    router.push(`/onboarding`)
+    router.push(`/register`)
   }
   const handleLogin = () => {
-    router.replace(`homepage`)
+    router.replace(`/login`)
   }
 
   return (

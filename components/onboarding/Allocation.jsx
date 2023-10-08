@@ -32,13 +32,17 @@ const Allocation = ({category, curAllocation, icon, allocationHandler, checkExce
         <Text style={[styles.topText, styles.whiteText]}>{category}</Text>
         <View style={styles.sideBySide}>
           <Text style={[styles.bottomText, styles.whiteText]}>Php. </Text>
-          <TextInput
+          {checkExceeding ? 
+            <TextInput
             placeholder="0"
             value={allocation}
             inputMode='numeric'
             onChangeText={onChangeAllocation}
             onSubmitEditing={onChangeHandler}
             style={[styles.bottomText, styles.whiteText]} />
+            :
+            <Text style={[styles.bottomText, styles.whiteText]}>{curAllocation}</Text>
+          }
         </View>
         
       </View>

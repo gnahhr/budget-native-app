@@ -7,4 +7,4 @@ const CustomIcon = ({imageUrl, size = 25}) => {
   )
 }
 
-export default CustomIcon
+export default CustomIcon 

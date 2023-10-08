@@ -10,7 +10,7 @@ import Categories from '../modals/Categories';
 import Suggestions from '../modals/Suggestions';
 import Allocation from './Allocation';
 
-const Step3 = ({totalBudget, prevStep, setAllocations}) => {
+const Step3 = ({totalBudget, prevStep, nextStep, setAllocations}) => {
 
   // Header Data
   const [ activeTab, setActiveTab ] = useState("NEED");
@@ -99,9 +99,9 @@ const Step3 = ({totalBudget, prevStep, setAllocations}) => {
     const savings = savingAllocations.filter(category => category.toggled);
 
     setAllocations({
-      needAllocations: needs,
-      wantAllocations: wants,
-      savingAllocations: savings,
+      needs: needs,
+      wants: wants,
+      savings: savings,
     })
   }
 
@@ -109,6 +109,11 @@ const Step3 = ({totalBudget, prevStep, setAllocations}) => {
     setNeedRatio(needsRatio);
     setWantRatio(wantsRatio);
     setSavingRatio(savingRatio);
+  }
+
+  const nextStepHandler = () => {
+    setAllocationsHandler();
+    nextStep();
   }
 
   const allocationHandler = (name, allocation) => {
@@ -223,7 +228,7 @@ const Step3 = ({totalBudget, prevStep, setAllocations}) => {
           <Pressable onPress={() => modalToggleHandler("SUGGESTION")}>
             <Text style={[styles.textCenter, styles.smallButton, styles.whiteText]}>SUGGESTION</Text>
           </Pressable>
-          <Pressable onPress={setAllocationsHandler}>
+          <Pressable onPress={() => nextStepHandler()}>
             <Text style={[styles.textCenter, styles.smallButton, styles.whiteText]}>Next</Text>
           </Pressable>
         </View>

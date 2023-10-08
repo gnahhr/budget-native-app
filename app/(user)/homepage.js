@@ -3,46 +3,132 @@ import { Tabs } from 'expo-router';
 import { View, SafeAreaView, Text, StyleSheet, Pressable, ScrollView } from 'react-native'
 import { useStorageState } from '../../hooks/useStorageState';
 
+// Components
 import AnimatedProgressWheel from 'react-native-progress-wheel';
 import CustomIcon from '../../components/common/CustomIcon';
 import HomeAllocation from '../../components/homepage/HomeAllocation';
 import Money from '../../components/homepage/Money';
-import AddExpenses from '../../components/modals/AddExpenses';
 
+// Modals
+import AddExpenses from '../../components/modals/AddExpenses';
+import UpdateBudget from '../../components/modals/UpdateBudget';
+
+// API
+import { getAllocatedBudget } from '../../api/budget';
+import { getAllExpenses, allocateExpense } from '../../api/expenses';
 import LogoS from '../../assets/logos/logo-s.png';
+import { useAuth } from '../../context/auth';
 
 const HomepageIndex = () => {
-  const [[isLoading, data], setData] = useStorageState('user');
-  const [ isEModalOpen, setIsEModalOpen ] = useState(false);
+  // LocalStorage States
+  const [[isUserLoading, userData], setUserData] = useStorageState('user');
+  const [[isDataLoading, data], setData] = useStorageState('data');
+  const [[isExpensesLoading, expenses], setExpenses] = useStorageState('expenses');
   const [ parsedData, setParsedData ] = useState({});
+  const [ parsedUser, setParsedUser ] = useState({});
+  const [ parsedExpenses, setParsedExpenses ] = useState([]);
+  const [ progress, setProgress ] = useState(0);
 
+  const { user } = useAuth();
+
+  // Modal States
+  const [ isEModalOpen, setIsEModalOpen ] = useState(false);
+  const [ isBModalOpen, setIsBModalOpen ] = useState(false);
+
+  // Tab Constants
   const [ activeTab, setActiveTab ] = useState("Needs");
   const tabs = ['Needs', 'Savings', 'Wants'];
   const tabData = {
     'Needs': {
-      data: parsedData.needAllocations
+      data: parsedData.needs,
+      name: 'needs'
     },
     'Savings': {
-      data: parsedData.savingAllocations
+      data: parsedData.savings,
+      name: 'savings'
     },
     'Wants': {
-      data: parsedData.wantAllocations
+      data: parsedData.wants,
+      name: 'wants'
     }
   }
 
   const expenseModalToggle = () => {
+    getAllocation(parsedUser.email);
     setIsEModalOpen(true);
   }
 
-  const addExpenseHandler = () => {
-
+  const budgetModalToggle = () => {
+    setIsBModalOpen(true);
   }
-  
+
+  async function getExpensesHandler(email) {
+    const data = await getAllExpenses(email);
+    const summary = formatExpenses(data.response);
+    setParsedExpenses(summary);
+    setExpenses(JSON.stringify(summary));
+  }
+
+  const formatExpenses = (data) => {
+    const categories = data.map((data) => data.category);
+    const tabs = [...new Set(categories)];
+    
+    return tabs.map((category) => {
+      const total = data.reduce((sum, object) => {
+        if (object['category'] === category) {
+          return Number(sum) + Number(object['amount'])
+        } else {
+          return Number(sum)
+        }
+      }, 0)
+
+      return {
+        category: category,
+        amount: total,
+      }
+    })
+  }
+
+  async function addExpenseHandler(category, amount, note) {
+    const payload = {
+      email: parsedUser.email,
+      type: tabData[activeTab].name,
+      category: category,
+      amount: Number(amount),
+      note,
+    }
+
+    const response = await allocateExpense(payload);
+    getAllocation();
+    setIsEModalOpen(false);
+  }
+
+  async function getAllocation(email) {
+    const allocation = await getAllocatedBudget(email);
+    console.log(allocation.response[tabData[activeTab].name]);
+    setData(JSON.stringify(allocation.response));
+    setParsedData(allocation.response);
+  }
+
   useEffect(() => {
-    if (!isLoading) {
+    const userParse = JSON.parse(user);
+
+    setParsedUser(userParse);
+    getAllocation(userParse.email);
+    getExpensesHandler(userParse.email);
+  }, [])
+
+  useEffect(() => {
+    if (!isUserLoading) {
+      setParsedUser(JSON.parse(userData));
+    }
+    if (!isDataLoading) {
       setParsedData(JSON.parse(data));
     }
-  }, [isLoading])
+    if (!isExpensesLoading) {
+      setParsedExpenses(JSON.parse(expenses));
+    }
+  }, [isUserLoading, isDataLoading, isExpensesLoading, data, user, expenses])
 
   return (
     <SafeAreaView style={{backgroundColor: '#f3f3f7'}}>
@@ -57,7 +143,7 @@ const HomepageIndex = () => {
         }}
       />
       <View style={[styles.container]}>
-        <Text style={[styles.normalText, styles.grayText]}>Hello Shiela,</Text>
+        <Text style={[styles.normalText, styles.grayText]}>Hello {parsedUser ? parsedUser.username : "User"},</Text>
         <Text style={[styles.boldText, styles.bigFont]}>Welcome Back!</Text>
       </View>
 
@@ -71,14 +157,14 @@ const HomepageIndex = () => {
               size={160} 
               width={15} 
               color={'#1e9dc5'}
-              progress={25}
+              progress={0}
               backgroundColor={'#c3ece8'}
             />
-            <Text style={{position: 'absolute', alignSelf: 'center', marginTop: 70}}>Hatdog</Text>
+            <Text style={{position: 'absolute', alignSelf: 'center', marginTop: 70}}>Php. {parsedData.remainingBudget}</Text>
           </View>
           <View style={styles.moneyWrapper}>
-            <Money currency={parsedData.totalBudget} subText="Remaining budget" onClickHandler={() => console.log('yey')}/>
-            <Money currency={0} subText="Total Expenses"/>
+            <Money currency={parsedData.remainingBudget} subText="Remaining budget" onClickHandler={budgetModalToggle}/>
+            <Money currency={parsedData.totalExpenses} subText="Total Expenses"/>
           </View>
         </View>
       </View>
@@ -98,9 +184,11 @@ const HomepageIndex = () => {
           }
           )}
       </View> 
+      
       <ScrollView style={[styles.container, styles.scrollHeight]}>
-        {tabData[activeTab].data && tabData[activeTab].data.map(data => <HomeAllocation key={data.name} category={data}/>)}
+        {tabData[activeTab].data && !isExpensesLoading && tabData[activeTab].data.map(data => <HomeAllocation key={data.name} category={data} expenses={parsedExpenses}/>)}
       </ScrollView>
+
       <View style={[styles.bottomButtonWrapper]}>
         <Pressable>
           <Text style={[styles.boldText, styles.italics, styles.button, styles.whiteText]}>Edit Categories</Text>
@@ -109,7 +197,9 @@ const HomepageIndex = () => {
           <Text style={[styles.boldText, styles.italics, styles.button, styles.whiteText]}>Add Expenses</Text>
         </Pressable>
       </View>
-      <AddExpenses categoryList={tabData[activeTab].data} isModalVisible={isEModalOpen} setModalVisible={setIsEModalOpen} onAddExpense={() => console.log('yey')}/>
+
+      <UpdateBudget isModalVisible={isBModalOpen} setModalVisible={setIsBModalOpen} onAddExpense={()=>console.log('yey')} />
+      <AddExpenses categoryList={parsedData[tabData[activeTab].name]} isModalVisible={isEModalOpen} setModalVisible={setIsEModalOpen} onAddExpense={addExpenseHandler}/>
     </SafeAreaView>
   )
 }
