@@ -22,16 +22,20 @@ const History = () => {
   async function expensesHandler(email) {
     const data = await getExpenses(email, activeTab);
     const response = data.response;
-
     const formattedTransactions = formatExpenses(response);
 
     setTransactions(formattedTransactions);
 
     const totalExpenses = formattedTransactions.map(item => {
-      return item.transactions.reduce((sum, curVal) => sum + curVal.amount, 0);
+      return item.transactions.reduce((sum, curVal) => Number(sum) + Number(curVal.amount), 0);
     })
 
-    setTotalExpenses(totalExpenses);
+    if (totalExpenses.length > 0) {
+      setTotalExpenses(totalExpenses.reduce((sum, val) => sum + val, 0));
+    } else {
+      setTotalExpenses(totalExpenses);
+    }
+
   }
 
   useEffect(() => {

@@ -4,8 +4,6 @@ export const formatDate = (input) => {
   const date = new Date(input).getDate();
   const month = new Date(input).getMonth();
   const year = new Date(input).getFullYear();
-  
-  console.log(`${MONTHS[month]} ${date}, ${year}`);
 
   return `${MONTHS[month]} ${date}, ${year}`;
 }

@@ -24,6 +24,8 @@ const HomepageIndex = () => {
   const [[isUserLoading, userData], setUserData] = useStorageState('user');
   const [[isDataLoading, data], setData] = useStorageState('data');
   const [[isExpensesLoading, expenses], setExpenses] = useStorageState('expenses');
+  const [ remainingBudget, setRemainingBudget ] = useState(0);
+  const [ totalExpenses, setTotalExpenses ] = useState(0);
   const [ parsedData, setParsedData ] = useState({});
   const [ parsedUser, setParsedUser ] = useState({});
   const [ parsedExpenses, setParsedExpenses ] = useState([]);
@@ -40,15 +42,12 @@ const HomepageIndex = () => {
   const tabs = ['Needs', 'Savings', 'Wants'];
   const tabData = {
     'Needs': {
-      data: parsedData.needs,
       name: 'needs'
     },
     'Savings': {
-      data: parsedData.savings,
       name: 'savings'
     },
     'Wants': {
-      data: parsedData.wants,
       name: 'wants'
     }
   }
@@ -95,18 +94,21 @@ const HomepageIndex = () => {
       type: tabData[activeTab].name,
       category: category,
       amount: Number(amount),
-      note,
+      note: note ? note : "",
     }
 
     const response = await allocateExpense(payload);
-    getAllocation();
+    getAllocation(parsedUser.email);
+    getExpensesHandler(parsedUser.email);
     setIsEModalOpen(false);
   }
 
   async function getAllocation(email) {
     const allocation = await getAllocatedBudget(email);
-    console.log(allocation.response[tabData[activeTab].name]);
-    setData(JSON.stringify(allocation.response));
+    const data = allocation.response;
+    setData(JSON.stringify(data));
+    setRemainingBudget(data.remainingBudget);
+    setTotalExpenses(data.totalExpenses);
     setParsedData(allocation.response);
   }
 
@@ -160,11 +162,11 @@ const HomepageIndex = () => {
               progress={0}
               backgroundColor={'#c3ece8'}
             />
-            <Text style={{position: 'absolute', alignSelf: 'center', marginTop: 70}}>Php. {parsedData.remainingBudget}</Text>
+            <Text style={{position: 'absolute', alignSelf: 'center', marginTop: 70}}>Php. {remainingBudget ? remainingBudget : 0}</Text>
           </View>
           <View style={styles.moneyWrapper}>
-            <Money currency={parsedData.remainingBudget} subText="Remaining budget" onClickHandler={budgetModalToggle}/>
-            <Money currency={parsedData.totalExpenses} subText="Total Expenses"/>
+            <Money currency={remainingBudget ? remainingBudget : 0} subText="Remaining budget" onClickHandler={budgetModalToggle}/>
+            <Money currency={totalExpenses ? totalExpenses : 0} subText="Total Expenses"/>
           </View>
         </View>
       </View>
@@ -186,7 +188,7 @@ const HomepageIndex = () => {
       </View> 
       
       <ScrollView style={[styles.container, styles.scrollHeight]}>
-        {tabData[activeTab].data && !isExpensesLoading && tabData[activeTab].data.map(data => <HomeAllocation key={data.name} category={data} expenses={parsedExpenses}/>)}
+        {tabData[activeTab].name && !isExpensesLoading && parsedData[tabData[activeTab].name].map(data => <HomeAllocation key={data.name} category={data} expenses={parsedExpenses}/>)}
       </ScrollView>
 
       <View style={[styles.bottomButtonWrapper]}>

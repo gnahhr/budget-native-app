@@ -13,7 +13,7 @@ export async function allocateExpense(payload) {
 };
 
 export async function getAllExpenses(email) {
-  const response = await axios.get(`${apiURL}/budget/get-transaction?email=${email}`)
+  const response = await axios.get(`${apiURL}/budget/get-transactions?email=${email}`)
   .then(response => response.data)
   .catch(err => console.error(err));
   
@@ -21,7 +21,7 @@ export async function getAllExpenses(email) {
 };
 
 export async function getExpenses(email, type) {
-  const response = await axios.get(`${apiURL}/budget/get-transaction?email=${email}`)
+  const response = await axios.get(`${apiURL}/budget/get-transactions?email=${email}`)
   .then(response => response.data)
   .catch(err => console.error(err));
   
