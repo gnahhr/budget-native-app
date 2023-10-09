@@ -31,7 +31,7 @@ function useProtectedRoute(user) {
     const inRoot = segments[0] === undefined;
     const isBudgetAllocationExists = JSON.parse(user)?.ifBudgetAllocationExists;
     if (!isNavigationReady && !inRoot) return;
-
+    
     if (!user && inUserGroup){
       router.replace('/');
     } else if (user && inAuthGroup) {

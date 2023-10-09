@@ -17,7 +17,7 @@ import CloseIco from '../../assets/icons/X.png';
 
 const Onboarding = () => {
   const [[isDataLoading, data], setData] = useStorageState('data');
-  const { user } = useAuth();
+  const { user, signIn } = useAuth();
   const router = useRouter();
 
   // Add States of Needs-Savings-Wants-Total Budget-ExpenseAllocation
@@ -36,13 +36,19 @@ const Onboarding = () => {
   }
 
   async function saveAllocation() {
+    const parsedUser = JSON.parse(user);
     const payload = {
-      email: JSON.parse(user).email,
+      email: parsedUser.email,
       totalBudget,
       ...allocations,
     }
 
     setData(JSON.stringify(payload));
+    signIn({
+      ...parsedUser,
+      ifBudgetAllocationExists: true
+    })
+
     const allocation = await allocateBudget(payload);
     
     if (allocation.statusCode === 200) {
