@@ -8,7 +8,11 @@ export async function login (email, password) {
     const response = await axios.post(`${apiURL}/user/login`, {
         "email": email,
         "password": password,
-    })
+    }, {
+        headers:{
+          'content-type': 'application/x-www-form-urlencoded',
+          'accept': 'application/json'}
+      })
     .then(response => response.data)
     .catch(err => console.error(err));
     

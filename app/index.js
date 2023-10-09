@@ -10,7 +10,7 @@ const Index = () => {
     router.push(`/register`)
   }
   const handleLogin = () => {
-    router.replace(`/login`)
+    router.push(`/login`)
   }
 
   return (

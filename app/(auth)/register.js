@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react'
 import Logo from '../../assets/logos/logo.png';
 import { Stack, useRouter } from 'expo-router';
 import { register } from '../../api/login';
+import { useAuth } from '../../context/auth';
 import { Text, SafeAreaView, Image, StyleSheet, View, Button, TextInput, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
 
 const Register = () => {
   const router = useRouter();
+  const { signIn } = useAuth();
   const [ username, setUsername ] = useState("");
   const [ isLoading, setIsLoading ] = useState(false);
   const [ email, setEmail ] = useState("");
@@ -21,15 +23,16 @@ const Register = () => {
       setAlert("");
 
       const data = await register(username, email, password);
-      
+
       setIsLoading(false);
 
       if (data?.statusCode === 422) {
         setAlert(data.message);
       }
 
-      if (data?.statusCode === 201) {
-        router.push(`/login`)
+      if (data.statusCode === 201) {
+        router.replace(`/onboarding`);
+        signIn(JSON.stringify(data));
       }
     }
   }

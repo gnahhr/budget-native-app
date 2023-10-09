@@ -20,12 +20,14 @@ const Login = () => {
   }
 
   async function handleLogin() {
+    console.log("yay");
     setIsLoading(true);
     setAlert("");
 
     const data = await login(email, password);
+    console.log(data);
     setIsLoading(false);
-
+    
     if (data?.statusCode === 409) {
       setAlert(data.message);
     }
@@ -35,7 +37,6 @@ const Login = () => {
         email: data.response.email,
         username: data.response.userName,
       }));
-
       router.replace(`/homepage`);
     }
   }

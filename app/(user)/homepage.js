@@ -144,6 +144,11 @@ const HomepageIndex = () => {
           headerTitle: "",
         }}
       />
+      {
+        !parsedUser && !parsedData && !parsedExpenses ? 
+        <Text>Loading...</Text>
+      :
+      <>
       <View style={[styles.container]}>
         <Text style={[styles.normalText, styles.grayText]}>Hello {parsedUser ? parsedUser.username : "User"},</Text>
         <Text style={[styles.boldText, styles.bigFont]}>Welcome Back!</Text>
@@ -202,6 +207,7 @@ const HomepageIndex = () => {
 
       <UpdateBudget isModalVisible={isBModalOpen} setModalVisible={setIsBModalOpen} onAddExpense={()=>console.log('yey')} />
       <AddExpenses categoryList={parsedData[tabData[activeTab].name]} isModalVisible={isEModalOpen} setModalVisible={setIsEModalOpen} onAddExpense={addExpenseHandler}/>
+      </>}
     </SafeAreaView>
   )
 }

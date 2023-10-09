@@ -26,13 +26,15 @@ function useProtectedRoute(user) {
   }, [rootNavigation])
 
   useEffect(() => {
-    if (!isNavigationReady) return;
-
+    // if (!isNavigationReady) return;
     const inAuthGroup = segments[0] === '(auth)';
+    const inUserGroup = segments[0] === '(user)';
 
-    if (!user && !inAuthGroup){
+    if (!user && inUserGroup){
       router.replace('/');
     } else if (user && inAuthGroup) {
+      router.replace('/homepage');
+    } else if (user && segments[0] === undefined) {
       router.replace('/homepage');
     }
   }, [user, segments, isNavigationReady])

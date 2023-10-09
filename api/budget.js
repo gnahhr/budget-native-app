@@ -5,7 +5,7 @@ const apiURL = Platform.OS === "android" ? process.env.EXPO_PUBLIC_API_URL_ANDRO
 
 export async function allocateBudget(payload) {
 
-    const response = await axios.post(`${apiURL}/budget/allocation`, payload)
+    const response = await axios.post(`${apiURL}/budget/allocation`, payload )
     .then(response => response.data)
     .catch(err => console.error(err));
     

@@ -95,8 +95,8 @@ const History = () => {
             return (
               <>
                 <Text style={styles.historyDate}>{transaction.date}</Text>
-                {transaction.transactions.map((item) => 
-                  <View style={styles.historyItem}>
+                {transaction.transactions.map((item, idx) => 
+                  <View key={idx} style={styles.historyItem}>
                     <Text style={styles.historyCategory}>{item.category}</Text>
                     <Text>-Php. {item.amount}</Text>
                   </View>

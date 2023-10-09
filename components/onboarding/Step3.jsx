@@ -205,7 +205,8 @@ const Step3 = ({totalBudget, prevStep, nextStep, setAllocations}) => {
           {tabData[activeTab].state.filter(x => x.toggled).length > 0 ? 
             <>
             {tabData[activeTab].state.filter(x => x.toggled).map(x =>
-              <Allocation category={x.name}
+              <Allocation key={x.name}
+                          category={x.name}
                           curAllocation={x.allocation}
                           allocationHandler={allocationHandler}
                           checkExceeding={checkExceeding}

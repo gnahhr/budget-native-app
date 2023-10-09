@@ -27,7 +27,7 @@ const Step2 = ({setBudget, nextStep, prevStep}) => {
           onChangeText={onChangeNumInput}
           onSubmitEditing={() => totalBudgetHandler()}
           placeholder='0'
-          value={numInput}
+          value={String(numInput)}
           keyboardType="numeric"
         />
         
