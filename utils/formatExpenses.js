@@ -7,7 +7,6 @@ export default formatExpenses = (data) => {
   const tabs = [...new Set(categories)];
 
   return reduceDates.map((date) => {
-
     const transactions = tabs.map((category) => {
       const total = data.reduce((sum, object) => {
         if ((object['category'] === category) && (formatDate(object.createdAt) === date)) {
@@ -31,3 +30,4 @@ export default formatExpenses = (data) => {
     }
   })
 }
+

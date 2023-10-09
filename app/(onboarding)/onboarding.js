@@ -44,10 +44,10 @@ const Onboarding = () => {
     }
 
     setData(JSON.stringify(payload));
-    signIn({
+    signIn(JSON.stringify({
       ...parsedUser,
       ifBudgetAllocationExists: true
-    })
+    }));
 
     const allocation = await allocateBudget(payload);
     

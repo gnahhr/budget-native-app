@@ -109,7 +109,6 @@ const HomepageIndex = () => {
     const data = allocation.response;
 
     setData(JSON.stringify(data));
-    console.log(data.totalBudget - data.totalExpenses);
     setRemainingBudget(data.remainingBudget ? data.remainingBudget : 0);
     setTotalExpenses(data.totalExpenses ? data.totalExpenses : 0);
     setProgress(Math.floor(Number(data.remainingBudget) / Number(data.totalBudget) * 100));

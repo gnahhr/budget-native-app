@@ -3,12 +3,12 @@ import { View, Text, SafeAreaView, ScrollView, Pressable, StyleSheet } from 'rea
 import { Tabs } from 'expo-router';
 import { Entypo } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
-import CustomIcon from '../../components/common/CustomIcon';
-import { getExpenses } from '../../api/expenses';
 import { useAuth } from '../../context/auth';
+
+import CustomIcon from '../../components/common/CustomIcon';
 import LogoS from '../../assets/logos/logo-s.png';
 import formatExpenses from '../../utils/formatExpenses';
-import { formatDate } from '../../utils/dateFunctions';
+import { getExpenses } from '../../api/expenses';
 
 const History = () => { 
   const [ activeTab, setActiveTab ] = useState('Daily');
