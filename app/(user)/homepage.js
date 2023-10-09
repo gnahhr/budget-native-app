@@ -106,15 +106,16 @@ const HomepageIndex = () => {
   async function getAllocation(email) {
     const allocation = await getAllocatedBudget(email);
     const data = allocation.response;
+    console.log(data);
     setData(JSON.stringify(data));
-    setRemainingBudget(data.remainingBudget);
-    setTotalExpenses(data.totalExpenses);
+    setRemainingBudget(data.remainingBudget ? data.remainingBudget : 0);
+    setTotalExpenses(data.totalExpenses ? data.totalExpenses : 0);
+    setProgress(Math.floor(Number(data.remainingBudget) / Number(data.totalBudget) * 100));
     setParsedData(allocation.response);
   }
 
   useEffect(() => {
     const userParse = JSON.parse(user);
-
     setParsedUser(userParse);
     getAllocation(userParse.email);
     getExpensesHandler(userParse.email);
@@ -164,7 +165,7 @@ const HomepageIndex = () => {
               size={160} 
               width={15} 
               color={'#1e9dc5'}
-              progress={0}
+              progress={progress ? progress : 0}
               backgroundColor={'#c3ece8'}
             />
             <Text style={{position: 'absolute', alignSelf: 'center', marginTop: 70}}>Php. {remainingBudget ? remainingBudget : 0}</Text>
@@ -193,7 +194,11 @@ const HomepageIndex = () => {
       </View> 
       
       <ScrollView style={[styles.container, styles.scrollHeight]}>
-        {tabData[activeTab].name && !isExpensesLoading && parsedData[tabData[activeTab].name].map(data => <HomeAllocation key={data.name} category={data} expenses={parsedExpenses}/>)}
+        {tabData[activeTab].name && !isExpensesLoading && parsedData[tabData[activeTab].name].length > 0 ?
+          parsedData[tabData[activeTab].name].map(data => <HomeAllocation key={data.name} category={data} expenses={parsedExpenses}/>)
+          :
+          <Text>Nothing Allocated</Text>
+          }
       </ScrollView>
 
       <View style={[styles.bottomButtonWrapper]}>
