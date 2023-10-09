@@ -22,6 +22,9 @@ const History = () => {
   async function expensesHandler(email) {
     const data = await getExpenses(email, activeTab);
     const response = data.response;
+
+    if (!response) return;
+
     const formattedTransactions = formatExpenses(response);
 
     setTransactions(formattedTransactions);
@@ -90,20 +93,23 @@ const History = () => {
 
       <ScrollView style={[styles.headerWrapper, styles.noPadding]}>
         <View>
-          {/* <Text style={styles.historyDate}>Today</Text> */}
-          {transactions.map(transaction => {
-            return (
-              <>
-                <Text style={styles.historyDate}>{transaction.date}</Text>
-                {transaction.transactions.map((item, idx) => 
-                  <View key={idx} style={styles.historyItem}>
-                    <Text style={styles.historyCategory}>{item.category}</Text>
-                    <Text>-Php. {item.amount}</Text>
-                  </View>
-                )}
-              </>
-            )
-          })}
+          {transactions.length > 0 ?
+            transactions.map(transaction => {
+              return (
+                <>
+                  <Text style={styles.historyDate}>{transaction.date}</Text>
+                  {transaction.transactions.map((item, idx) => 
+                    <View key={idx} style={styles.historyItem}>
+                      <Text style={styles.historyCategory}>{item.category}</Text>
+                      <Text>-Php. {item.amount}</Text>
+                    </View>
+                  )}
+                </>
+              )
+            })
+            :
+            <Text>No expenses for this period.</Text>
+            }
         </View>
       </ScrollView>
     </SafeAreaView>

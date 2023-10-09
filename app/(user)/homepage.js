@@ -30,6 +30,7 @@ const HomepageIndex = () => {
   const [ parsedUser, setParsedUser ] = useState({});
   const [ parsedExpenses, setParsedExpenses ] = useState([]);
   const [ progress, setProgress ] = useState(0);
+  const [ isLoading, setIsLoading ] = useState(true);
 
   const { user } = useAuth();
 
@@ -106,7 +107,7 @@ const HomepageIndex = () => {
   async function getAllocation(email) {
     const allocation = await getAllocatedBudget(email);
     const data = allocation.response;
-    console.log(data);
+
     setData(JSON.stringify(data));
     setRemainingBudget(data.remainingBudget ? data.remainingBudget : 0);
     setTotalExpenses(data.totalExpenses ? data.totalExpenses : 0);
@@ -115,10 +116,13 @@ const HomepageIndex = () => {
   }
 
   useEffect(() => {
-    const userParse = JSON.parse(user);
-    setParsedUser(userParse);
-    getAllocation(userParse.email);
-    getExpensesHandler(userParse.email);
+    if (user) {
+      setIsLoading(false);
+      const userParse = JSON.parse(user);
+      setParsedUser(userParse);
+      getAllocation(userParse.email);
+      getExpensesHandler(userParse.email);
+    }
   }, [])
 
   useEffect(() => {
@@ -146,7 +150,7 @@ const HomepageIndex = () => {
         }}
       />
       {
-        !parsedUser && !parsedData && !parsedExpenses ? 
+        !parsedUser && !parsedData && !parsedExpenses && isLoading ? 
         <Text>Loading...</Text>
       :
       <>

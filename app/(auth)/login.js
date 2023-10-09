@@ -20,12 +20,10 @@ const Login = () => {
   }
 
   async function handleLogin() {
-    console.log("yay");
     setIsLoading(true);
     setAlert("");
 
     const data = await login(email, password);
-    console.log(data);
     setIsLoading(false);
     
     if (data?.statusCode === 409) {
@@ -36,6 +34,7 @@ const Login = () => {
       signIn(JSON.stringify({
         email: data.response.email,
         username: data.response.userName,
+        ifBudgetAllocationExists: data.response.ifBudgetAllocationExists
       }));
       router.replace(`/homepage`);
     }

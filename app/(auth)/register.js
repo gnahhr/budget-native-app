@@ -35,7 +35,7 @@ const Register = () => {
         signIn(JSON.stringify({
           email: data.response.email,
           username: data.response.userName,
-          // 
+          ifBudgetAllocationExists: data.response.ifBudgetAllocationExists 
         }));
       }
     }

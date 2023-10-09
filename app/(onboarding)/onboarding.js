@@ -36,10 +36,8 @@ const Onboarding = () => {
   }
 
   async function saveAllocation() {
-    console.log(user.email);
-
     const payload = {
-      email: user.email,
+      email: JSON.parse(user).email,
       totalBudget,
       ...allocations,
     }
