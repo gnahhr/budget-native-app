@@ -12,6 +12,24 @@ export async function allocateBudget(payload) {
     return await response;
 };
 
+export async function updateBudget(email, totalBudget) {
+    const response = await axios.put(`${apiURL}/budget/edit-budget-allocation?email=${email}`,{
+      totalBudget,
+    })
+    .then(response => response.data)
+    .catch(err => console.error(err));
+    
+    return await response;
+};
+
+export async function updateAllocation(email, payload) {
+    const response = await axios.put(`${apiURL}/budget/edit-budget-category?email=${email}`, payload)
+    .then(response => response.data)
+    .catch(err => console.error(err));
+    
+    return await response;
+};
+
 export async function getAllocatedBudget(email) {
 
   const response = await axios.get(`${apiURL}/budget/get-budget-allocation?email=${email}`)

@@ -10,7 +10,7 @@ import Categories from '../modals/Categories';
 import Suggestions from '../modals/Suggestions';
 import Allocation from './Allocation';
 
-const Step3 = ({totalBudget, prevStep, nextStep, setAllocations}) => {
+const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocations}) => {
 
   // Header Data
   const [ activeTab, setActiveTab ] = useState("NEED");
@@ -41,16 +41,19 @@ const Step3 = ({totalBudget, prevStep, nextStep, setAllocations}) => {
       state: needAllocations,
       setAllocation: setNeedAllocations,
       ratio: needRatio,
+      alt: "needs",
     },
     "SAVINGS": {
       state: savingAllocations,
       setAllocation: setSavingAllocations,
       ratio: savingRatio,
+      alt: "savings",
     },
     "WANT": {
       state: wantAllocations,
       setAllocation: setWantAllocations,
       ratio: wantRatio,
+      alt: "wants",
     }
   }
 
@@ -127,7 +130,7 @@ const Step3 = ({totalBudget, prevStep, nextStep, setAllocations}) => {
         return x;
       }
     })
-
+    
     const totalAllocation = newData.reduce((sum, category) => sum + Number(category.allocation), 0);
     const percentage = tabData[activeTab].ratio ? tabData[activeTab].ratio / 100 : 1;
 
@@ -144,6 +147,36 @@ const Step3 = ({totalBudget, prevStep, nextStep, setAllocations}) => {
     tabData[activeTab].setAllocation(newData);
   };
 
+  const currentAllocationHandler = (curAllocation) => {
+    const types = ['WANT', 'NEED', 'SAVINGS'];
+    
+    types.map((type) => {
+      const container = [...tabData[type].state, ...curAllocation[tabData[type].alt]];
+      const newContainer = [];
+      const uniqueContainer = {};
+
+      for (let item in container) {
+          category = container[item]['name'];
+
+          if (uniqueContainer[category] !== undefined) {
+            uniqueContainer[category] = {
+              ...uniqueContainer[category],
+              allocation: container[item].allocation,
+              toggled: true,
+            }
+          } else {
+            uniqueContainer[category] = container[item]; 
+          }
+      }
+
+      for (i in uniqueContainer) {
+        newContainer.push(uniqueContainer[i]);
+      }
+      
+      tabData[type].setAllocation(newContainer);
+    })
+  };
+
   useEffect(() => {
     setTotalWant(getAllocationSum(wantAllocations));
   }, [wantAllocations])
@@ -155,6 +188,12 @@ const Step3 = ({totalBudget, prevStep, nextStep, setAllocations}) => {
   useEffect(() => {
     setTotalSavings(getAllocationSum(savingAllocations));
   }, [savingAllocations])
+
+  useEffect(() => {
+    if (currentAllocations) {
+      currentAllocationHandler(currentAllocations);
+    }
+  }, [currentAllocations])
   
   useEffect(() => {
     const totalAllocations = totalSavings + totalWant + totalNeed;

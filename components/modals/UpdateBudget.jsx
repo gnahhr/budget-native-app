@@ -2,12 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, Pressable } from 'react-native';
 import Modal from 'react-native-modal';
 
-const UpdateBudget = ({isModalVisible, setModalVisible, onAddExpense}) => {
+const UpdateBudget = ({isModalVisible, totalBudget, setModalVisible, updateBudget}) => {
   const [ budget, onChangeBudget ] = useState(0);
 
   const toggleModal = () => {
     setModalVisible(false);
   };
+
+  const updateBudgetHandler = () => {
+    updateBudget(budget);
+  }
+
+  useEffect(() => {
+    onChangeBudget(totalBudget);
+  }, [])
 
   return (
     <Modal
@@ -38,7 +46,7 @@ const UpdateBudget = ({isModalVisible, setModalVisible, onAddExpense}) => {
               <Text style={[styles.textCenter, styles.textBold]}>Cancel</Text>
             </Pressable>
 
-            <Pressable style={[styles.buttonStyle]}>
+            <Pressable style={[styles.buttonStyle]} onPress={() => updateBudgetHandler()}>
               <Text style={[styles.textCenter, styles.textWhite, styles.textBold]}>Save</Text>
             </Pressable>
           </View>

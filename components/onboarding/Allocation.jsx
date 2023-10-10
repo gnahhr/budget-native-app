@@ -41,10 +41,9 @@ const Allocation = ({category, curAllocation, icon, allocationHandler, checkExce
             onSubmitEditing={onChangeHandler}
             style={[styles.bottomText, styles.whiteText]} />
             :
-            <Text style={[styles.bottomText, styles.whiteText]}>{curAllocation}</Text>
+            <Text style={[styles.bottomText, styles.whiteText]}>{allocation}</Text>
           }
         </View>
-        
       </View>
     </View>
   )

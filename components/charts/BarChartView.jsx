@@ -1,67 +1,64 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, Text } from 'react-native';
 import { BarChart } from 'react-native-gifted-charts';
 
 
-const BarChartView = () => {
-  const barData = [
-    {
-      value: 40,
-      label: 'Jan',
-      spacing: 2,
-      labelWidth: 30,
-      labelTextStyle: {color: 'gray'},
-      frontColor: '#177AD5',
-    },
-    {value: 20, spacing: 2, frontColor: '#ED6665'},
-    {value: 40, frontColor: 'green'},
-    {
-      value: 50,
-      label: 'Feb',
-      spacing: 2,
-      labelWidth: 30,
-      labelTextStyle: {color: 'gray'},
-      frontColor: '#177AD5',
-    },
-    {value: 40, spacing: 2, frontColor: '#ED6665'},
-    {value: 40, frontColor: '#ED6665'},
-    {
-      value: 75,
-      label: 'Mar',
-      spacing: 2,
-      labelWidth: 30,
-      labelTextStyle: {color: 'gray'},
-      frontColor: '#177AD5',
-    },
-    {value: 25, frontColor: '#ED6665'},
-    {
-      value: 30,
-      label: 'Apr',
-      spacing: 2,
-      labelWidth: 30,
-      labelTextStyle: {color: 'gray'},
-      frontColor: '#177AD5',
-    },
-    {value: 20, frontColor: '#ED6665'},
-    {
-      value: 60,
-      label: 'May',
-      spacing: 2,
-      labelWidth: 30,
-      labelTextStyle: {color: 'gray'},
-      frontColor: '#177AD5',
-    },
-    {value: 40, frontColor: '#ED6665'},
-    {
-      value: 65,
-      label: 'Jun',
-      spacing: 2,
-      labelWidth: 30,
-      labelTextStyle: {color: 'gray'},
-      frontColor: '#177AD5',
-    },
-    {value: 30, frontColor: '#ED6665'},
-  ];
+const BarChartView = ({data}) => {
+  const colors = ['#185577', '#83a7c8', '#1e9dc5'];
+  const [ rChartData, setRChartData ] = useState(); 
+  const [ barData, setBarData ] = useState();
+  const [ barHeight, setBarHeight ] = useState(200);
+  
+  const initData = (initData) => {
+    const dataCheck = initData.map(item => {
+      return {
+        month: item.month,
+        topExpenses: [...item.expenses.sort((a, b) => b.amount - a.amount).slice(0,3)]
+      }
+    });
+
+    setRChartData(dataCheck);
+    initBarData(dataCheck);
+  }
+
+  const initBarData = (data) => {
+    let highest = 0
+    const initData = data.map((date) => {
+      return date.topExpenses.map((item, idx) => {
+        if (item.amount > highest) highest = item.amount;
+        if (idx === 0) {
+          return {
+            value: item.amount,
+            label: date.month,
+            spacing: 2,
+            labelWidth: 30,
+            labelTextStyle: {color: 'gray'},
+            frontColor: colors[idx],
+          }
+        } else if (idx === 1) {
+          return {
+            value: item.amount,
+            spacing: 2,
+            frontColor: colors[idx],
+          }
+        } else if (idx === 2) {
+          return {
+            value: item.amount,
+            frontColor: colors[idx],
+          }
+        }
+      })
+    })
+
+    setBarHeight(highest);
+    setBarData(...initData);
+  };
+
+  useEffect(() => {
+    if (data) {
+      initData(data);
+    }
+  }, [data])
 
   return (
     <View style={[styles.container]}>
@@ -76,7 +73,7 @@ const BarChartView = () => {
             yAxisThickness={0}
             yAxisTextStyle={{color: 'gray'}}
             noOfSections={5}
-            maxValue={100}
+            maxValue={barHeight + 100}
             height={160}
           />
       </View>

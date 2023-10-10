@@ -8,25 +8,35 @@ import { useAuth } from '../../context/auth';
 import CustomIcon from '../../components/common/CustomIcon';
 import LogoS from '../../assets/logos/logo-s.png';
 import formatExpenses from '../../utils/formatExpenses';
-import { getExpenses } from '../../api/expenses';
+import { getAllExpenses } from '../../api/expenses';
 
 const History = () => { 
   const [ activeTab, setActiveTab ] = useState('Daily');
   const [ userData, setUserData ] = useState(null);
   const [ transactions, setTransactions ] = useState([]);
   const [ totalExpenses, setTotalExpenses ] = useState(0);
-  const tabs = ['Daily', 'Weekly', 'Monthly', 'Yearly']
+  const tabs = ['Daily', 'Weekly', 'Monthly', 'Yearly'];
 
   const { user } = useAuth();
 
   async function expensesHandler(email) {
-    const data = await getExpenses(email, activeTab);
+    const data = await getAllExpenses(email, activeTab.toLocaleLowerCase());
     const response = data.response;
-
     if (!response) return;
 
-    const formattedTransactions = formatExpenses(response);
+    let formattedTransactions;
 
+    if (activeTab === 'Daily') {
+      formattedTransactions = formatExpenses(response);
+    } else if (activeTab === 'Weekly') {
+      formattedTransactions = formatExpenses(response[0].expenses_this_week, activeTab);
+    } else if (activeTab === 'Monthly') {
+      formattedTransactions = formatExpenses(response[0].expenses_this_month, activeTab);
+    } else if (activeTab === 'Yearly') {
+      formattedTransactions = formatExpenses(response[0].expenses_this_year, activeTab);
+    } 
+    
+    // console.log(formattedTransactions);
     setTransactions(formattedTransactions);
 
     const totalExpenses = formattedTransactions.map(item => {
@@ -46,6 +56,11 @@ const History = () => {
     setUserData(userParse);
     expensesHandler(userParse.email);
   }, [])
+
+  useEffect(() => {
+    const userParse = JSON.parse(user);
+    expensesHandler(userParse.email);
+  }, [activeTab])
 
   return (
     <SafeAreaView>
@@ -96,7 +111,7 @@ const History = () => {
           {transactions.length > 0 ?
             transactions.map(transaction => {
               return (
-                <>
+                <View key={transaction.date}>
                   <Text style={styles.historyDate}>{transaction.date}</Text>
                   {transaction.transactions.map((item, idx) => 
                     <View key={idx} style={styles.historyItem}>
@@ -104,7 +119,7 @@ const History = () => {
                       <Text>-Php. {item.amount}</Text>
                     </View>
                   )}
-                </>
+                </View>
               )
             })
             :

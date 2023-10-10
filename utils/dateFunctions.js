@@ -8,6 +8,18 @@ export const formatDate = (input) => {
   return `${MONTHS[month]} ${date}, ${year}`;
 }
 
+export const extractMonth = (input) => {
+  const month = new Date(input).getMonth();
+  const year = new Date(input).getFullYear();
+
+  return `${MONTHS[month]} ${year}`;
+}
+
+export const extractYear = (input) => {
+  const year = new Date(input).getFullYear();
+
+  return `${year}`;
+}
 export const compareDate = (date1, date2) => {
   const dateL = new Date(date1).getDate();
   const monthL = new Date(date1).getMonth();

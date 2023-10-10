@@ -24,7 +24,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.instaloknahh.budgetmanagement"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -32,6 +33,14 @@
     "plugins": [
       "expo-router"
     ],
-    "scheme": "acme"
+    "scheme": "acme",
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "43492717-4e0c-4a30-a511-3ae370faa16d"
+      }
+    }
   }
 }

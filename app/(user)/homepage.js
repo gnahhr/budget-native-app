@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Tabs } from 'expo-router';
+import { Tabs, useRouter } from 'expo-router';
 import { View, SafeAreaView, Text, StyleSheet, Pressable, ScrollView } from 'react-native'
 import { useStorageState } from '../../hooks/useStorageState';
 
@@ -14,7 +14,7 @@ import AddExpenses from '../../components/modals/AddExpenses';
 import UpdateBudget from '../../components/modals/UpdateBudget';
 
 // API
-import { getAllocatedBudget } from '../../api/budget';
+import { getAllocatedBudget, updateBudget } from '../../api/budget';
 import { getAllExpenses, allocateExpense } from '../../api/expenses';
 import LogoS from '../../assets/logos/logo-s.png';
 import { useAuth } from '../../context/auth';
@@ -26,6 +26,7 @@ const HomepageIndex = () => {
   const [[isExpensesLoading, expenses], setExpenses] = useStorageState('expenses');
   const [ remainingBudget, setRemainingBudget ] = useState(0);
   const [ totalExpenses, setTotalExpenses ] = useState(0);
+  const [ totalBudget, setTotalBudget ] = useState(0);
   const [ parsedData, setParsedData ] = useState({});
   const [ parsedUser, setParsedUser ] = useState({});
   const [ parsedExpenses, setParsedExpenses ] = useState([]);
@@ -33,6 +34,7 @@ const HomepageIndex = () => {
   const [ isLoading, setIsLoading ] = useState(true);
 
   const { user } = useAuth();
+  const router = useRouter();
 
   // Modal States
   const [ isEModalOpen, setIsEModalOpen ] = useState(false);
@@ -61,6 +63,16 @@ const HomepageIndex = () => {
   const budgetModalToggle = () => {
     setIsBModalOpen(true);
   }
+
+  const handleEditCategory = () => {
+    router.replace('/(onboarding)/editCategories');
+  }
+
+  async function updateBudgetHandler(newBudget) {
+    const data = await updateBudget(parsedUser.email, newBudget);
+    getAllocation(parsedUser.email);
+    setIsBModalOpen(false);
+  };
 
   async function getExpensesHandler(email) {
     const data = await getAllExpenses(email);
@@ -109,6 +121,7 @@ const HomepageIndex = () => {
     const data = allocation.response;
 
     setData(JSON.stringify(data));
+    setTotalBudget(data.totalBudget);
     setRemainingBudget(data.remainingBudget ? data.remainingBudget : 0);
     setTotalExpenses(data.totalExpenses ? data.totalExpenses : 0);
     setProgress(Math.floor(Number(data.remainingBudget) / Number(data.totalBudget) * 100));
@@ -206,7 +219,7 @@ const HomepageIndex = () => {
       </ScrollView>
 
       <View style={[styles.bottomButtonWrapper]}>
-        <Pressable>
+        <Pressable onPress={() => handleEditCategory()}>
           <Text style={[styles.boldText, styles.italics, styles.button, styles.whiteText]}>Edit Categories</Text>
         </Pressable>
         <Pressable onPress={() => expenseModalToggle()}>
@@ -214,7 +227,7 @@ const HomepageIndex = () => {
         </Pressable>
       </View>
 
-      <UpdateBudget isModalVisible={isBModalOpen} setModalVisible={setIsBModalOpen} onAddExpense={()=>console.log('yey')} />
+      <UpdateBudget isModalVisible={isBModalOpen} totalBudget={totalBudget} setModalVisible={setIsBModalOpen} updateBudget={updateBudgetHandler} />
       <AddExpenses categoryList={parsedData[tabData[activeTab].name]} isModalVisible={isEModalOpen} setModalVisible={setIsEModalOpen} onAddExpense={addExpenseHandler}/>
       </>}
     </SafeAreaView>

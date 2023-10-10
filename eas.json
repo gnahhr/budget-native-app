@@ -1,0 +1,22 @@
+{
+  "cli": {
+    "version": ">= 5.4.0"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://budgetplanner-xl3s.onrender.com/api",
+        "EXPO_PUBLIC_API_URL_ANDROID": "https://budgetplanner-xl3s.onrender.com/api"
+      }
+    },
+    "production": {}
+  },
+  "submit": {
+    "production": {}
+  }
+}

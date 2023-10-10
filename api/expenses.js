@@ -12,16 +12,8 @@ export async function allocateExpense(payload) {
   return await response;
 };
 
-export async function getAllExpenses(email) {
-  const response = await axios.get(`${apiURL}/budget/get-transactions?email=${email}`)
-  .then(response => response.data)
-  .catch(err => console.error(err));
-  
-  return await response;
-};
-
-export async function getExpenses(email, type) {
-  const response = await axios.get(`${apiURL}/budget/get-transactions?email=${email}`)
+export async function getAllExpenses(email, type="daily") {
+  const response = await axios.get(`${apiURL}/budget/get-transactions?email=${email}&type=${type}`)
   .then(response => response.data)
   .catch(err => console.error(err));
   
