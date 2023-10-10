@@ -8,39 +8,110 @@ import { useAuth } from '../../context/auth';
 import CustomIcon from '../../components/common/CustomIcon';
 import LogoS from '../../assets/logos/logo-s.png';
 import formatExpenses from '../../utils/formatExpenses';
-import { getAllExpenses } from '../../api/expenses';
-import { getDateWithOffset } from '../../utils/dateFunctions';
+import { getExpenses } from '../../api/expenses';
+import { extractMonth,
+        formatDate,
+        getDateWithOffset,
+        formatWeekly,
+        getWeeklyOffset,
+        getMonthOffset,
+        getYearOffset,
+        getDateTodayISO,
+        getWeeklyStartEnd } from '../../utils/dateFunctions';
 
 const History = () => { 
   const [ activeTab, setActiveTab ] = useState('Daily');
   const [ userData, setUserData ] = useState(null);
+  const [ dailyDate, setDailyDate ] = useState();
+  const [ weeklyDate, setWeeklyDate ] = useState();
+  const [ monthlyDate, setMonthlyDate ] = useState();
+  const [ yearlyDate, setYearlyDate ] = useState();
   const [ transactions, setTransactions ] = useState([]);
   const [ totalExpenses, setTotalExpenses ] = useState(0);
   const tabs = ['Daily', 'Weekly', 'Monthly', 'Yearly'];
 
   const { user } = useAuth();
 
-  const dateFunctions = {
-    "Daily": getDateWithOffset(),
+  const initDate = () => {
+    const dateToday = getDateTodayISO();
+    const dateWeekly = getWeeklyStartEnd(getDateTodayISO());
+    const monthToday = dateToday.split('-').splice(0,2).join('-');
+    const yearToday = dateToday.split('-')[0];
+
+    setDailyDate(dateToday);
+    setWeeklyDate(dateWeekly);
+    setMonthlyDate(monthToday);
+    setYearlyDate(yearToday);
+  }
+
+  const dateDisplay = () => {
+    switch (activeTab) {
+      case 'Daily':
+        return formatDate(dailyDate)
+      case 'Weekly':
+        return formatWeekly(weeklyDate)
+      case 'Monthly':
+        return extractMonth(monthlyDate);
+      case 'Yearly':
+        return yearlyDate;
+    }
+  }
+
+  const prevDateHandler = () => {
+    switch (activeTab) {
+      case 'Daily':
+        setDailyDate(getDateWithOffset(dailyDate, -1));
+        break;
+      case 'Weekly':
+        setWeeklyDate(getWeeklyOffset(weeklyDate, -7));
+        break;
+      case 'Monthly':
+        setMonthlyDate(getMonthOffset(monthlyDate, -1));
+        break;
+      case 'Yearly':
+        setYearlyDate(getYearOffset(yearlyDate, -1));
+        break;
+    }
+  }
+
+  const nextDateHandler = () => {
+    switch (activeTab) {
+      case 'Daily':
+        setDailyDate(getDateWithOffset(dailyDate, 1));
+        break;
+      case 'Weekly':
+        setWeeklyDate(getWeeklyOffset(weeklyDate, 7));
+        break;
+      case 'Monthly':
+        setMonthlyDate(getMonthOffset(monthlyDate, 1));
+        break;
+      case 'Yearly':
+        setYearlyDate(getYearOffset(yearlyDate, 1));
+        break;
+    }
   }
 
   async function expensesHandler(email) {
-    const data = await getAllExpenses(email, activeTab.toLocaleLowerCase());
-    const response = data.response;
-    if (!response) return;
+    let year = (activeTab === 'Monthly') ? monthlyDate.split('-')[0] : yearlyDate;
 
+    const data = await getExpenses({
+      params: {
+        email: email,
+        endDate: weeklyDate[1],
+        startDate: weeklyDate[0],
+        type: activeTab.toLocaleLowerCase(),
+        month: monthlyDate.split('-')[1],
+        year: year,
+        day: dailyDate
+      }
+    });
+
+    const response = data.response;
+    if (response.length === 0) return;
     let formattedTransactions;
     // Iba iba kasi nilagay sa API na pagkuha kaya ayern, iba iba ang kanilang variables huhu
     // format yung expenses para makita siya per date.
-    if (activeTab === 'Daily') {
-      formattedTransactions = formatExpenses(response);
-    } else if (activeTab === 'Weekly') {
-      formattedTransactions = formatExpenses(response[0].expenses_this_week, activeTab);
-    } else if (activeTab === 'Monthly') {
-      formattedTransactions = formatExpenses(response[0].expenses_this_month, activeTab);
-    } else if (activeTab === 'Yearly') {
-      formattedTransactions = formatExpenses(response[0].expenses_this_year, activeTab);
-    } 
+    formattedTransactions = formatExpenses(response.getExpenses);
     
     setTransactions(formattedTransactions);
     
@@ -58,6 +129,7 @@ const History = () => {
   }
 
   useEffect(() => {
+    initDate();
     const userParse = JSON.parse(user);
     setUserData(userParse);
     expensesHandler(userParse.email);
@@ -66,7 +138,7 @@ const History = () => {
   useEffect(() => {
     const userParse = JSON.parse(user);
     expensesHandler(userParse.email);
-  }, [activeTab])
+  }, [activeTab, dailyDate, weeklyDate, monthlyDate, yearlyDate])
 
   return (
     <SafeAreaView>
@@ -100,9 +172,13 @@ const History = () => {
         </ScrollView>
 
         <View style={{flexDirection: 'row', marginVertical: 24}}>
-          <Entypo name="chevron-left" size={24} color="#1e3546" />
-          <Text style={{flex: 1, alignSelf: 'center', textAlign: 'center', fontSize: 13}}>1 October 2023 -  7 October 2023</Text>
-          <Entypo name="chevron-right" size={24} color="#1e3546" />
+          <Pressable onPress={() => prevDateHandler()}>
+            <Entypo name="chevron-left" size={24} color="#1e3546" />
+          </Pressable>
+          <Text style={{flex: 1, alignSelf: 'center', textAlign: 'center', fontSize: 13}}>{dailyDate ? dateDisplay() : "Today"}</Text>
+          <Pressable onPress={() => nextDateHandler()}>
+            <Entypo name="chevron-right" size={24} color="#1e3546" />
+          </Pressable>
         </View>
 
         <Text style={{textAlign: 'center', color: '#969a9f', fontSize: 14, fontWeight: '700'}}>Total Expenses</Text>

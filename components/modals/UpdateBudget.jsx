@@ -10,7 +10,9 @@ const UpdateBudget = ({isModalVisible, totalBudget, setModalVisible, updateBudge
   };
 
   const updateBudgetHandler = () => {
-    updateBudget(budget);
+    if (Number(budget) > 0 ){
+      updateBudget(budget);
+    }
   }
 
   useEffect(() => {

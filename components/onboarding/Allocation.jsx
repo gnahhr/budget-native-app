@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { View, Image, Text, StyleSheet, TextInput } from 'react-native'
+import ICONS from '../../constants/icons';
 import { Icon } from '@rneui/themed';
 
 
-const Allocation = ({category, curAllocation, icon, allocationHandler, checkExceeding}) => {
+const Allocation = ({category, curAllocation, allocationHandler, checkExceeding}) => {
   const [ allocation, onChangeAllocation ] = useState(curAllocation);
+  const [ icon, setIcon ] = useState(null);
 
   const onChangeHandler = (e) => {
     const allo = Number(e)
@@ -19,6 +21,7 @@ const Allocation = ({category, curAllocation, icon, allocationHandler, checkExce
   }
 
   useEffect(() => {
+    setIcon(ICONS[category]);
     onChangeAllocation(curAllocation);
   }, [])
 

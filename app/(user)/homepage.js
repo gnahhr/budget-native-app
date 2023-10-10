@@ -102,6 +102,7 @@ const HomepageIndex = () => {
   // Pag format lang ng data na nakuha from expensesHandler para madisplay ng maayos yung data,
   // Kasama na diyan yung summation ng expenses
   const formatExpenses = (data) => {
+    if (!data) return;
     const categories = data.map((data) => data.category);
     const tabs = [...new Set(categories)];
     
@@ -151,15 +152,13 @@ const HomepageIndex = () => {
     const summary = formatExpenses(data.response);
     setParsedExpenses(summary);
     setExpenses(JSON.stringify(summary));
-
     if (data.statusCode === 200) setExpensesLoading(false);
   }
 
   // Use Effects yung ginagamit para pag may magbabagong data sa dependency array niya,
   // which is yung [] after ng comma, mag r-run yung codes sa useEffect, if walang laman yung []
   // nag r-run siya pagka mount or pagka display ng component
-  // Components yung isang file sa screen
-
+  
   useEffect(() => {
     if (user) {
       const userParse = JSON.parse(user);
@@ -251,7 +250,6 @@ const HomepageIndex = () => {
       </View> 
       
       <ScrollView style={[styles.container, styles.scrollHeight]}>
-        {/* Check if data are already loaded */}
         {!expensesLoading && !isExpensesLoading && parsedData[tabData[activeTab].name].length > 0 ?
           parsedData[tabData[activeTab].name].map(data => <HomeAllocation key={data.name} category={data} expenses={parsedExpenses} type={tabData[activeTab].name}/>)
           :

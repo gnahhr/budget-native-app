@@ -21,7 +21,7 @@ const Insights = () => {
   async function getInsightHandler(email, type) {
     const data = await getInsights(email, type);
     setInsight(JSON.stringify(data.response));
-    setData(data.response);
+    if (!(data.response.length === 0)) setData(data.response);
   }
 
   useEffect(() => {

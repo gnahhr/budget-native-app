@@ -259,8 +259,7 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
                           category={x.name}
                           curAllocation={x.allocation}
                           allocationHandler={allocationHandler}
-                          checkExceeding={checkExceeding}
-                          icon={x.icon} />)}
+                          checkExceeding={checkExceeding}/>)}
             <Pressable onPress={() => modalToggleHandler("CATEGORY")}>
               <Text style={[styles.textCenter, styles.textMediumBold, styles.categoryWrapper, styles.whiteText]}>Edit Categories</Text>
             </Pressable> 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { View, Image, Text, StyleSheet, TextInput } from 'react-native'
-import { savingsCategories, needsCategories, wantCategories } from '../../constants/categories';
+import ICONS from '../../constants/icons/';
 import { Icon } from '@rneui/themed';
 
 
@@ -8,12 +8,6 @@ const HomeAllocation = ({category, expenses, type}) => {
   const [ indiStyle, setIndiStyle ] = useState([styles.indicatorStyle]);
   const [ expense, setExpense ] = useState(0);
   const [ icon, setIcon ] = useState(null);
-
-  const iconsList = {
-    'needs': needsCategories,
-    'wants': wantCategories,
-    'savings': savingsCategories,
-  }
 
   useEffect(()=> {
     if (expense > category.allocation) {
@@ -29,13 +23,8 @@ const HomeAllocation = ({category, expenses, type}) => {
         setExpense(expense.amount);
       }
     })
-    // Check if may same category from category list tska sa allocation,
-    // If meron set niya yung icon from the list
-    iconsList[type].map((icon) => {
-      if (icon.name === category.name) {
-        setIcon(icon.icon);
-      }
-    });
+    
+    setIcon(ICONS[category.name]);
   }, [])
 
   return (

@@ -2,7 +2,6 @@ import MONTHS from "../constants/months";
 
 export const getDateToday = (noTime = true, type = "string") => {
   const date = new Date(Date.now());
-
   let options = {
     year: "numeric",
     month: "long",
@@ -30,24 +29,52 @@ export const getDateToday = (noTime = true, type = "string") => {
   return new Intl.DateTimeFormat('en-US', options).format(date);
 }
 
-export const getDateWithOffset = (type="string", offset) => {
+export const getDateTodayISO = () => {
   const date = new Date(Date.now());
+  const newDate = new Intl.DateTimeFormat('en-GB', {timeZone: "Singapore"}).format(date);
+  return newDate.split('/').reverse().join('-');
+}
 
-  let options = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    timeZone: "Singapore",
-  };
+export const getDateWithOffset = (date, value) => {
+  let newDate = new Date(date);
+  newDate.setDate(newDate.getDate() + value);
+  return newDate.toISOString().split('T')[0];
+}
 
-  if (type === "ISO") {
-    options = {
-      ...options,
-      month: "numeric",
-    }
-  }
+export const getWeeklyStartEnd = (date) => {
+  let newDate = new Date(date);
+  let today = newDate.getDay();
+  const startDate = new Date(newDate.setDate(newDate.getDate() - today));
+  let endDate = new Date(newDate.setDate(newDate.getDate() + 6));
+  
+  return [startDate, endDate];
+}
 
-  return new Intl.DateTimeFormat('en-US', options).format(date);
+export const getWeeklyOffset = ([startDate, endDate], value) => {
+  let newStartDate = new Date(startDate.setDate(startDate.getDate() + value));
+  let newEndDate = new Date(endDate.setDate(endDate.getDate() + value));
+  
+  return [newStartDate, newEndDate];
+}
+
+export const getMonthOffset = (date, value) => {
+   let newDate = date.split('-').map(x => Number(x));
+
+   if (newDate[1] + value > 12) {
+    newDate[0] = newDate[0]+value;
+    newDate[1] = 1;
+   } else if (newDate[1] + value < 0){
+    newDate[0] = newDate[0]+value;
+    newDate[1] = 12;
+   } else {
+    newDate[1] = newDate[1] + value;
+   }
+
+   return newDate.join('-');
+};
+
+export const getYearOffset = (date, value) => {
+  return Number(date) + Number(value);
 }
 
 export const formatDate = (input) => {
@@ -56,6 +83,10 @@ export const formatDate = (input) => {
   const year = new Date(input).getFullYear();
 
   return `${MONTHS[month]} ${date}, ${year}`;
+}
+
+export const formatWeekly = ([startDate, endDate]) => {
+  return `${formatDate(startDate)} - ${formatDate(endDate)}`;
 }
 
 export const extractMonth = (input) => {

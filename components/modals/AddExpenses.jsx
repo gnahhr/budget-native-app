@@ -20,7 +20,9 @@ const AddExpenses = ({categoryList, isModalVisible, setModalVisible, onAddExpens
   };
 
   const addExpenseHandler = () => {
-    onAddExpense(value, amount, note);
+    if (Number(amount) > 0) {
+      onAddExpense(value, amount, note);
+    }
   };
 
   const handleGetDate = () => {
