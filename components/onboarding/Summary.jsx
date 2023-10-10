@@ -30,9 +30,30 @@ const Summary = ({totalBudget, initialAllocation, prevStep, setAllocations}) => 
   
   const setAllocationsHandler = () => {
     setAllocations({
-      needs: needs.filter(category => category.toggled),
-      wants: wants.filter(category => category.toggled),
-      savings: savings.filter(category => category.toggled),
+      needs: needs.filter(category => {
+        if (category.toggled) {
+          return {
+            ...category,
+            icon: ""
+          }
+        }
+      }),
+      wants: wants.filter(category => {
+        if (category.toggled) {
+          return {
+            ...category,
+            icon: ""
+          }
+        }
+      }),
+      savings: savings.filter(category => {
+        if (category.toggled) {
+          return {
+            ...category,
+            icon: ""
+          }
+        }
+      }),
     })
   }
 
