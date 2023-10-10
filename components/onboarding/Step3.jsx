@@ -58,7 +58,7 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
   }
 
   const Tabs = ["NEED", "SAVINGS", "WANT"];
-
+  // Check if exeeding na yung limit ng allocation, comparison ng new and current allocation sa total allocation
   const checkExceeding = (curAllocation = 0, newAllocation = 0) => {
     const totalAllocations = totalSavings + totalWant + totalNeed - Number(curAllocation);
 
@@ -86,6 +86,7 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
 
   // Handlers
   const modalToggleHandler = (modalType) => {
+    // Isang Handler ng pagtoggle ng modal
     switch(modalType) {
       case 'CATEGORY':
         setCategoryVisible(true);
@@ -97,6 +98,8 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
   }
   
   const setAllocationsHandler = () => {
+    // Kinukuha lang lahat ng toggled categories then if toggled,
+    // Yun yung isesend sa back end para mairecord
     const needs = needAllocations.filter(category => category.toggled);
     const wants = wantAllocations.filter(category => category.toggled);
     const savings = savingAllocations.filter(category => category.toggled);
@@ -120,6 +123,7 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
   }
 
   const allocationHandler = (name, allocation) => {
+    // Iterate sa list ng categories, if same name tska siya mag record ng allocation
     const newData = tabData[activeTab].state.map(x => {
       if (x.name === name) {
         return {
@@ -130,7 +134,7 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
         return x;
       }
     })
-    
+    // Computation ng total allocation then percentace.
     const totalAllocation = newData.reduce((sum, category) => sum + Number(category.allocation), 0);
     const percentage = tabData[activeTab].ratio ? tabData[activeTab].ratio / 100 : 1;
 
@@ -147,14 +151,21 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
     tabData[activeTab].setAllocation(newData);
   };
 
+  // Pag compare ng nakuhang data sa backend to the list of categories
+  // If may same sila then mag toggle yung nasa local tska update ng allocation
+  // Ito yung function na ginagamit sa pag edit mismo nung edit categories bc
+  // magkaiba sila compared sa fresh data
   const currentAllocationHandler = (curAllocation) => {
     const types = ['WANT', 'NEED', 'SAVINGS'];
     
     types.map((type) => {
+      // Ginawang isang array yung allocations na galing database to local
       const container = [...tabData[type].state, ...curAllocation[tabData[type].alt]];
       const newContainer = [];
       const uniqueContainer = {};
-
+      
+      // Iterate yung ginawang array para if may double ng name, uupdate nalang yung nasa
+      // Categories then di na isasama yung galing local
       for (let item in container) {
           category = container[item]['name'];
 
@@ -249,7 +260,7 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
                           curAllocation={x.allocation}
                           allocationHandler={allocationHandler}
                           checkExceeding={checkExceeding}
-                          icon={"yey"} />)}
+                          icon={x.icon} />)}
             <Pressable onPress={() => modalToggleHandler("CATEGORY")}>
               <Text style={[styles.textCenter, styles.textMediumBold, styles.categoryWrapper, styles.whiteText]}>Edit Categories</Text>
             </Pressable> 

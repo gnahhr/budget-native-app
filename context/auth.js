@@ -7,7 +7,7 @@ const AuthContext = createContext(null);
 export function useAuth() {
   return useContext(AuthContext);
 }
-
+// Protected routes
 function useProtectedRoute(user) {
   const segments = useSegments();
   const [isNavigationReady, setIsNavigationReady] = useState(false);
@@ -26,11 +26,17 @@ function useProtectedRoute(user) {
   }, [rootNavigation])
 
   useEffect(() => {
+    // Ito yung pagkuha ng current routes ng user, nasa segements
     const inAuthGroup = segments[0] === '(auth)';
     const inUserGroup = segments[0] === '(user)';
     const inRoot = segments[0] === undefined;
     
+    // If di pa nakakapag allocate ng budget
     const isBudgetAllocationExists = JSON.parse(user)?.ifBudgetAllocationExists;
+
+    // Chinecheck if ready na yung pages sa isNavigationReady then sa inRoot if nasa
+    // Landing Page
+
     if (!isNavigationReady && !inRoot) return;
 
     if (!user && inUserGroup){
@@ -50,6 +56,7 @@ export function Provider(props) {
   const [ user, setUser ] = useState(null);
   const [[isLoading, userData], setUserData] = useStorageState('user');
 
+  // Pagset ng data not just sa provider pero dun din sa local storage
   useEffect(() => {
     if (userData) {
       setUser(userData);

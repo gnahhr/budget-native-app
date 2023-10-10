@@ -3,11 +3,13 @@ import { View, Text, StyleSheet, TextInput, Pressable } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Modal from 'react-native-modal';
 import { AntDesign } from '@expo/vector-icons';
+import { getDateToday } from '../../utils/dateFunctions';
 
 const AddExpenses = ({categoryList, isModalVisible, setModalVisible, onAddExpense}) => {
   const [ categoryState, setCategoryState ] = useState(categoryList);
   const [ amount, setAmount ] = useState(amount);
   const [ note, setNote ] = useState("");
+  const [ date, setDate ] = useState();
   // Drop Down States
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
@@ -20,6 +22,19 @@ const AddExpenses = ({categoryList, isModalVisible, setModalVisible, onAddExpens
   const addExpenseHandler = () => {
     onAddExpense(value, amount, note);
   };
+
+  const handleGetDate = () => {
+    return getDateToday(false);
+  }
+
+  // Pangkuha ng date today
+  useEffect(() => {
+    setDate(handleGetDate());
+  }, [])
+
+  useEffect(() => {
+    setDate(handleGetDate());
+  }, [isModalVisible])
 
   useEffect(() => {
     setCategoryState(categoryList);
@@ -74,7 +89,8 @@ const AddExpenses = ({categoryList, isModalVisible, setModalVisible, onAddExpens
 
           <View style={{backgroundColor: '#eff5f9', text: 'center'}}>
             <Text style={[styles.textBold, styles.textCenter]}>Transcation date and time:</Text>
-            <Text style={[styles.textCenter]}>June 03, 2023 01:09 AM</Text>
+            {/* Ideth */}
+            <Text style={[styles.textCenter]}>{date}</Text>
           </View>
 
           <Pressable style={[styles.buttonStyle]} onPress={() => addExpenseHandler()}>

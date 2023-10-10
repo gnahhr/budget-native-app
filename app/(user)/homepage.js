@@ -16,23 +16,34 @@ import UpdateBudget from '../../components/modals/UpdateBudget';
 // API
 import { getAllocatedBudget, updateBudget } from '../../api/budget';
 import { getAllExpenses, allocateExpense } from '../../api/expenses';
+
+// Images
 import LogoS from '../../assets/logos/logo-s.png';
+
+// Context
 import { useAuth } from '../../context/auth';
 
 const HomepageIndex = () => {
   // LocalStorage States
-  const [[isUserLoading, userData], setUserData] = useStorageState('user');
   const [[isDataLoading, data], setData] = useStorageState('data');
   const [[isExpensesLoading, expenses], setExpenses] = useStorageState('expenses');
-  const [ remainingBudget, setRemainingBudget ] = useState(0);
-  const [ totalExpenses, setTotalExpenses ] = useState(0);
-  const [ totalBudget, setTotalBudget ] = useState(0);
+  
+  // Loading States
+  const [ isLoading, setIsLoading ] = useState(true);
+  const [ expensesLoading, setExpensesLoading ] = useState(true);
+  
+  // Parsed Data States
   const [ parsedData, setParsedData ] = useState({});
   const [ parsedUser, setParsedUser ] = useState({});
   const [ parsedExpenses, setParsedExpenses ] = useState([]);
+  
+  // Data States na ginamit for comupatations
+  const [ totalExpenses, setTotalExpenses ] = useState(0);
+  const [ totalBudget, setTotalBudget ] = useState(0);
   const [ progress, setProgress ] = useState(0);
-  const [ isLoading, setIsLoading ] = useState(true);
+  const [ remainingBudget, setRemainingBudget ] = useState(0);
 
+  // Use hooks
   const { user } = useAuth();
   const router = useRouter();
 
@@ -55,6 +66,7 @@ const HomepageIndex = () => {
     }
   }
 
+  // Modal Toggles
   const expenseModalToggle = () => {
     getAllocation(parsedUser.email);
     setIsEModalOpen(true);
@@ -64,23 +76,31 @@ const HomepageIndex = () => {
     setIsBModalOpen(true);
   }
 
+  // Pag add ng expenses
+  async function addExpenseHandler(category, amount, note) {
+    const payload = {
+      email: parsedUser.email,
+      type: tabData[activeTab].name,
+      category: category,
+      amount: Number(amount),
+      note: note ? note : "",
+    }
+
+    // Kada add niya ng expenses get niya ulit yung allocation tska expenses para ma update yung nasa app,
+    // Which is yung nasa line 92 and 93 then close na niya yung modal sa 94
+    const response = await allocateExpense(payload);
+    getAllocation(parsedUser.email);
+    getExpensesHandler(parsedUser.email);
+    setIsEModalOpen(false);
+  }
+
+  // Paglipat page papuntang edit categories
   const handleEditCategory = () => {
     router.replace('/(onboarding)/editCategories');
   }
 
-  async function updateBudgetHandler(newBudget) {
-    const data = await updateBudget(parsedUser.email, newBudget);
-    getAllocation(parsedUser.email);
-    setIsBModalOpen(false);
-  };
-
-  async function getExpensesHandler(email) {
-    const data = await getAllExpenses(email);
-    const summary = formatExpenses(data.response);
-    setParsedExpenses(summary);
-    setExpenses(JSON.stringify(summary));
-  }
-
+  // Pag format lang ng data na nakuha from expensesHandler para madisplay ng maayos yung data,
+  // Kasama na diyan yung summation ng expenses
   const formatExpenses = (data) => {
     const categories = data.map((data) => data.category);
     const tabs = [...new Set(categories)];
@@ -101,46 +121,65 @@ const HomepageIndex = () => {
     })
   }
 
-  async function addExpenseHandler(category, amount, note) {
-    const payload = {
-      email: parsedUser.email,
-      type: tabData[activeTab].name,
-      category: category,
-      amount: Number(amount),
-      note: note ? note : "",
-    }
-
-    const response = await allocateExpense(payload);
-    getAllocation(parsedUser.email);
-    getExpensesHandler(parsedUser.email);
-    setIsEModalOpen(false);
-  }
-
+  // Get ng allocation
   async function getAllocation(email) {
     const allocation = await getAllocatedBudget(email);
     const data = allocation.response;
-
+    // Kasama na rin dito yung pag compute nung makikita sa homepage which is yung remaining budget,
+    // tska yung yung parang progress if malapit na maubos budget
+    const remainingBudget = data.totalBudget ? data.totalBudget - data.totalExpenses : 0
     setData(JSON.stringify(data));
     setTotalBudget(data.totalBudget);
-    setRemainingBudget(data.remainingBudget ? data.remainingBudget : 0);
+    setRemainingBudget(remainingBudget); 
     setTotalExpenses(data.totalExpenses ? data.totalExpenses : 0);
-    setProgress(Math.floor(Number(data.remainingBudget) / Number(data.totalBudget) * 100));
+    setProgress(Math.floor(Number(remainingBudget) / Number(data.totalBudget) * 100));
     setParsedData(allocation.response);
   }
 
+  // For updating ng budget, pagka update niya get na ng allocation then close modal
+  async function updateBudgetHandler(newBudget) {
+    const data = await updateBudget(parsedUser.email, newBudget);
+
+    getAllocation(parsedUser.email);
+    setIsBModalOpen(false);
+  };
+
+  // pag get ng expenses, pagkaget niya store niya dun sa local storage yung nakuhang data which is nasa
+  // Line 153
+  async function getExpensesHandler(email) {
+    const data = await getAllExpenses(email);
+    const summary = formatExpenses(data.response);
+    setParsedExpenses(summary);
+    setExpenses(JSON.stringify(summary));
+
+    if (data.statusCode === 200) setExpensesLoading(false);
+  }
+
+  // Use Effects yung ginagamit para pag may magbabagong data sa dependency array niya,
+  // which is yung [] after ng comma, mag r-run yung codes sa useEffect, if walang laman yung []
+  // nag r-run siya pagka mount or pagka display ng component
+  // Components yung isang file sa screen
+
   useEffect(() => {
     if (user) {
-      setIsLoading(false);
       const userParse = JSON.parse(user);
       setParsedUser(userParse);
-      getAllocation(userParse.email);
       getExpensesHandler(userParse.email);
+      getAllocation(userParse.email);
+      setIsLoading(false);
     }
   }, [])
 
   useEffect(() => {
-    if (!isUserLoading) {
-      setParsedUser(JSON.parse(userData));
+    if (expensesLoading === false) {
+      setExpensesLoading(true);
+      getExpensesHandler(parsedUser.email);
+    }
+  }, [expenses])
+
+  useEffect(() => {
+    if (user) {
+      setParsedUser(JSON.parse(user));
     }
     if (!isDataLoading) {
       setParsedData(JSON.parse(data));
@@ -148,7 +187,7 @@ const HomepageIndex = () => {
     if (!isExpensesLoading) {
       setParsedExpenses(JSON.parse(expenses));
     }
-  }, [isUserLoading, isDataLoading, isExpensesLoading, data, user, expenses])
+  }, [isDataLoading, isExpensesLoading, data, user, expenses]);
 
   return (
     <SafeAreaView style={{backgroundColor: '#f3f3f7'}}>
@@ -163,6 +202,7 @@ const HomepageIndex = () => {
         }}
       />
       {
+        // Checks if data are still loading
         !parsedUser && !parsedData && !parsedExpenses && isLoading ? 
         <Text>Loading...</Text>
       :
@@ -211,8 +251,9 @@ const HomepageIndex = () => {
       </View> 
       
       <ScrollView style={[styles.container, styles.scrollHeight]}>
-        {tabData[activeTab].name && !isExpensesLoading && parsedData[tabData[activeTab].name].length > 0 ?
-          parsedData[tabData[activeTab].name].map(data => <HomeAllocation key={data.name} category={data} expenses={parsedExpenses}/>)
+        {/* Check if data are already loaded */}
+        {!expensesLoading && !isExpensesLoading && parsedData[tabData[activeTab].name].length > 0 ?
+          parsedData[tabData[activeTab].name].map(data => <HomeAllocation key={data.name} category={data} expenses={parsedExpenses} type={tabData[activeTab].name}/>)
           :
           <Text>Nothing Allocated</Text>
           }

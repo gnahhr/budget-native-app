@@ -19,10 +19,10 @@ const Summary = ({totalBudget, initialAllocation, prevStep, setAllocations}) => 
       state: needs,
     },
     "SAVINGS": {
-      state: wants,
+      state: savings,
     },
     "WANT": {
-      state: savings,
+      state: wants,
     }
   }
 

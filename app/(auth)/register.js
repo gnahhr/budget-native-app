@@ -29,7 +29,7 @@ const Register = () => {
       if (data?.statusCode === 422) {
         setAlert(data.message);
       }
-
+      // If done na mag register, same sa login, save ng login creds sa localStorage then relocate na sa onboarding para makapag allocate
       if (data.statusCode === 201) {
         router.replace(`/onboarding`);
         signIn(JSON.stringify({

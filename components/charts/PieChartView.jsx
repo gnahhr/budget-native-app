@@ -10,13 +10,15 @@ const PieChartView = ({data}) => {
     {value: 20, color: '#1e9dc5'},
   ]);
 
+  // set ng colors
   const colors = ['#185577', '#83a7c8', '#1e9dc5'];
 
   const initPieData = (dataPie) => {
+    // Kunin muna yung total expenses para mahati ng maayos yung pie
     const total = dataPie.reduce((sum, cur) => sum + cur.amount, 0);
     const dataCat = dataPie.map((data) => data.category);
     setCategories(dataCat);
-
+    
     const pieData = dataPie.map((data, idx) => {
       return {
         value: Math.floor(data.amount / total * 100),

@@ -1,5 +1,55 @@
 import MONTHS from "../constants/months";
 
+export const getDateToday = (noTime = true, type = "string") => {
+  const date = new Date(Date.now());
+
+  let options = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "Singapore",
+  };
+
+  if (!noTime) {
+    options = {
+      ...options,
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: true,
+    }
+  }
+
+  if (type === "ISO") {
+    options = {
+      ...options,
+      month: "numeric",
+    }
+  }
+
+  return new Intl.DateTimeFormat('en-US', options).format(date);
+}
+
+export const getDateWithOffset = (type="string", offset) => {
+  const date = new Date(Date.now());
+
+  let options = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "Singapore",
+  };
+
+  if (type === "ISO") {
+    options = {
+      ...options,
+      month: "numeric",
+    }
+  }
+
+  return new Intl.DateTimeFormat('en-US', options).format(date);
+}
+
 export const formatDate = (input) => {
   const date = new Date(input).getDate();
   const month = new Date(input).getMonth();
@@ -20,6 +70,7 @@ export const extractYear = (input) => {
 
   return `${year}`;
 }
+
 export const compareDate = (date1, date2) => {
   const dateL = new Date(date1).getDate();
   const monthL = new Date(date1).getMonth();

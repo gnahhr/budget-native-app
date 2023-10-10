@@ -14,6 +14,21 @@ const Suggestions = ({isModalVisible, setModalVisible, onChangeToggle}) => {
     setModalVisible(false);
   };
 
+  const label = [
+    {
+      label: "needs",
+      color: '#4098bf',
+    },
+    {
+      label: "wants",
+      color: '#8bbccb',
+    },
+    {
+      label: "savings",
+      color: '#1578b2',
+    }
+  ]
+
   const changeChoiceHandler = (choice, state, data) => {
     if (state) {
       setChoice("");
@@ -45,6 +60,13 @@ const Suggestions = ({isModalVisible, setModalVisible, onChangeToggle}) => {
                 )
                 }
               )}
+              <View style={{flexDirection: 'row', backgroundColor: '#ffffff', alignSelf: 'center', gap: 4, padding: 8, borderRadius: 8, maxWidth: '70%', flexWrap: 'wrap'}}>
+                {label.map((item) => 
+                <View key={item.label} style={[styles.wrapper, {gap: 2}]}>
+                    <View style={{width: 20, height: 20, backgroundColor: item.color, borderRadius: 100}}></View>
+                    <Text>{item.label}</Text>
+                </View>)}
+              </View>
             </View>
             
             <View>

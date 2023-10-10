@@ -29,7 +29,8 @@ const Login = () => {
     if (data?.statusCode === 409) {
       setAlert(data.message);
     }
-    // userNam3- password
+    // pagka successfully na nag login store niya yung login credentials sa localStorage
+    // acts as indicator if logged in na or hindi pa yung user then relocate siya sa homepage
     if (data.statusCode === 200) {
       signIn(JSON.stringify({
         email: data.response.email,

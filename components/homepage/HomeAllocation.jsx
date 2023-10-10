@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import { View, Image, Text, StyleSheet, TextInput } from 'react-native'
+import { savingsCategories, needsCategories, wantCategories } from '../../constants/categories';
 import { Icon } from '@rneui/themed';
 
 
-const HomeAllocation = ({category, expenses}) => {
+const HomeAllocation = ({category, expenses, type}) => {
   const [ indiStyle, setIndiStyle ] = useState([styles.indicatorStyle]);
   const [ expense, setExpense ] = useState(0);
+  const [ icon, setIcon ] = useState(null);
 
+  const iconsList = {
+    'needs': needsCategories,
+    'wants': wantCategories,
+    'savings': savingsCategories,
+  }
 
   useEffect(()=> {
     if (expense > category.allocation) {
@@ -22,17 +29,28 @@ const HomeAllocation = ({category, expenses}) => {
         setExpense(expense.amount);
       }
     })
+    // Check if may same category from category list tska sa allocation,
+    // If meron set niya yung icon from the list
+    iconsList[type].map((icon) => {
+      if (icon.name === category.name) {
+        setIcon(icon.icon);
+      }
+    });
   }, [])
 
   return (
     <View style={styles.main}>
       <View style={styles.topWrapper}>
-        <Icon
-            name='wifi'
-            type='font-awesome'
-            color='#ffffff'
-            style={styles.iconStyle}
-            />
+        {icon ?
+        <View style={styles.iconStyle}>{icon}</View>
+        :
+          <Icon
+              name='wifi'
+              type='font-awesome'
+              color='#ffffff'
+              style={styles.iconStyle}
+              />
+        }
         <View style={{flex: 1}}>
           <Text style={[styles.topText]}>{category.name}</Text>
           <Text style={[styles.bottomText]}>Php. {expense} / Php. {category.allocation}</Text>

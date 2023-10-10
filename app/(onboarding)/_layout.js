@@ -4,7 +4,7 @@ const Layout = () => {
   return (
     <Stack initialRouteName="(onboarding)">
       <Stack.Screen name="onboarding" />
-      <Stack.Screen name="editCategory" />
+      <Stack.Screen name="editCategories" />
     </Stack>
   )
 };

@@ -9,6 +9,7 @@ import CustomIcon from '../../components/common/CustomIcon';
 import LogoS from '../../assets/logos/logo-s.png';
 import formatExpenses from '../../utils/formatExpenses';
 import { getAllExpenses } from '../../api/expenses';
+import { getDateWithOffset } from '../../utils/dateFunctions';
 
 const History = () => { 
   const [ activeTab, setActiveTab ] = useState('Daily');
@@ -19,13 +20,18 @@ const History = () => {
 
   const { user } = useAuth();
 
+  const dateFunctions = {
+    "Daily": getDateWithOffset(),
+  }
+
   async function expensesHandler(email) {
     const data = await getAllExpenses(email, activeTab.toLocaleLowerCase());
     const response = data.response;
     if (!response) return;
 
     let formattedTransactions;
-
+    // Iba iba kasi nilagay sa API na pagkuha kaya ayern, iba iba ang kanilang variables huhu
+    // format yung expenses para makita siya per date.
     if (activeTab === 'Daily') {
       formattedTransactions = formatExpenses(response);
     } else if (activeTab === 'Weekly') {
@@ -36,19 +42,19 @@ const History = () => {
       formattedTransactions = formatExpenses(response[0].expenses_this_year, activeTab);
     } 
     
-    // console.log(formattedTransactions);
     setTransactions(formattedTransactions);
-
+    
+    // Summation ng total of expenses
     const totalExpenses = formattedTransactions.map(item => {
       return item.transactions.reduce((sum, curVal) => Number(sum) + Number(curVal.amount), 0);
     })
 
+    // Set ng total expenses
     if (totalExpenses.length > 0) {
       setTotalExpenses(totalExpenses.reduce((sum, val) => sum + val, 0));
     } else {
-      setTotalExpenses(totalExpenses);
+      setTotalExpenses(0);
     }
-
   }
 
   useEffect(() => {
@@ -69,9 +75,6 @@ const History = () => {
           headerStyle: { backgroundColor: "white" },
           headerShadowVisible: false,
           headerLeft: () => (
-            <CustomIcon imageUrl={LogoS}/>
-          ),
-          headerRight: () => (
             <CustomIcon imageUrl={LogoS}/>
           ),
           headerTitle: "",

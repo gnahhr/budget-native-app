@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Pressable, Image, Text, StyleSheet } from 'react-native'
+import { Pressable, Image, Text, StyleSheet, ScrollView } from 'react-native'
 
 const Suggestion = ({name, description, chart}) => {
   const [ isToggled, setIsToggled ] = useState(false);
@@ -7,7 +7,7 @@ const Suggestion = ({name, description, chart}) => {
   return (
     <Pressable style={styles.main} onPress={() => setIsToggled(!isToggled)}>
       <Text style={[styles.titleStyle, styles.textCenter]}>{name}</Text>
-      {isToggled ? <Text style={[styles.bodyStyle, styles.textCenter]}>{description}</Text> : <Image source={chart} style={styles.imageStyle}/>}
+      {isToggled ? <ScrollView style={[styles.bodyStyle, styles.textCenter, styles.scrollView]}><Text>{description}</Text></ScrollView> : <Image source={chart} style={styles.imageStyle}/>}
     </Pressable>
   )
 }
@@ -26,14 +26,18 @@ const styles = StyleSheet.create({
   bodyStyle: {
     fontSize: 9,
   },
+  scrollView: {
+    width: '100%',
+    height: 100
+  },
   textCenter: {
     textAlign: 'center',
   },
   imageStyle: {
     alignSelf: 'center',
     resizeMode: 'contain',
-    width: 140,
-    height: 140
+    width: 100,
+    height: 100
   }
 })
 

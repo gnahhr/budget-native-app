@@ -48,7 +48,7 @@ const Insights = () => {
           <Text style={{fontSize: 18, fontWeight: '700'}}>MONTHLY</Text>
           <Entypo name="chevron-right" size={24} color="black" />
         </View>
-        {!data ? 
+        {!!data ? 
         <>
           <PieChart data={data}/>
           <BarChart data={data}/>

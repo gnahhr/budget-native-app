@@ -18,23 +18,23 @@ const bookPage = () => {
 
   return (
     <SafeAreaView style={[styles.window]}>
-      <ScrollView style={[styles.bookWrapper]}>
-        <Stack.Screen 
-          options={{
-            headerStyle: { backgroundColor: "white"},
-            headerShadowVisible: false,
-            headerBackButtonMenuEnabled: true,
-            headerLeft: () => (
-              <Pressable onPress={() => backHandler()}>
-                <FontAwesome5 name="backspace" size={24} color="#1e9dc5" />
-              </Pressable>
-            ),
-            headerRight: () => (
-              <CustomIcon imageUrl={LogoS}/>
-            ),
-            headerTitle: "",
-          }}
-        />
+      <Stack.Screen 
+        options={{
+          headerStyle: { backgroundColor: "white"},
+          headerShadowVisible: false,
+          headerBackButtonMenuEnabled: true,
+          headerLeft: () => (
+            <Pressable onPress={() => backHandler()}>
+              <FontAwesome5 name="backspace" size={24} color="#1e9dc5" />
+            </Pressable>
+          ),
+          headerRight: () => (
+            <CustomIcon imageUrl={LogoS}/>
+          ),
+          headerTitle: "",
+        }}
+      />
+      <ScrollView contentContainerStyle={{paddingVertical: 25, flexGrow: 1, paddingBottom: 400}} style={[styles.bookWrapper]}>
         <Image source={bookInfo.bookCover} style={styles.imageStyle}/>
         <Text style={styles.exertStyle}>"{bookInfo.exert}"</Text>
         <Text style={styles.contentStyle}>{bookInfo.content}</Text>
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   bookWrapper: {
-    width: '80%',
+    marginHorizontal: 20,
     alignSelf: 'center',
   },
   exertStyle: {

@@ -21,6 +21,7 @@ const BarChartView = ({data}) => {
     initBarData(dataCheck);
   }
 
+  // Dahil 3 lang naman yung kinukuhang data, sinet ko nalang sila as ganyan, bc need nila specific data para maayos ma-render
   const initBarData = (data) => {
     let highest = 0
     const initData = data.map((date) => {
@@ -33,6 +34,7 @@ const BarChartView = ({data}) => {
             spacing: 2,
             labelWidth: 30,
             labelTextStyle: {color: 'gray'},
+            // colors[idx] kukunin lang yung data ng color depende, sa index which is yung idx
             frontColor: colors[idx],
           }
         } else if (idx === 1) {

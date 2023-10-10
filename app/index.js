@@ -9,6 +9,7 @@ const Index = () => {
   const handleRegister = () => {
     router.push(`/register`)
   }
+
   const handleLogin = () => {
     router.push(`/login`)
   }
@@ -21,7 +22,6 @@ const Index = () => {
           headerTitle: "",
         }}
       />
-
       <View style={styles.mainWrapper}>
         <View styles={styles.viewContainer}>
           <Image source={Logo} style={styles.logo} />

@@ -43,7 +43,7 @@ const Onboarding = () => {
       totalBudget,
       ...allocations,
     }
-
+    // If nakapag set na ng allocations, set yung data sa local and database, then set user creds na tapos na siya mag allocate
     setData(JSON.stringify(payload));
     signIn(JSON.stringify({
       ...parsedUser,
@@ -101,7 +101,8 @@ const Onboarding = () => {
           headerTitle: "",
         }}
       />
-
+      
+      {/* Hinati ko na siya as steps para di masyadong crowded */}
       {step === 0 && <Intro nextStep={nextStepHandler}/>}
       {step === 1 && <Step1 prevStep={prevStepHandler} setBudgetPlan={budgetPlanHandler}/>}
       {step === 2 && <Step2 prevStep={prevStepHandler} setBudget={totalBudgetHandler} nextStep={nextStepHandler}/>}
