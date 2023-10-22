@@ -107,7 +107,7 @@ const History = () => {
     });
 
     const response = data.response;
-    if (response.length === 0) return;
+    // if (response.totalSum === 0) return;
     let formattedTransactions;
     // Iba iba kasi nilagay sa API na pagkuha kaya ayern, iba iba ang kanilang variables huhu
     // format yung expenses para makita siya per date.

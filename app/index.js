@@ -16,12 +16,6 @@ const Index = () => {
 
   return (
     <SafeAreaView style={styles.main}>
-      <Stack.Screen
-        options={{
-          headerShadowVisible: false,
-          headerTitle: "",
-        }}
-      />
       <View style={styles.mainWrapper}>
         <View styles={styles.viewContainer}>
           <Image source={Logo} style={styles.logo} />
@@ -59,6 +53,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   header: {
+    fontFamily: 'bold',
     fontWeight: 'bold',
     textAlign: 'center',
     fontSize: 43,
