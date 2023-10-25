@@ -8,7 +8,7 @@ import styles from './styles';
 import { View, Text, Pressable, ScrollView, Alert } from 'react-native';
 import Allocation from './Allocation';
 
-const Summary = ({totalBudget, initialAllocation, prevStep, setAllocations}) => {
+const Summary = ({totalBudget, initialAllocation, prevStep, setAllocations, isLoading = false}) => {
   // Header Data
   const [ activeTab, setActiveTab ] = useState("NEED");
   const { needs, wants, savings} = initialAllocation;
@@ -58,7 +58,12 @@ const Summary = ({totalBudget, initialAllocation, prevStep, setAllocations}) => 
   }
 
   return (
-    <View>
+    <View style={{position: 'relative'}}>
+      {isLoading &&
+        <View style={styles.loadingContainer}>
+            <Text style={{alignSelf: 'center', flex: 1,}}>Loading...</Text>
+        </View>
+      }
       <View style={styles.main}>
         <Text style={[styles.textBold, styles.textCenter]}>SUMMARY</Text>   
         <Text style={[styles.textBold, styles.textCenter]}>BUDGET PLANNER</Text>   

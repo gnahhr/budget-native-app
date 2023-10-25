@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, Pressable } from 'react-native';
+import Button from '../common/Button';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Modal from 'react-native-modal';
 import { AntDesign } from '@expo/vector-icons';
@@ -95,9 +96,7 @@ const AddExpenses = ({categoryList, isModalVisible, setModalVisible, onAddExpens
             <Text style={[styles.textCenter]}>{date}</Text>
           </View>
 
-          <Pressable style={[styles.buttonStyle]} onPress={() => addExpenseHandler()}>
-            <Text style={[styles.textCenter, styles.textWhite]}>Add Expense</Text>
-          </Pressable>
+          <Button label={"Add Expense"} action={() => addExpenseHandler()} />
         </View>
     </Modal>
   )

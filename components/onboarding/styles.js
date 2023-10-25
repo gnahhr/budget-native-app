@@ -121,6 +121,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     margin: 4
   },
+  loadingContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '130%',
+    height: '100%',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    zIndex: 999
+  }
 })
 
 export default styles;

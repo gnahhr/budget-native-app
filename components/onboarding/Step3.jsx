@@ -41,18 +41,21 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
       state: needAllocations,
       setAllocation: setNeedAllocations,
       ratio: needRatio,
+      totalBudget: totalNeed,
       alt: "needs",
     },
     "SAVINGS": {
       state: savingAllocations,
       setAllocation: setSavingAllocations,
       ratio: savingRatio,
+      totalBudget: totalSavings,
       alt: "savings",
     },
     "WANT": {
       state: wantAllocations,
       setAllocation: setWantAllocations,
       ratio: wantRatio,
+      totalBudget: totalWant,
       alt: "wants",
     }
   }
@@ -117,9 +120,41 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
     setSavingRatio(savingRatio);
   }
 
+  const computeAllocationRatio = (type) => {
+    if (tabData[type].state.filter(x => x.toggled).length === 0) return;
+
+    const ratio = tabData[type].ratio ? tabData[type].ratio / 100 : 1;
+
+    tabData[type].setAllocation(needAllocations.map(item => {
+      if (item.toggled) {
+        return {
+          ...item,
+          allocation: Math.floor(totalBudget * ratio * (item.allocation / tabData[type].totalBudget)),
+        }
+      } else {
+        return item;
+      }
+    }));
+  }
+
   const nextStepHandler = () => {
+    if (allocationChecker("WANT") || allocationChecker("SAVINGS") || allocationChecker("NEED")) {
+      Alert.alert('Warning', 'Select categories in every field!', [
+        {
+          text: 'Okay',
+          style: 'cancel'
+        }
+      ])
+
+      return;
+    }
+    
     setAllocationsHandler();
     nextStep();
+  }
+
+  const allocationChecker = (type) => {
+    return tabData[type].state.filter(x => x.toggled).length === 0
   }
 
   const allocationHandler = (name, allocation) => {
@@ -205,6 +240,18 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
       currentAllocationHandler(currentAllocations);
     }
   }, [currentAllocations])
+
+  useEffect(() => {
+    computeAllocationRatio("SAVINGS");
+  }, [savingRatio])
+
+  useEffect(() => {
+    computeAllocationRatio("WANT");
+  }, [wantRatio])
+
+  useEffect(() => {
+    computeAllocationRatio("NEED");
+  }, [needRatio])
   
   useEffect(() => {
     const totalAllocations = totalSavings + totalWant + totalNeed;

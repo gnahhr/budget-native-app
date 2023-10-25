@@ -31,14 +31,15 @@ const Categories = ({categoryList, isModalVisible, setModalVisible, onChangeTogg
               type='font-awesome'
               color='#21abe5'
               onPress={toggleModal} />
-            <View>
-              <Text style={[styles.modalText, styles.modalHeader]}>EDIT CATEGORIES</Text>
-              <Text style={[styles.modalText, styles.modalSubText]}>Select the categories that suitable to your expenses.</Text>
-            </View>
 
             <View style={styles.categoriesWrapper}>
-              {categoryState.map((category) => <Category key={category.name} category={category} categoryState={categoryState} updateCategory={setCategoryState} />)}
+              <Text style={[styles.modalText, styles.modalHeader]}>EDIT CATEGORIES</Text>
+              <Text style={[styles.modalText, styles.modalSubText]}>Select the categories that suitable to your expenses.</Text>
+              <View style={[styles.categoriesWrapper, {flexDirection: 'row', flexWrap: 'wrap'}]}>
+                {categoryState.map((category) => <Category key={category.name} category={category} categoryState={categoryState} updateCategory={setCategoryState} />)}
+              </View>
             </View>
+
           </View>
         </View>
     </Modal>
@@ -81,9 +82,9 @@ const styles = StyleSheet.create({
   categoriesWrapper: {
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
+    alignItems: 'center',
+    justifyContent: 'center',
     flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap'
   }
 })
 

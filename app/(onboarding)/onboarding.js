@@ -24,6 +24,7 @@ const Onboarding = () => {
 
   // Add States of Needs-Savings-Wants-Total Budget-ExpenseAllocation
   const [ step, setStep ] = useState(0);
+  const [ isLoading, setIsLoading ] = useState(false);
   const [ budgetPlan, setBudgetPlan ] = useState('');
   const [ totalBudget, setTotalBudget ] = useState(0);
 
@@ -38,6 +39,8 @@ const Onboarding = () => {
   }
 
   async function saveAllocation() {
+    setIsLoading(true);
+
     const payload = {
       email: parsedUser.email,
       totalBudget,
@@ -51,6 +54,8 @@ const Onboarding = () => {
     }));
 
     const allocation = await allocateBudget(payload);
+    
+    setIsLoading(false);
     
     if (allocation.statusCode === 200) {
       router.replace("/homepage");
@@ -107,7 +112,7 @@ const Onboarding = () => {
       {step === 1 && <Step1 prevStep={prevStepHandler} setBudgetPlan={budgetPlanHandler}/>}
       {step === 2 && <Step2 prevStep={prevStepHandler} setBudget={totalBudgetHandler} nextStep={nextStepHandler}/>}
       {step === 3 && <Step3 prevStep={prevStepHandler} totalBudget={totalBudget} nextStep={nextStepHandler} setAllocations={allocationHandler}/>}
-      {step === 4 && <Summary prevStep={prevStepHandler} totalBudget={totalBudget} initialAllocation={allocations} setAllocations={saveAllocation}/>}
+      {step === 4 && <Summary prevStep={prevStepHandler} totalBudget={totalBudget} initialAllocation={allocations} setAllocations={saveAllocation} isLoading={isLoading}/>}
 
     </SafeAreaView>
   )

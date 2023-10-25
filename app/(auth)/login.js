@@ -5,7 +5,6 @@ import { Stack, useRouter } from 'expo-router';
 import { Text, SafeAreaView, Image, View, TextInput, Pressable } from 'react-native';
 import { useAuth } from '../../context/auth'
 import Button from '../../components/common/Button';
-
 import styles from './authStyles';
 const Login = () => {
   const router = useRouter();
