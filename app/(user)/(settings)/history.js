@@ -3,12 +3,12 @@ import { View, Text, SafeAreaView, ScrollView, Pressable, StyleSheet } from 'rea
 import { Tabs } from 'expo-router';
 import { Entypo } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
-import { useAuth } from '../../context/auth';
+import { useAuth } from '../../../context/auth';
 
-import CustomIcon from '../../components/common/CustomIcon';
-import LogoS from '../../assets/logos/logo-s.png';
-import formatExpenses from '../../utils/formatExpenses';
-import { getExpenses } from '../../api/expenses';
+import CustomIcon from '../../../components/common/CustomIcon';
+import LogoS from '../../../assets/logos/logo-s.png';
+import formatExpenses from '../../../utils/formatExpenses';
+import { getExpenses } from '../../../api/expenses';
 import { extractMonth,
         formatDate,
         getDateWithOffset,
@@ -17,7 +17,7 @@ import { extractMonth,
         getMonthOffset,
         getYearOffset,
         getDateTodayISO,
-        getWeeklyStartEnd } from '../../utils/dateFunctions';
+        getWeeklyStartEnd } from '../../../utils/dateFunctions';
 
 const History = () => { 
   const [ activeTab, setActiveTab ] = useState('Daily');

@@ -35,6 +35,11 @@ export const getDateTodayISO = () => {
   return newDate.split('/').reverse().join('-');
 }
 
+export const formatDatePicker = (date) => {
+  const dateTrim = date.split(' ')[0];
+  return dateTrim.split('/').join('-');
+}
+
 export const getDateWithOffset = (date, value) => {
   let newDate = new Date(date);
   newDate.setDate(newDate.getDate() + value);

@@ -37,9 +37,9 @@ const Layout = () => {
             tabBarIcon: ({color, size}) => <FontAwesome name="bar-chart" size={24} color="black" />,
         }}/>
         <Tabs.Screen
-          name="history"
+          name="debts"
           options={{
-            headerTitle: "History",
+            headerTitle: "Debts",
             headerShadowVisible: false,
             headerStyle: { backgroundColor: "#f3f3f7"},
             tabBarIcon: ({color, size}) => <FontAwesome name="history" size={24} color="black" />,
