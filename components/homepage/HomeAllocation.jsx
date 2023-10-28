@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { View, Image, Text, StyleSheet, TextInput } from 'react-native'
 import ICONS from '../../constants/icons/';
 import { Icon } from '@rneui/themed';
+import { schedulePushNotification } from '../../utils/notification';
 
 
 const HomeAllocation = ({category, expenses, type}) => {
@@ -10,7 +11,8 @@ const HomeAllocation = ({category, expenses, type}) => {
   const [ icon, setIcon ] = useState(null);
 
   useEffect(()=> {
-    if (expense > category.allocation) {
+    if (expense >= category.allocation) {
+      schedulePushNotification("overspend", category.name)
       setIndiStyle([...indiStyle, styles.indicatorRed])
     } else {
       setIndiStyle([...indiStyle, styles.indicatorGreen])

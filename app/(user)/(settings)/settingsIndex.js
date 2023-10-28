@@ -11,6 +11,11 @@ const SettingsIndex = () => {
   const router = useRouter();
 
   const { username, email } = JSON.parse(user);
+
+  const transactionsHandler = () => {
+    router.push(`/(user)/(settings)/history`)
+  }
+
   const signOutHandler = () => {
     signOut();
     router.replace('/');
@@ -46,6 +51,9 @@ const SettingsIndex = () => {
             <Text style={[styles.button, styles.textWhite, styles.textItalics, styles.textBold, styles.largeFont]}>SECURITY</Text>
           </View>
         </View>
+        <Pressable onPress={() => transactionsHandler()}>
+          <Text style={[styles.button, styles.textWhite, styles.textItalics, styles.textBold, styles.largeFont]}>TRANSACTIONS</Text>
+        </Pressable>
         <Text style={[styles.button, styles.textWhite, styles.textItalics, styles.textBold, styles.largeFont]}>HELP</Text>
         <Text style={[styles.button, styles.textWhite, styles.textItalics, styles.textBold, styles.largeFont]}>ABOUT</Text>
         <Pressable>

@@ -8,7 +8,7 @@ import { getDateToday } from '../../utils/dateFunctions';
 import { receiveAndPay } from '../../api/debt';
 
 import { useAuth } from '../../context/auth';
-const PayDebt = ({nameList, isModalVisible, setModalVisible}) => {
+const PayDebt = ({nameList, isModalVisible, setModalVisible, type}) => {
   const [ nameState, setNameState ] = useState(nameList);
   const [ amount, setAmount ] = useState(amount);
   const [ date, setDate ] = useState();
@@ -27,13 +27,16 @@ const PayDebt = ({nameList, isModalVisible, setModalVisible}) => {
 
   async function addExpenseHandler() {
     setIsLoading(true);
+    const debtType = type === 'Debt' ? 'borrowed' : 'lend';
 
     const payload = {
       name: value,
       payments: {
         amount: amount
-      }
+      },
+      debtType: debtType
     }
+    
     const email = JSON.parse(user).email;
     const data = await receiveAndPay(email, payload);
     setIsLoading(false);

@@ -14,6 +14,7 @@ import LogoS from '../../assets/logos/logo-s.png';
 
 // Context
 import { useAuth } from '../../context/auth';
+import { schedulePushNotification } from '../../utils/notification';
 
 const Debts = () => {
   const [ activeTab, setActiveTab ] = useState("Debt");
@@ -29,19 +30,21 @@ const Debts = () => {
 
   const buttonActions = {
     "Debt": {
-      leftBtn: () => setBorrowModalVisible(true),
-      rightBtn: () => setPayDebtModalVisible(true),
       leftBtnLabel: "Borrow Money",
       rightBtnLabel: "Pay Debt",
     },
     "Lend": {
-      leftBtn: () => fetchList(),
-      rightBtn: () => console.log("Right Lend"),
       leftBtnLabel: "Lend Money",
       rightBtnLabel: "Receive Payment",
     },
   }
 
+  const leftBtnHandler = () => {
+    setBorrowModalVisible(true)
+  }
+  const rightBtnHandler = () => {
+    setPayDebtModalVisible(true)
+  }
   async function fetchList() {
     const email = JSON.parse(user).email;
     
@@ -96,22 +99,29 @@ const Debts = () => {
         <Text style={[styles.boldText, styles.normalText, {marginTop: 8, marginLeft: 8}]}>List</Text>
 
         <ScrollView style={[styles.container]}>
-          {listState.map(item => <ListItem name={item.name} balance={item.balance} type={activeTab}/>)}
+          {listState.length > 0 ?
+            listState.map(item => <ListItem key={item.name} name={item.name} balance={item.balance} history={item.payments} type={activeTab}/>)
+            :
+            <Text style={[styles.boldText, styles.textCenter]}>Add person to track your debts/lends</Text>
+          }
         </ScrollView>
 
       </View>
 
       <View style={[styles.bottomButtonWrapper, styles.container]}>
-        <Pressable style={styles.evenButtons} onPress={() => buttonActions[activeTab].leftBtn()}>
+        <Pressable style={styles.evenButtons} onPress={() => leftBtnHandler()}>
           <Text style={[styles.boldText, styles.italics, styles.button, styles.whiteText]}>{buttonActions[activeTab].leftBtnLabel}</Text>
         </Pressable>
-        <Pressable style={styles.evenButtons} onPress={() => buttonActions[activeTab].rightBtn()}>
+        <Pressable style={styles.evenButtons} onPress={() => rightBtnHandler()}>
           <Text style={[styles.boldText, styles.italics, styles.button, styles.whiteText]}>{buttonActions[activeTab].rightBtnLabel}</Text>
+        </Pressable>
+        <Pressable style={styles.evenButtons} onPress={() => schedulePushNotification()}>
+          <Text style={[styles.boldText, styles.italics, styles.button, styles.whiteText]}>Ya</Text>
         </Pressable>
       </View>
       
-      <PayDebt nameList={nameList} isModalVisible={payDebtModalVisible} setModalVisible={setPayDebtModalVisible} />
-      <BorrowMoney isModalVisible={borrowModalVisible} setModalVisible={setBorrowModalVisible}/>
+      <PayDebt nameList={nameList} isModalVisible={payDebtModalVisible} setModalVisible={setPayDebtModalVisible} type={activeTab}/>
+      <BorrowMoney isModalVisible={borrowModalVisible} setModalVisible={setBorrowModalVisible} type={activeTab}/>
     </SafeAreaView>
   )
 }

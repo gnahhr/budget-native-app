@@ -26,11 +26,10 @@ const Login = () => {
     setAlert("");
 
     const data = await login(email, password);
+    // Invalid password toast yey
+    console.log(data);
     setIsLoading(false);
-    
-    if (data?.statusCode === 409) {
-      setAlert(data.message);
-    }
+
     // pagka successfully na nag login store niya yung login credentials sa localStorage
     // acts as indicator if logged in na or hindi pa yung user then relocate siya sa homepage
     if (data.statusCode === 200) {
@@ -40,6 +39,8 @@ const Login = () => {
         ifBudgetAllocationExists: data.response.ifBudgetAllocationExists
       }));
       router.replace(`/homepage`);
+    } else {
+      setAlert(data.message);
     }
   }
 

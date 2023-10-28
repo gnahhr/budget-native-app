@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Tabs, useRouter } from 'expo-router';
 import { View, SafeAreaView, Text, StyleSheet, Pressable, ScrollView } from 'react-native'
 import { useStorageState } from '../../hooks/useStorageState';
@@ -16,12 +16,23 @@ import UpdateBudget from '../../components/modals/UpdateBudget';
 // API
 import { getAllocatedBudget, updateBudget } from '../../api/budget';
 import { getAllExpenses, allocateExpense } from '../../api/expenses';
+import { registerForPushNotificationsAsync } from '../../utils/notification';
 
 // Images
 import LogoS from '../../assets/logos/logo-s.png';
 
 // Context
 import { useAuth } from '../../context/auth';
+
+import * as Notifications from "expo-notifications";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
 
 const HomepageIndex = () => {
   // LocalStorage States
@@ -42,6 +53,11 @@ const HomepageIndex = () => {
   const [ totalBudget, setTotalBudget ] = useState(0);
   const [ progress, setProgress ] = useState(0);
   const [ remainingBudget, setRemainingBudget ] = useState(0);
+
+  // Notification States
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
 
   // Use hooks
   const { user } = useAuth();
@@ -187,6 +203,23 @@ const HomepageIndex = () => {
       setParsedExpenses(JSON.parse(expenses));
     }
   }, [isDataLoading, isExpensesLoading, data, user, expenses]);
+
+  useEffect(() => {
+    registerForPushNotificationsAsync();
+
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      setNotification(notification);
+    });
+
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response);
+    });
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
 
   return (
     <SafeAreaView style={{backgroundColor: '#f3f3f7'}}>

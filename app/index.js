@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import Logo from '../assets/logos/logo.png';
 import { Stack, useRouter } from 'expo-router';
 import { Text, SafeAreaView, Image, StyleSheet, View, Button } from 'react-native';

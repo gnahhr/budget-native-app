@@ -11,7 +11,7 @@ import { borrowAndLend } from '../../api/debt';
 
 import { useAuth } from '../../context/auth';
 
-const BorrowMoney = ({isModalVisible, setModalVisible}) => {
+const BorrowMoney = ({isModalVisible, setModalVisible, type}) => {
   const [ dueDate, setDueDate ] = useState(dayjs());
   const [ date, setDate ] = useState(); 
   const [ name, setName ] = useState("");
@@ -24,14 +24,17 @@ const BorrowMoney = ({isModalVisible, setModalVisible}) => {
     setModalVisible(false);
   };
 
+  const headerTitle = type === 'Debt' ? 'Borrow Money' : 'Lend Money';
+
   async function borrowMoneyHandler() {
     setIsLoading(true);
+    const debtType = type === 'Debt' ? 'borrowed' : 'lend';
     const payload = {
       dueDate: formatDatePicker(dueDate),
       name: name,
       totalDebt: amount,
       interest: interest,
-      debtType: 'borrowed',
+      debtType: debtType,
     }
     const email = JSON.parse(user).email;
     const data = await borrowAndLend(email, payload);
@@ -64,7 +67,7 @@ const BorrowMoney = ({isModalVisible, setModalVisible}) => {
         <View style={styles.modalWrapper}>
           <View>
             <View style={[styles.modalHeader]}>
-              <Text style={[styles.textBold, styles.textHeader]}>Borrow Money</Text>
+              <Text style={[styles.textBold, styles.textHeader]}>{headerTitle}</Text>
               <AntDesign name="close" size={24} color="#3A85AF" onPress={toggleModal}/>
             </View>
 
@@ -80,7 +83,7 @@ const BorrowMoney = ({isModalVisible, setModalVisible}) => {
               </View>
               <View>
                 <Text style={[styles.textBold]}>Name</Text>
-                <TextInput placeholder='Enter Person in Debt' value={name} onChangeText={setName}/>
+                <TextInput placeholder='Enter Person Name' value={name} onChangeText={setName}/>
               </View>
               <View>
                 <Text style={[styles.textBold]}>Amount</Text>

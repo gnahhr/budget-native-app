@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, SafeAreaView, ScrollView, Pressable, StyleSheet } from 'react-native';
+import { View, Text, SafeAreaView, ScrollView, Pressable, StyleSheet, Button, PermissionsAndroid} from 'react-native';
 import { Tabs } from 'expo-router';
 import { Entypo } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
@@ -8,6 +8,7 @@ import { useAuth } from '../../../context/auth';
 import CustomIcon from '../../../components/common/CustomIcon';
 import LogoS from '../../../assets/logos/logo-s.png';
 import formatExpenses from '../../../utils/formatExpenses';
+// import formatCSV from '../../../utils/formatCSV';
 import { getExpenses } from '../../../api/expenses';
 import { extractMonth,
         formatDate,
@@ -91,6 +92,10 @@ const History = () => {
     }
   }
 
+  // async function convertToCSV() {
+  
+  // }
+
   async function expensesHandler(email) {
     let year = (activeTab === 'Monthly') ? monthlyDate.split('-')[0] : yearlyDate;
 
@@ -112,9 +117,8 @@ const History = () => {
     // Iba iba kasi nilagay sa API na pagkuha kaya ayern, iba iba ang kanilang variables huhu
     // format yung expenses para makita siya per date.
     formattedTransactions = formatExpenses(response.getExpenses);
-    
     setTransactions(formattedTransactions);
-    
+
     // Summation ng total of expenses
     const totalExpenses = formattedTransactions.map(item => {
       return item.transactions.reduce((sum, curVal) => Number(sum) + Number(curVal.amount), 0);
@@ -206,6 +210,7 @@ const History = () => {
             }
         </View>
       </ScrollView>
+      {/* <Button title={"Convert to CSV"} onPress={() => convertToCSV()}/> */}
     </SafeAreaView>
   )
 }

@@ -1,16 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { COLORS } from '../../constants/theme';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { formatDate } from '../../utils/dateFunctions';
 
-const ListItem = ({name, balance, type = "Lend"}) => {
+const ListItem = ({name, balance, history, type = "Lend"}) => {
+  const [ toggled, setToggled ] = useState(false);
+
   const textColor = type === "Lend" ? styles.textGreen : styles.textRed;
 
+  const toggleHandler = () => {
+    setToggled(!toggled);
+  }
+
   return (
-    <Pressable style={[styles.flexRow, styles.container]}>
-      <Text style={[styles.stretch, styles.textBold]}>{name}</Text>
-      <Text style={[styles.stretch, styles.textEnd, styles.textBold, textColor]}>
-        {balance > 0 ? `Php. ${balance}` : "Fully Paid"}
-      </Text>
+    <Pressable style={[styles.container]} onPress={() => toggleHandler()}>
+      <View style={[styles.flexRow]}>
+        <Text style={[styles.stretch, styles.textBold]}>{name}</Text>
+        <Text style={[styles.stretch, styles.textEnd, styles.textBold, textColor]}>
+          {balance > 0 ? `Php. ${balance}` : "Fully Paid"}
+        </Text>
+      </View>
+
+      {toggled &&
+        <View>
+          {history.map(item => {
+            return (
+              <View style={[styles.flexRow, styles.container]}>
+                <Text style={[styles.stretch, styles.textBold]}>{formatDate(item.paymentDate)}</Text>
+                <Text style={[styles.stretch, styles.textBold, styles.textEnd]}>{item.amount}</Text>
+              </View>
+            )
+          })}
+        </View>
+      }
     </Pressable>
   )
 }

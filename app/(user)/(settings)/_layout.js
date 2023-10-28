@@ -11,6 +11,13 @@ const Layout = () => {
           headerShadowVisible: false,
           headerStyle: { backgroundColor: "#f3f3f7"},
         }}/>
+      <Stack.Screen
+        name="history"
+        options={{
+          headerTitle: "Transactions",
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor: "#f3f3f7"},
+        }}/>
     </Stack>
   )
 };
