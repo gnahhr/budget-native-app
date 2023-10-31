@@ -27,16 +27,15 @@ const Login = () => {
 
     const data = await login(email, password);
     // Invalid password toast yey
-    console.log(data);
     setIsLoading(false);
 
     // pagka successfully na nag login store niya yung login credentials sa localStorage
     // acts as indicator if logged in na or hindi pa yung user then relocate siya sa homepage
     if (data.statusCode === 200) {
       signIn(JSON.stringify({
-        email: data.response.email,
-        username: data.response.userName,
-        ifBudgetAllocationExists: data.response.ifBudgetAllocationExists
+        email: data.response.token.userDetails.email,
+        username: data.response.token.userDetails.userName,
+        ifNewUser: data.response.token.userDetails.ifNewUser
       }));
       router.replace(`/homepage`);
     } else {

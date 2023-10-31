@@ -26,6 +26,7 @@ const Onboarding = () => {
   const [ step, setStep ] = useState(0);
   const [ isLoading, setIsLoading ] = useState(false);
   const [ budgetPlan, setBudgetPlan ] = useState('');
+  const [ budgetName, setBudgetName ] = useState('');
   const [ totalBudget, setTotalBudget ] = useState(0);
 
   const [ allocations, setAllocations ] = useState([]);
@@ -42,7 +43,8 @@ const Onboarding = () => {
     setIsLoading(true);
 
     const payload = {
-      email: parsedUser.email,
+      budgetName: budgetName,
+      budgetType: budgetPlan.toLowerCase(),
       totalBudget,
       ...allocations,
     }
@@ -50,10 +52,10 @@ const Onboarding = () => {
     setData(JSON.stringify(payload));
     signIn(JSON.stringify({
       ...parsedUser,
-      ifBudgetAllocationExists: true
+      ifNewUser: false
     }));
 
-    const allocation = await allocateBudget(payload);
+    const allocation = await allocateBudget(parsedUser.email, payload);
     
     setIsLoading(false);
     
@@ -80,7 +82,8 @@ const Onboarding = () => {
   }
 
   const handleClose = () => {
-    if (!parsedUser.ifBudgetAllocationExists) {
+    console.log("New User", parsedUser.ifNewUser);
+    if (parsedUser.ifNewUser) {
       signOut();
       router.replace("/"); 
     }
@@ -110,7 +113,7 @@ const Onboarding = () => {
       {/* Hinati ko na siya as steps para di masyadong crowded */}
       {step === 0 && <Intro nextStep={nextStepHandler}/>}
       {step === 1 && <Step1 prevStep={prevStepHandler} setBudgetPlan={budgetPlanHandler}/>}
-      {step === 2 && <Step2 prevStep={prevStepHandler} setBudget={totalBudgetHandler} nextStep={nextStepHandler}/>}
+      {step === 2 && <Step2 prevStep={prevStepHandler} setBudget={totalBudgetHandler} setBudgetName={setBudgetName} nextStep={nextStepHandler}/>}
       {step === 3 && <Step3 prevStep={prevStepHandler} totalBudget={totalBudget} nextStep={nextStepHandler} setAllocations={allocationHandler}/>}
       {step === 4 && <Summary prevStep={prevStepHandler} totalBudget={totalBudget} initialAllocation={allocations} setAllocations={saveAllocation} isLoading={isLoading}/>}
 

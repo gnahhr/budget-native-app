@@ -1,30 +1,34 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Tabs, useRouter } from 'expo-router';
 import { View, SafeAreaView, Text, StyleSheet, Pressable, ScrollView } from 'react-native'
-import { useStorageState } from '../../hooks/useStorageState';
+import { useStorageState } from '../../../hooks/useStorageState';
 
 // Components
 import AnimatedProgressWheel from 'react-native-progress-wheel';
-import CustomIcon from '../../components/common/CustomIcon';
-import HomeAllocation from '../../components/homepage/HomeAllocation';
-import Money from '../../components/homepage/Money';
+import CustomIcon from '../../../components/common/CustomIcon';
+import HomeAllocation from '../../../components/homepage/HomeAllocation';
+import Money from '../../../components/homepage/Money';
 
 // Modals
-import AddExpenses from '../../components/modals/AddExpenses';
-import UpdateBudget from '../../components/modals/UpdateBudget';
+import AddExpenses from '../../../components/modals/AddExpenses';
+import UpdateBudget from '../../../components/modals/UpdateBudget';
+import UserListModal from '../../../components/homepage/UserListModal';
+import BudgetList from '../../../components/homepage/BudgetList';
 
 // API
-import { getAllocatedBudget, updateBudget } from '../../api/budget';
-import { getAllExpenses, allocateExpense } from '../../api/expenses';
-import { registerForPushNotificationsAsync } from '../../utils/notification';
+import { getAllocatedBudget, updateBudget, getBudgetList } from '../../../api/budget';
+import { getAllExpenses, allocateExpense } from '../../../api/expenses';
+import { registerForPushNotificationsAsync } from '../../../utils/notification';
 
 // Images
-import LogoS from '../../assets/logos/logo-s.png';
+import LogoS from '../../../assets/logos/logo-s.png';
 
 // Context
-import { useAuth } from '../../context/auth';
+import { useAuth } from '../../../context/auth';
+import { useBudget } from '../../../context/budget';
 
 import * as Notifications from "expo-notifications";
+import Button from '../../../components/common/Button';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -35,6 +39,9 @@ Notifications.setNotificationHandler({
 });
 
 const HomepageIndex = () => {
+  const { user } = useAuth();
+  const { activeBudget, budgetList, updateActive, updateBudgetL } = useBudget();
+
   // LocalStorage States
   const [[isDataLoading, data], setData] = useStorageState('data');
   const [[isExpensesLoading, expenses], setExpenses] = useStorageState('expenses');
@@ -60,12 +67,13 @@ const HomepageIndex = () => {
   const responseListener = useRef();
 
   // Use hooks
-  const { user } = useAuth();
   const router = useRouter();
 
   // Modal States
   const [ isEModalOpen, setIsEModalOpen ] = useState(false);
   const [ isBModalOpen, setIsBModalOpen ] = useState(false);
+  const [ isUserModalVisible, setIsUserModalVisible ] = useState(false);
+  const [ isBListModalVisible, setIsBListModalVisible ] = useState(false);
 
   // Tab Constants
   const [ activeTab, setActiveTab ] = useState("Needs");
@@ -92,10 +100,17 @@ const HomepageIndex = () => {
     setIsBModalOpen(true);
   }
 
+  const userModalToggle = () => {
+    setIsUserModalVisible(true);
+  }
+
+  const budgetListModalToggle = () => {
+    setIsBListModalVisible(true);
+  }
+
   // Pag add ng expenses
   async function addExpenseHandler(category, amount, note) {
     const payload = {
-      email: parsedUser.email,
       type: tabData[activeTab].name,
       category: category,
       amount: Number(amount),
@@ -104,7 +119,7 @@ const HomepageIndex = () => {
 
     // Kada add niya ng expenses get niya ulit yung allocation tska expenses para ma update yung nasa app,
     // Which is yung nasa line 92 and 93 then close na niya yung modal sa 94
-    const response = await allocateExpense(payload);
+    const response = await allocateExpense(parsedUser.email, activeBudget, payload);
     getAllocation(parsedUser.email);
     getExpensesHandler(parsedUser.email);
     setIsEModalOpen(false);
@@ -112,7 +127,7 @@ const HomepageIndex = () => {
 
   // Paglipat page papuntang edit categories
   const handleEditCategory = () => {
-    router.replace('/(onboarding)/editCategories');
+    router.replace('(user)/(homepage)/editCategories');
   }
 
   // Pag format lang ng data na nakuha from expensesHandler para madisplay ng maayos yung data,
@@ -140,7 +155,8 @@ const HomepageIndex = () => {
 
   // Get ng allocation
   async function getAllocation(email) {
-    const allocation = await getAllocatedBudget(email);
+    const allocation = await getAllocatedBudget(email, activeBudget);
+    
     const data = allocation.response;
     // Kasama na rin dito yung pag compute nung makikita sa homepage which is yung remaining budget,
     // tska yung yung parang progress if malapit na maubos budget
@@ -154,8 +170,12 @@ const HomepageIndex = () => {
   }
 
   // For updating ng budget, pagka update niya get na ng allocation then close modal
-  async function updateBudgetHandler(newBudget) {
-    const data = await updateBudget(parsedUser.email, newBudget);
+  async function updateBudgetHandler(newBudget, newName) {
+    const data = await updateBudget(parsedUser.email, activeBudget, newBudget, newName);
+
+    if (data?.statusCode === 200) {
+      updateActive(newName)
+    }
 
     getAllocation(parsedUser.email);
     setIsBModalOpen(false);
@@ -174,7 +194,7 @@ const HomepageIndex = () => {
   // Use Effects yung ginagamit para pag may magbabagong data sa dependency array niya,
   // which is yung [] after ng comma, mag r-run yung codes sa useEffect, if walang laman yung []
   // nag r-run siya pagka mount or pagka display ng component
-  
+
   useEffect(() => {
     if (user) {
       const userParse = JSON.parse(user);
@@ -183,7 +203,11 @@ const HomepageIndex = () => {
       getAllocation(userParse.email);
       setIsLoading(false);
     }
-  }, [])
+  }, [activeBudget])
+
+  useEffect(() => {
+    updateBudgetL();
+  }, [isBModalOpen])
 
   useEffect(() => {
     if (expensesLoading === false) {
@@ -235,17 +259,29 @@ const HomepageIndex = () => {
       />
       {
         // Checks if data are still loading
-        !parsedUser && !parsedData && !parsedExpenses && isLoading ? 
+        !parsedUser && !parsedData && !parsedExpenses && isLoading && !activeBudget ? 
         <Text>Loading...</Text>
       :
       <>
-      <View style={[styles.container]}>
-        <Text style={[styles.normalText, styles.grayText]}>Hello {parsedUser ? parsedUser.username : "User"},</Text>
-        <Text style={[styles.boldText, styles.bigFont]}>Welcome Back!</Text>
+      <View style={[styles.container, {flexDirection: 'row'}]}>
+        <View>
+          <Text style={[styles.normalText, styles.grayText]}>Hello {parsedUser ? parsedUser.username : "User"},</Text>
+          <Text style={[styles.boldText, styles.bigFont]}>Welcome Back!</Text>
+        </View>
+        <View style={{flex: 1, alignItems: 'flex-end', justifyContent:'center'}}>
+          <Pressable onPress={() => userModalToggle()}>
+            <View style={{backgroundColor: 'red', width: 35, height: 35, borderRadius: 50}}>
+              
+            </View>
+          </Pressable>
+        </View>
       </View>
 
       <View style={[styles.budgetWrapper, styles.container]}>
-        <Text style={[styles.bigFont]}>MY BUDGET</Text>
+        <Pressable onPress={() => budgetListModalToggle()}>
+          <Text style={[styles.bigFont]}>{activeBudget}</Text>
+        </Pressable>
+
         <Text style={[styles.italics, styles.normalText]}>MONTH</Text>
 
         <View style={styles.flexRow}>
@@ -299,7 +335,10 @@ const HomepageIndex = () => {
         </Pressable>
       </View>
 
-      <UpdateBudget isModalVisible={isBModalOpen} totalBudget={totalBudget} setModalVisible={setIsBModalOpen} updateBudget={updateBudgetHandler} />
+      
+      <BudgetList isModalVisible={isBListModalVisible} setModalVisible={setIsBListModalVisible} />
+      <UserListModal isModalVisible={isUserModalVisible} setModalVisible={setIsUserModalVisible} />
+      <UpdateBudget isModalVisible={isBModalOpen} totalBudget={totalBudget} activeBudget={activeBudget} setModalVisible={setIsBModalOpen} updateBudget={updateBudgetHandler} />
       <AddExpenses categoryList={parsedData[tabData[activeTab].name]} isModalVisible={isEModalOpen} setModalVisible={setIsEModalOpen} onAddExpense={addExpenseHandler}/>
       </>}
     </SafeAreaView>

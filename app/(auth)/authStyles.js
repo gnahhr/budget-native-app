@@ -61,7 +61,6 @@ export default styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 16,
     paddingHorizontal: "20px",
-    display: "block"
   },
   checkbox: {
     width: 20,

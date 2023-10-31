@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { View, Image, Text, StyleSheet, TextInput } from 'react-native'
-import ICONS from '../../constants/icons/';
+import { getIcon } from '../../constants/icons';
 import { Icon } from '@rneui/themed';
 import { schedulePushNotification } from '../../utils/notification';
 
@@ -26,7 +26,7 @@ const HomeAllocation = ({category, expenses, type}) => {
       }
     })
     
-    setIcon(ICONS[category.name]);
+    setIcon(getIcon(category.iconId));
   }, [])
 
   return (

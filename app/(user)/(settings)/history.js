@@ -3,13 +3,16 @@ import { View, Text, SafeAreaView, ScrollView, Pressable, StyleSheet, Button, Pe
 import { Tabs } from 'expo-router';
 import { Entypo } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
-import { useAuth } from '../../../context/auth';
 
+import { useAuth } from '../../../context/auth';
+import { useBudget } from '../../../context/budget';
+
+import DatePicker from '../../../components/common/DatePicker';
 import CustomIcon from '../../../components/common/CustomIcon';
+
 import LogoS from '../../../assets/logos/logo-s.png';
+
 import formatExpenses from '../../../utils/formatExpenses';
-// import formatCSV from '../../../utils/formatCSV';
-import { getExpenses } from '../../../api/expenses';
 import { extractMonth,
         formatDate,
         getDateWithOffset,
@@ -19,8 +22,9 @@ import { extractMonth,
         getYearOffset,
         getDateTodayISO,
         getWeeklyStartEnd } from '../../../utils/dateFunctions';
+import { getExpenses } from '../../../api/expenses';
 
-const History = () => { 
+const History = () => {
   const [ activeTab, setActiveTab ] = useState('Daily');
   const [ userData, setUserData ] = useState(null);
   const [ dailyDate, setDailyDate ] = useState();
@@ -29,9 +33,11 @@ const History = () => {
   const [ yearlyDate, setYearlyDate ] = useState();
   const [ transactions, setTransactions ] = useState([]);
   const [ totalExpenses, setTotalExpenses ] = useState(0);
+  const [ isPickerVisible, setIsPickerVisible ] = useState(false);
   const tabs = ['Daily', 'Weekly', 'Monthly', 'Yearly'];
 
   const { user } = useAuth();
+  const { activeBudget } = useBudget();
 
   const initDate = () => {
     const dateToday = getDateTodayISO();
@@ -107,7 +113,8 @@ const History = () => {
         type: activeTab.toLocaleLowerCase(),
         month: monthlyDate.split('-')[1],
         year: year,
-        day: dailyDate
+        day: dailyDate,
+        budgetName: activeBudget
       }
     });
 
@@ -210,6 +217,7 @@ const History = () => {
             }
         </View>
       </ScrollView>
+      <DatePicker isModalVisible={isPickerVisible} setModalVisible={setIsPickerVisible}/>
       {/* <Button title={"Convert to CSV"} onPress={() => convertToCSV()}/> */}
     </SafeAreaView>
   )

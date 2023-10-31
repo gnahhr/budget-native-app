@@ -42,6 +42,7 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
       setAllocation: setNeedAllocations,
       ratio: needRatio,
       totalBudget: totalNeed,
+      default: needsCategories,
       alt: "needs",
     },
     "SAVINGS": {
@@ -49,6 +50,7 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
       setAllocation: setSavingAllocations,
       ratio: savingRatio,
       totalBudget: totalSavings,
+      default: savingsCategories,
       alt: "savings",
     },
     "WANT": {
@@ -56,6 +58,7 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
       setAllocation: setWantAllocations,
       ratio: wantRatio,
       totalBudget: totalWant,
+      default: wantCategories,
       alt: "wants",
     }
   }
@@ -192,10 +195,10 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
   // magkaiba sila compared sa fresh data
   const currentAllocationHandler = (curAllocation) => {
     const types = ['WANT', 'NEED', 'SAVINGS'];
-    
+
     types.map((type) => {
       // Ginawang isang array yung allocations na galing database to local
-      const container = [...tabData[type].state, ...curAllocation[tabData[type].alt]];
+      const container = [...tabData[type].default, ...curAllocation[tabData[type].alt]];
       const newContainer = [];
       const uniqueContainer = {};
       
@@ -210,16 +213,21 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
               allocation: container[item].allocation,
               toggled: true,
             }
+          } else if (container[item].allocation > 0) {
+            uniqueContainer[category] = {
+              ...container[item],
+              toggled: true,
+            }; 
           } else {
-            uniqueContainer[category] = container[item]; 
+            uniqueContainer[category] = container[item];
           }
       }
 
       for (i in uniqueContainer) {
         newContainer.push(uniqueContainer[i]);
       }
-      
-      tabData[type].setAllocation(newContainer);
+
+      tabData[type].setAllocation([...newContainer]);
     })
   };
 
@@ -294,7 +302,6 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
         setModalVisible={setRecoVisible}
         onChangeToggle={setRatioHandler}
       />
-
       <View style={[styles.blueDrawer, styles.blueDrawerExpanded, styles.blueDrawerExpandedAllocation]}>
         <Text style={[styles.textCenter, styles.textWhite]}>EXPENSE ALLOCATION</Text>
         {tabData[activeTab].ratio > 0 && <Text style={[styles.textCenter, styles.textWhite, styles.textMediumBold, styles.textHighlight]}>{totalBudget * (tabData[activeTab].ratio/100)}</Text>}
@@ -304,6 +311,7 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
             {tabData[activeTab].state.filter(x => x.toggled).map(x =>
               <Allocation key={x.name}
                           category={x.name}
+                          iconId={x.iconId}
                           curAllocation={x.allocation}
                           allocationHandler={allocationHandler}
                           checkExceeding={checkExceeding}/>)}

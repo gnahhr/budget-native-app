@@ -14,7 +14,6 @@ import LogoS from '../../assets/logos/logo-s.png';
 
 // Context
 import { useAuth } from '../../context/auth';
-import { schedulePushNotification } from '../../utils/notification';
 
 const Debts = () => {
   const [ activeTab, setActiveTab ] = useState("Debt");
@@ -114,9 +113,6 @@ const Debts = () => {
         </Pressable>
         <Pressable style={styles.evenButtons} onPress={() => rightBtnHandler()}>
           <Text style={[styles.boldText, styles.italics, styles.button, styles.whiteText]}>{buttonActions[activeTab].rightBtnLabel}</Text>
-        </Pressable>
-        <Pressable style={styles.evenButtons} onPress={() => schedulePushNotification()}>
-          <Text style={[styles.boldText, styles.italics, styles.button, styles.whiteText]}>Ya</Text>
         </Pressable>
       </View>
       

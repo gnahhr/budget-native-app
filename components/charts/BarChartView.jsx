@@ -3,16 +3,22 @@ import { View, StyleSheet, Text } from 'react-native';
 import { BarChart } from 'react-native-gifted-charts';
 
 
-const BarChartView = ({data}) => {
+const BarChartView = ({data, type}) => {
   const colors = ['#185577', '#83a7c8', '#1e9dc5'];
   const [ rChartData, setRChartData ] = useState(); 
   const [ barData, setBarData ] = useState();
   const [ barHeight, setBarHeight ] = useState(200);
+
+  const barLabel = {
+    'weekly': 'weekly',
+    'monthly': 'month',
+    'yearly': 'year',
+  }
   
   const initData = (initData) => {
     const dataCheck = initData.map(item => {
       return {
-        month: item.month,
+        date: item[barLabel[type]],
         topExpenses: [...item.expenses.sort((a, b) => b.amount - a.amount).slice(0,3)]
       }
     });
@@ -30,8 +36,8 @@ const BarChartView = ({data}) => {
         if (idx === 0) {
           return {
             value: item.amount,
-            label: date.month,
-            spacing: 2,
+            label: date.date,
+            spacing: 10,
             labelWidth: 30,
             labelTextStyle: {color: 'gray'},
             // colors[idx] kukunin lang yung data ng color depende, sa index which is yung idx

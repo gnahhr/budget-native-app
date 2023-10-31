@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import { Stack, useRouter } from 'expo-router';
-import { SafeAreaView, StyleSheet, Pressable } from 'react-native';
-import { updateAllocation, getAllocatedBudget } from '../../api/budget';
-import { useStorageState } from '../../hooks/useStorageState';
-import { useAuth } from '../../context/auth';
-import Step3 from '../../components/onboarding/Step3';
-import Summary from '../../components/onboarding/Summary';
+import { SafeAreaView, StyleSheet, Pressable, Text } from 'react-native';
+import { updateAllocation, getAllocatedBudget } from '../../../api/budget';
+import { useStorageState } from '../../../hooks/useStorageState';
 
-import CustomIcon from '../../components/common/CustomIcon';
-import LogoS from '../../assets/logos/logo-s.png';
-import CloseIco from '../../assets/icons/X.png';
+import Step3 from '../../../components/onboarding/Step3';
+import Summary from '../../../components/onboarding/Summary';
+import CustomIcon from '../../../components/common/CustomIcon';
+import LogoS from '../../../assets/logos/logo-s.png';
+import CloseIco from '../../../assets/icons/X.png';
+
+import { useBudget } from '../../../context/budget';
+import { useAuth } from '../../../context/auth';
 
 const EditCategories = () => {
   const [[isDataLoading, data], setData] = useStorageState('data');
   const router = useRouter();
   const { user } = useAuth();
+  const { activeBudget } = useBudget();
 
   const [ step, setStep ] = useState(0);
   const [ budgetPlan, setBudgetPlan ] = useState('Weekly');
@@ -32,17 +35,17 @@ const EditCategories = () => {
   }
   
   async function fetchAllocation(email) {
-    const data = await getAllocatedBudget(email);
+    const data = await getAllocatedBudget(email, activeBudget);
     const response = data.response;
-    setTotalBudget(response.totalBudget);
     setAllocations(response);
+    setTotalBudget(response.totalBudget);
   }
 
   useEffect(() => {
     if(user) {
       const parsedUser = JSON.parse(user);
-      setParsedUser(parsedUser);
       fetchAllocation(parsedUser.email);
+      setParsedUser(parsedUser);
     }
   }, [])
 
@@ -52,7 +55,7 @@ const EditCategories = () => {
     }
     
     setData(JSON.stringify(payload));
-    const allocation = await updateAllocation(parsedUser.email, payload);
+    const allocation = await updateAllocation(parsedUser.email, activeBudget, payload);
     
     if (allocation?.statusCode === 200) {
       router.replace("/homepage");
@@ -89,6 +92,7 @@ const EditCategories = () => {
           headerTitle: "",
         }}
       />
+
 
       {step === 0 && <Step3 prevStep={prevStepHandler} totalBudget={totalBudget} currentAllocations={allocations} nextStep={nextStepHandler} setAllocations={allocationHandler}/>}
       {step === 1 && <Summary prevStep={prevStepHandler} totalBudget={totalBudget} initialAllocation={allocations} setAllocations={saveAllocation}/>}

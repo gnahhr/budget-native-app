@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, Pressable } from 'react-native';
 import Modal from 'react-native-modal';
 
-const UpdateBudget = ({isModalVisible, totalBudget, setModalVisible, updateBudget}) => {
+const UpdateBudget = ({isModalVisible, totalBudget, activeBudget, setModalVisible, updateBudget}) => {
   const [ budget, onChangeBudget ] = useState(0);
+  const [ budgetName, setBudgetName ] = useState("");
 
   const toggleModal = () => {
     setModalVisible(false);
@@ -11,13 +12,17 @@ const UpdateBudget = ({isModalVisible, totalBudget, setModalVisible, updateBudge
 
   const updateBudgetHandler = () => {
     if (Number(budget) > 0 ){
-      updateBudget(budget);
+      updateBudget(budget, budgetName);
     }
   }
 
   useEffect(() => {
     onChangeBudget(totalBudget);
-  }, [])
+  }, [totalBudget])
+  
+  useEffect(() => {
+    setBudgetName(activeBudget);
+  }, [activeBudget])
 
   return (
     <Modal
@@ -31,6 +36,13 @@ const UpdateBudget = ({isModalVisible, totalBudget, setModalVisible, updateBudge
             </View>
             
             <View style={{gap: 16}}>
+              <View>
+                <Text style={[styles.textBold]}>Budget Name</Text>
+                <TextInput
+                  value={budgetName}
+                  onChangeText={setBudgetName}
+                />
+              </View>
               <View>
                 <Text style={[styles.textBold]}>Total Budget</Text>
                 <TextInput

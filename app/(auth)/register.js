@@ -38,9 +38,9 @@ const Register = () => {
       if (data.statusCode === 201) {
         router.replace(`/onboarding`);
         signIn(JSON.stringify({
-          email: data.response.email,
-          username: data.response.userName,
-          ifBudgetAllocationExists: data.response.ifBudgetAllocationExists 
+          email: data.response.token.userDetails.email,
+          username: data.response.token.userDetails.userName,
+          ifNewUser: data.response.token.userDetails.ifNewUser
         }));
       }
     }

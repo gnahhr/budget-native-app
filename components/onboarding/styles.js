@@ -106,7 +106,6 @@ const styles = StyleSheet.create({
   },
   navWrapper: {
     flexDirection: 'row',
-    marginTop: 100,
     justifySelf: 'flex-end',
     width: 325,
     justifyContent: 'space-between',

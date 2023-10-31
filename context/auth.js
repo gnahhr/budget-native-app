@@ -29,10 +29,11 @@ function useProtectedRoute(user) {
     // Ito yung pagkuha ng current routes ng user, nasa segements
     const inAuthGroup = segments[0] === '(auth)';
     const inUserGroup = segments[0] === '(user)';
+    const inOnboarding = segments[0] === '(onboarding)';
     const inRoot = segments[0] === undefined;
     
     // If di pa nakakapag allocate ng budget
-    const isBudgetAllocationExists = JSON.parse(user)?.ifBudgetAllocationExists;
+    const ifNewUser = JSON.parse(user)?.ifNewUser;
 
     // Chinecheck if ready na yung pages sa isNavigationReady then sa inRoot if nasa
     // Landing Page
@@ -45,7 +46,7 @@ function useProtectedRoute(user) {
       router.replace('/homepage');
     } else if (user && inRoot) {
       router.replace('/homepage');
-    } else if (!isBudgetAllocationExists && inUserGroup) {
+    } else if (ifNewUser && inUserGroup) {
       router.replace('/onboarding');
     }
   }, [user, segments, isNavigationReady])
