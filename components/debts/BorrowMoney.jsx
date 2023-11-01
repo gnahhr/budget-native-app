@@ -5,14 +5,14 @@ import dayjs from 'dayjs';
 import Button from '../common/Button';
 import Modal from 'react-native-modal';
 import { AntDesign } from '@expo/vector-icons';
-import { getDateToday } from '../../utils/dateFunctions';
+import { getDateToday, getDateTodayISO, getDateWithOffset } from '../../utils/dateFunctions';
 import { formatDatePicker } from '../../utils/dateFunctions';
 import { borrowAndLend } from '../../api/debt';
 
 import { useAuth } from '../../context/auth';
 
 const BorrowMoney = ({isModalVisible, setModalVisible, type}) => {
-  const [ dueDate, setDueDate ] = useState(dayjs());
+  const [ dueDate, setDueDate ] = useState(getDateWithOffset(getDateTodayISO(), 1));
   const [ date, setDate ] = useState(); 
   const [ name, setName ] = useState("");
   const [ amount, setAmount ] = useState(0);

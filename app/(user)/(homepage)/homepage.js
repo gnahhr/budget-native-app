@@ -17,6 +17,7 @@ import BudgetList from '../../../components/homepage/BudgetList';
 
 // API
 import { getAllocatedBudget, updateBudget, getBudgetList } from '../../../api/budget';
+// Change getAllExpenses to match the the budgetType
 import { getAllExpenses, allocateExpense } from '../../../api/expenses';
 import { registerForPushNotificationsAsync } from '../../../utils/notification';
 
@@ -28,7 +29,6 @@ import { useAuth } from '../../../context/auth';
 import { useBudget } from '../../../context/budget';
 
 import * as Notifications from "expo-notifications";
-import Button from '../../../components/common/Button';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -220,10 +220,10 @@ const HomepageIndex = () => {
     if (user) {
       setParsedUser(JSON.parse(user));
     }
-    if (!isDataLoading) {
+    if (!isDataLoading && data) {
       setParsedData(JSON.parse(data));
     }
-    if (!isExpensesLoading) {
+    if (!isExpensesLoading && expenses) {
       setParsedExpenses(JSON.parse(expenses));
     }
   }, [isDataLoading, isExpensesLoading, data, user, expenses]);
@@ -319,13 +319,13 @@ const HomepageIndex = () => {
       </View> 
       
       <ScrollView style={[styles.container, styles.scrollHeight]}>
-        {!expensesLoading && !isExpensesLoading && parsedData[tabData[activeTab].name].length > 0 ?
+        {!expensesLoading && !isExpensesLoading && parsedData[tabData[activeTab].name] && parsedData[tabData[activeTab].name].length > 0 ?
           parsedData[tabData[activeTab].name].map(data => <HomeAllocation key={data.name} category={data} expenses={parsedExpenses} type={tabData[activeTab].name}/>)
           :
           <Text>Nothing Allocated</Text>
           }
       </ScrollView>
-
+ 
       <View style={[styles.bottomButtonWrapper]}>
         <Pressable onPress={() => handleEditCategory()}>
           <Text style={[styles.boldText, styles.italics, styles.button, styles.whiteText]}>Edit Categories</Text>

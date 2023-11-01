@@ -29,7 +29,8 @@ export function Provider(props) {
     // Palagay ng personal budget sa user hehe
     const data = await getBudgetList(JSON.parse(user).email);
     const list = data.response.map(item => item.budgetName);
-
+    console.log(data);
+    
     setBudgetList(list);
     setActiveBudget(list[0]);
   }

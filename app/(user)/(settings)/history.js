@@ -7,7 +7,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { useAuth } from '../../../context/auth';
 import { useBudget } from '../../../context/budget';
 
-import DatePicker from '../../../components/common/DatePicker';
+import DatePicker from '../../../components/modals/DatePicker';
 import CustomIcon from '../../../components/common/CustomIcon';
 
 import LogoS from '../../../assets/logos/logo-s.png';
@@ -39,12 +39,23 @@ const History = () => {
   const { user } = useAuth();
   const { activeBudget } = useBudget();
 
+  const calendarToggleHandler = () => {
+    setIsPickerVisible(true);
+  }
+
+  const setDateFromPicker = {
+    'Daily': setDailyDate,
+    'Weekly': setWeeklyDate,
+    'Monthly': setMonthlyDate,
+    'Yearly': setYearlyDate,
+  }
+
   const initDate = () => {
     const dateToday = getDateTodayISO();
     const dateWeekly = getWeeklyStartEnd(getDateTodayISO());
     const monthToday = dateToday.split('-').splice(0,2).join('-');
     const yearToday = dateToday.split('-')[0];
-
+    
     setDailyDate(dateToday);
     setWeeklyDate(dateWeekly);
     setMonthlyDate(monthToday);
@@ -167,7 +178,10 @@ const History = () => {
 
       <View style={[styles.headerWrapper]}>
         <ScrollView horizontal={true} contentContainerStyle={styles.containerStyle} style={[styles.tabWrapper]}>
-          <AntDesign name="calendar" size={24} color="#5087b9" />
+          <Pressable onPress={() => calendarToggleHandler()}>
+            <AntDesign name="calendar" size={24} color="#5087b9" />
+          </Pressable>
+        
           {tabs.map(tab => 
             {  
               let tabStyle = {};
@@ -217,8 +231,7 @@ const History = () => {
             }
         </View>
       </ScrollView>
-      <DatePicker isModalVisible={isPickerVisible} setModalVisible={setIsPickerVisible}/>
-      {/* <Button title={"Convert to CSV"} onPress={() => convertToCSV()}/> */}
+      <DatePicker isModalVisible={isPickerVisible} setModalVisible={setIsPickerVisible} setDates={setDateFromPicker} type={activeTab}/>
     </SafeAreaView>
   )
 }
@@ -238,6 +251,9 @@ const styles = StyleSheet.create({
   },
   noPadding: {
     paddingVertical: 4,
+  },
+  tabWrapper: {
+    minHeight: 25,
   },
   containerStyle: {
     alignItems: 'center',

@@ -9,6 +9,18 @@ const HomeAllocation = ({category, expenses, type}) => {
   const [ indiStyle, setIndiStyle ] = useState([styles.indicatorStyle]);
   const [ expense, setExpense ] = useState(0);
   const [ icon, setIcon ] = useState(null);
+  const [ percentage, setPercentage ] = useState(0); 
+
+  const percentageHandler = () => {
+    if (expense >= category.allocation) {
+      setPercentage(100);
+      return;
+    } else if (expense === 0) {
+      setPercentage(1);
+    } else {
+      setPercentage(Math.floor(expense/category.allocation * 100))
+    }
+  }
 
   useEffect(()=> {
     if (expense >= category.allocation) {
@@ -17,6 +29,8 @@ const HomeAllocation = ({category, expenses, type}) => {
     } else {
       setIndiStyle([...indiStyle, styles.indicatorGreen])
     }
+
+    percentageHandler();
   }, [expense])
 
   useEffect(() => {
@@ -47,7 +61,7 @@ const HomeAllocation = ({category, expenses, type}) => {
           <Text style={[styles.bottomText]}>Php. {expense} / Php. {category.allocation}</Text>
         </View>
       </View>
-      <View style={[indiStyle]} />
+      <View style={[indiStyle, styles.progressBar, { width: `${percentage}%`}]} />
     </View>
   )
 }
@@ -61,6 +75,9 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 8,
     margin: 4
+  },
+  progressBar: {
+    alignSelf: 'flex-start'
   },
   topWrapper: {
     flexDirection: 'row',
