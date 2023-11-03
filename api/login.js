@@ -31,8 +31,8 @@ export async function register (username, email, password) {
     return await response;
 };
 
-export async function fetchData (email) {
-    const response = await axios.get(`${apiURL}/budget/get-budget-allocation?email=${email}`)
+export async function updateUser (email, payload) {
+    const response = await axios.put(`${apiURL}/user/update?email=${email}`, payload)
     .then(response => response.data)
     .catch(err => console.error(err));
     

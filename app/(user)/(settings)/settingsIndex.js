@@ -16,6 +16,14 @@ const SettingsIndex = () => {
     router.push(`/(user)/(settings)/history`)
   }
 
+  const notificationsHandler = () => {
+    router.push(`/(user)/(settings)/notifications`)
+  }
+
+  const editProfileHandler = () => {
+    router.push(`/(user)/(settings)/editProfile`)
+  }
+
   const signOutHandler = () => {
     signOut();
     router.replace('/');
@@ -44,10 +52,14 @@ const SettingsIndex = () => {
       <View style={[styles.buttonWrapper, styles.buttonGap, {marginTop: 24}]}>
         <View style={[styles.buttonGap, {flexDirection: 'row'}]}>
           <View style={[styles.bigButton]}>
-            <Text style={[styles.button, styles.textWhite, styles.textItalics, styles.textBold, styles.largeFont]}>NOTIFICATIONS</Text>
+            <Pressable onPress={() => notificationsHandler()}>
+              <Text style={[styles.button, styles.textWhite, styles.textItalics, styles.textBold, styles.largeFont]}>NOTIFICATIONS</Text>
+            </Pressable>
           </View>
           <View style={[styles.buttonGap, {flex :1}]}>
-            <Text style={[styles.button, styles.textWhite, styles.textItalics, styles.textBold, styles.largeFont]}>EDIT PROFILE</Text>
+            <Pressable onPress={() => editProfileHandler()}>
+              <Text style={[styles.button, styles.textWhite, styles.textItalics, styles.textBold, styles.largeFont]}>EDIT PROFILE</Text>
+            </Pressable>
             <Text style={[styles.button, styles.textWhite, styles.textItalics, styles.textBold, styles.largeFont]}>SECURITY</Text>
           </View>
         </View>

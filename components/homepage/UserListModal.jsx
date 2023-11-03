@@ -21,8 +21,8 @@ const UserListModal = ({isModalVisible, setModalVisible}) => {
   const { activeBudget } = useBudget();
 
   async function handleGetUsers () {
-    const data = await getBudgetUsers(JSON.parse(user).email, activeBudget);
-
+    
+    const data = await getBudgetUsers(JSON.parse(user).email, activeBudget.budgetName);
     setUserList(data.response);
   }
 
@@ -63,7 +63,7 @@ const UserListModal = ({isModalVisible, setModalVisible}) => {
                   paddingVertical: 16,
                 }}>  
               {userList && userList.map((user, idx) =>
-              <View style={{width: 75, height: 75, backgroundColor: '#5087B9', borderRadius: 50, alignItems: 'center', justifyContent: 'center'}}>
+              <View key={user} style={{width: 75, height: 75, backgroundColor: '#5087B9', borderRadius: 50, alignItems: 'center', justifyContent: 'center'}}>
                 <Text key={idx}>{user}</Text>
               </View>)}
             </View>

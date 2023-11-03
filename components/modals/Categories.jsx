@@ -3,13 +3,27 @@ import { View, Text, StyleSheet } from 'react-native'
 import Category from './Category';
 import Modal from 'react-native-modal'
 import { Icon } from '@rneui/themed';
+import AddCategory from './AddCategory';
+import Button from '../common/Button';
 
 const Categories = ({categoryList, isModalVisible, setModalVisible, onChangeToggle}) => {
   const [ categoryState, setCategoryState ] = useState(categoryList);
+  const [ isAddVisible, setAddVisible ] = useState(false);
 
   const toggleModal = () => {
     setModalVisible(false);
   };
+
+  const toggleAdd = () => {
+    setAddVisible(true);
+  }
+
+  const createCategoryHandler = (newCategory) => {
+    setCategoryState([
+      ...categoryState,
+      newCategory
+    ])
+  }
 
   useEffect(() => {
     setCategoryState(categoryList);
@@ -23,7 +37,8 @@ const Categories = ({categoryList, isModalVisible, setModalVisible, onChangeTogg
     <Modal
       isVisible={isModalVisible}
       animationIn="slideInRight"
-      animationOut="slideOutRight">
+      animationOut="slideOutRight"
+      style={{zIndex: 90}}>
         <View style={styles.modalWrapper}>
           <View style={styles.modalContent}>
             <Icon
@@ -38,10 +53,11 @@ const Categories = ({categoryList, isModalVisible, setModalVisible, onChangeTogg
               <View style={[styles.categoriesWrapper, {flexDirection: 'row', flexWrap: 'wrap'}]}>
                 {categoryState.map((category) => <Category key={category.name} category={category} categoryState={categoryState} updateCategory={setCategoryState} />)}
               </View>
+              <Button label="Add Category" action={() => toggleAdd()} />
             </View>
-
           </View>
         </View>
+        <AddCategory isModalVisible={isAddVisible} setModalVisible={setAddVisible} createCategory={createCategoryHandler}/>
     </Modal>
   )
 }

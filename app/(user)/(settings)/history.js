@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, SafeAreaView, ScrollView, Pressable, StyleSheet, Button, PermissionsAndroid} from 'react-native';
-import { Tabs } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { Entypo } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 
@@ -10,7 +10,7 @@ import { useBudget } from '../../../context/budget';
 import DatePicker from '../../../components/modals/DatePicker';
 import CustomIcon from '../../../components/common/CustomIcon';
 
-import LogoS from '../../../assets/logos/logo-s.png';
+import LogoS from '../../../assets/logos/logo-sw.png';
 
 import formatExpenses from '../../../utils/formatExpenses';
 import { extractMonth,
@@ -38,6 +38,7 @@ const History = () => {
 
   const { user } = useAuth();
   const { activeBudget } = useBudget();
+  const router = useRouter();
 
   const calendarToggleHandler = () => {
     setIsPickerVisible(true);
@@ -73,6 +74,10 @@ const History = () => {
       case 'Yearly':
         return yearlyDate;
     }
+  }
+
+  const backHandler = () => {
+    router.back();
   }
 
   const prevDateHandler = () => {
@@ -125,7 +130,7 @@ const History = () => {
         month: monthlyDate.split('-')[1],
         year: year,
         day: dailyDate,
-        budgetName: activeBudget
+        budgetName: activeBudget.budgetName
       }
     });
 
@@ -152,10 +157,12 @@ const History = () => {
 
   useEffect(() => {
     initDate();
-    const userParse = JSON.parse(user);
-    setUserData(userParse);
-    expensesHandler(userParse.email);
-  }, [])
+    if (user) {
+      const userParse = JSON.parse(user);
+      setUserData(userParse);
+      expensesHandler(userParse.email);
+    }
+  }, [user])
 
   useEffect(() => {
     const userParse = JSON.parse(user);
@@ -164,17 +171,24 @@ const History = () => {
 
   return (
     <SafeAreaView>
-      <Tabs.Screen 
+      <Stack.Screen 
         options={{
-          headerStyle: { backgroundColor: "white" },
+          headerStyle: { backgroundColor: "#1579b2"},
           headerShadowVisible: false,
           headerLeft: () => (
+            <Pressable onPress={() => backHandler()}>
+              <Text>BACK</Text>
+            </Pressable>
+          ),
+          headerRight: () => (
             <CustomIcon imageUrl={LogoS}/>
           ),
           headerTitle: "",
         }}
       />
-      <Text style={{fontSize: 32, fontWeight: '700', width: '95%', alignSelf: 'center'}}>Transactions</Text>
+      <View style={[styles.headerDesign, {justifyContent: 'flex-end', alignItems: 'flex-end'}]}>
+        <Text style={[styles.textWhite, {fontSize: 32, fontWeight: '700', width: '100%', alignSelf: 'center', textAlign: 'center', marginBottom: 30}]}>Transactions</Text>
+      </View>
 
       <View style={[styles.headerWrapper]}>
         <ScrollView horizontal={true} contentContainerStyle={styles.containerStyle} style={[styles.tabWrapper]}>
@@ -249,11 +263,23 @@ const styles = StyleSheet.create({
     borderColor: '#969a9f',
     maxHeight: '60%',
   },
+  headerDesign: {
+    backgroundColor: '#1579b2',
+    width: '100%',
+    alignSelf: 'center',
+    height: 80,
+    // top: '-80%',
+    borderBottomLeftRadius: 1000,
+    borderBottomRightRadius: 1000,
+  },
   noPadding: {
     paddingVertical: 4,
   },
   tabWrapper: {
     minHeight: 25,
+  },
+  textWhite: {
+    color: '#ffffff'
   },
   containerStyle: {
     alignItems: 'center',

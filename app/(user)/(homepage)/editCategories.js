@@ -35,10 +35,13 @@ const EditCategories = () => {
   }
   
   async function fetchAllocation(email) {
-    const data = await getAllocatedBudget(email, activeBudget);
-    const response = data.response;
-    setAllocations(response);
-    setTotalBudget(response.totalBudget);
+    if (activeBudget) {
+      const data = await getAllocatedBudget(email, activeBudget.budgetName);
+      const response = data.response;
+      setAllocations(response);
+      console.log(response.totalBudget);
+      setTotalBudget(response.totalBudget);
+    }
   }
 
   useEffect(() => {
@@ -47,7 +50,7 @@ const EditCategories = () => {
       fetchAllocation(parsedUser.email);
       setParsedUser(parsedUser);
     }
-  }, [])
+  }, [activeBudget])
 
   async function saveAllocation() {
     const payload = {
@@ -55,7 +58,7 @@ const EditCategories = () => {
     }
     
     setData(JSON.stringify(payload));
-    const allocation = await updateAllocation(parsedUser.email, activeBudget, payload);
+    const allocation = await updateAllocation(parsedUser.email, activeBudget.budgetName, payload);
     
     if (allocation?.statusCode === 200) {
       router.replace("/homepage");

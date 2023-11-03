@@ -24,6 +24,12 @@ export const getDateToday = (noTime = true, type = "string") => {
       ...options,
       month: "numeric",
     }
+  } else if (type === "24H") {
+    options = {
+      ...options,
+      month: "numeric",
+      hour12: false,
+    }
   }
 
   return new Intl.DateTimeFormat('en-US', options).format(date);

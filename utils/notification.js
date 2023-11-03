@@ -1,12 +1,41 @@
 import { Platform } from 'react-native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
+import { getDateTodayISO } from './dateFunctions';
 
-export async function schedulePushNotification(type, value) {
+export async function schedulePushNotification(type, value, hasList, list) {
+
   const notifData = {
     "overspend": {
       title: "You have overspent!",
       body: `You spend over the budget for ${value}!`
+    },
+    "nearBudget": {
+      title: 'Warning!',
+      body: 'You are close to spending all your budget!'
+    },
+    "overBudget": {
+      title: 'Warning!!',
+      body: 'You have spent over your budget!'
+    },
+    "reminder": {
+      title: 'Reminder!',
+      body: `Don't forget to add your expenses for the day!`,
+    }
+  }
+  
+  let newList = list ? JSON.parse(list) : {"initData" : "0-0-0"};
+  
+  if (hasList) {
+    const notifDate = new Date(newList[value]);
+    const dateToday = getDateTodayISO();
+
+    if (newList[value] === undefined) {
+      newList[value] = getDateTodayISO();
+    } else if (newList[value] && (dateToday > notifDate)) {
+      newList[value] = getDateTodayISO();
+    } else {
+      return newList;
     }
   }
 
@@ -18,6 +47,8 @@ export async function schedulePushNotification(type, value) {
     },
     trigger: { seconds: 1 },
   });
+
+  if (hasList) return newList;
 }
 
 export async function registerForPushNotificationsAsync() {

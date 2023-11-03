@@ -3,13 +3,15 @@ import { View, Image, Text, StyleSheet, TextInput } from 'react-native'
 import { getIcon } from '../../constants/icons';
 import { Icon } from '@rneui/themed';
 import { schedulePushNotification } from '../../utils/notification';
-
+import { useStorageState } from '../../hooks/useStorageState';
 
 const HomeAllocation = ({category, expenses, type}) => {
   const [ indiStyle, setIndiStyle ] = useState([styles.indicatorStyle]);
   const [ expense, setExpense ] = useState(0);
   const [ icon, setIcon ] = useState(null);
   const [ percentage, setPercentage ] = useState(0); 
+  const [ [isLoading, notifList], setNotifList ] = useStorageState("notifList");
+  const [ [isSettingsLoading, notifSettings], setNotifSettings ] = useStorageState("notifSettings");
 
   const percentageHandler = () => {
     if (expense >= category.allocation) {
@@ -22,16 +24,25 @@ const HomeAllocation = ({category, expenses, type}) => {
     }
   }
 
+  async function handleNotification() {
+    if (!isSettingsLoading) {
+      if (JSON.parse(notifSettings).reminderOverspend){
+        const data = await schedulePushNotification("overspend", category.name, true, notifList);
+        setNotifList(JSON.stringify(data));
+      }
+    }
+  }
+
   useEffect(()=> {
-    if (expense >= category.allocation) {
-      schedulePushNotification("overspend", category.name)
+    if (expense >= category.allocation && !isLoading) {
+      handleNotification();
       setIndiStyle([...indiStyle, styles.indicatorRed])
     } else {
       setIndiStyle([...indiStyle, styles.indicatorGreen])
     }
-
     percentageHandler();
-  }, [expense])
+
+  }, [expense, isLoading, isSettingsLoading])
 
   useEffect(() => {
     expenses.map((expense) => {
@@ -39,7 +50,7 @@ const HomeAllocation = ({category, expenses, type}) => {
         setExpense(expense.amount);
       }
     })
-    
+
     setIcon(getIcon(category.iconId));
   }, [])
 

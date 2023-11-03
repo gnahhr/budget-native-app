@@ -42,8 +42,8 @@ const BudgetList = ({isModalVisible, setModalVisible}) => {
                 }}>  
 
                 {budgetList && budgetList.map(budget => 
-                  <Pressable onPress={() => updateActiveHandler(budget)}>
-                    <Text style={[styles.pill, styles.textWhite, styles.textBold]}>{budget}</Text>
+                  <Pressable key={budget.budgetName} onPress={() => updateActiveHandler(budget)}>
+                    <Text style={[styles.pill, styles.textWhite, styles.textBold]}>{budget.budgetName}</Text>
                   </Pressable>
                   )}
             </View>

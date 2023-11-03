@@ -25,7 +25,6 @@ const Insights = () => {
   const [ parsedUser, setParsedUser ] = useState();
   const [ data, setData ] = useState();
   const [ [isInsightLoading, insight], setInsight ] = useStorageState('insight');
-  const [ type, setType] = useState("monthly");
   const { user } = useAuth();
   const { activeBudget } = useBudget();
 
@@ -64,7 +63,7 @@ const Insights = () => {
         month: monthlyDate.split('-')[1],
         year: yearlyDate,
         day: dailyDate,
-        budgetName: activeBudget
+        budgetName: activeBudget.budgetName
       }
     });
     setInsight(JSON.stringify(data.response));
@@ -81,7 +80,7 @@ const Insights = () => {
     if (parsedUser) {
       getInsightHandler(parsedUser.email);
     }
-  }, [activeType])
+  }, [activeType, parsedUser])
 
   const initDate = () => {
     const dateToday = getDateTodayISO();
@@ -97,16 +96,16 @@ const Insights = () => {
 
   return (
     <SafeAreaView>
-      <Tabs.Screen 
-        options={{
-          headerStyle: { backgroundColor: "white" },
-          headerShadowVisible: false,
-          headerLeft: () => (
-            <CustomIcon imageUrl={LogoS}/>
-          ),
-          headerTitle: "",
-        }}
-      />
+        <Tabs.Screen 
+          options={{
+            headerStyle: { backgroundColor: "white" },
+            headerShadowVisible: false,
+            headerLeft: () => (
+              <CustomIcon imageUrl={LogoS}/>
+            ),
+            headerTitle: "",
+          }}
+        />
       <View style={{width: '85%', alignSelf: 'center'}}>
         <Text style={{fontSize: 32, fontWeight: '700'}}>Insights</Text>
         <View style={{flexDirection: 'row', alignItems: 'center', marginVertical: 8}}>

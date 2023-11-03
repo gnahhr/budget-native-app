@@ -26,10 +26,8 @@ export function Provider(props) {
   // }, [activeBudget, budgetList]);
 
   async function getBudgetListHandler() {
-    // Palagay ng personal budget sa user hehe
     const data = await getBudgetList(JSON.parse(user).email);
-    const list = data.response.map(item => item.budgetName);
-    console.log(data);
+    const list = data.response;
     
     setBudgetList(list);
     setActiveBudget(list[0]);
@@ -37,7 +35,7 @@ export function Provider(props) {
 
   async function refreshBudgetList() {
     const data = await getBudgetList(JSON.parse(user).email);
-    const list = data.response.map(item => item.budgetName);
+    const list = data.response;
 
     setBudgetList(list);
   }

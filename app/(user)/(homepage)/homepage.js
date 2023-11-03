@@ -17,9 +17,12 @@ import BudgetList from '../../../components/homepage/BudgetList';
 
 // API
 import { getAllocatedBudget, updateBudget, getBudgetList } from '../../../api/budget';
-// Change getAllExpenses to match the the budgetType
-import { getAllExpenses, allocateExpense } from '../../../api/expenses';
-import { registerForPushNotificationsAsync } from '../../../utils/notification';
+import { getExpenses, allocateExpense } from '../../../api/expenses';
+import { registerForPushNotificationsAsync, schedulePushNotification } from '../../../utils/notification';
+import {
+  getDateToday,
+  getDateTodayISO,
+  getWeeklyStartEnd } from '../../../utils/dateFunctions';
 
 // Images
 import LogoS from '../../../assets/logos/logo-s.png';
@@ -45,7 +48,8 @@ const HomepageIndex = () => {
   // LocalStorage States
   const [[isDataLoading, data], setData] = useStorageState('data');
   const [[isExpensesLoading, expenses], setExpenses] = useStorageState('expenses');
-  
+  const [[isNotifSetLoading, notifSettings], setNotifSettings] = useStorageState('notifSettings');
+
   // Loading States
   const [ isLoading, setIsLoading ] = useState(true);
   const [ expensesLoading, setExpensesLoading ] = useState(true);
@@ -119,7 +123,7 @@ const HomepageIndex = () => {
 
     // Kada add niya ng expenses get niya ulit yung allocation tska expenses para ma update yung nasa app,
     // Which is yung nasa line 92 and 93 then close na niya yung modal sa 94
-    const response = await allocateExpense(parsedUser.email, activeBudget, payload);
+    const response = await allocateExpense(parsedUser.email, activeBudget.budgetName, payload);
     getAllocation(parsedUser.email);
     getExpensesHandler(parsedUser.email);
     setIsEModalOpen(false);
@@ -155,14 +159,14 @@ const HomepageIndex = () => {
 
   // Get ng allocation
   async function getAllocation(email) {
-    const allocation = await getAllocatedBudget(email, activeBudget);
+    const allocation = await getAllocatedBudget(email, activeBudget.budgetName);
     
     const data = allocation.response;
     // Kasama na rin dito yung pag compute nung makikita sa homepage which is yung remaining budget,
     // tska yung yung parang progress if malapit na maubos budget
     const remainingBudget = data.totalBudget ? data.totalBudget - data.totalExpenses : 0
     setData(JSON.stringify(data));
-    setTotalBudget(data.totalBudget);
+    setTotalBudget(data.totalBudget ? data.totalBudget : 0);
     setRemainingBudget(remainingBudget); 
     setTotalExpenses(data.totalExpenses ? data.totalExpenses : 0);
     setProgress(Math.floor(Number(remainingBudget) / Number(data.totalBudget) * 100));
@@ -171,7 +175,7 @@ const HomepageIndex = () => {
 
   // For updating ng budget, pagka update niya get na ng allocation then close modal
   async function updateBudgetHandler(newBudget, newName) {
-    const data = await updateBudget(parsedUser.email, activeBudget, newBudget, newName);
+    const data = await updateBudget(parsedUser.email, activeBudget.budgetName, newBudget, newName);
 
     if (data?.statusCode === 200) {
       updateActive(newName)
@@ -183,12 +187,29 @@ const HomepageIndex = () => {
 
   // pag get ng expenses, pagkaget niya store niya dun sa local storage yung nakuhang data which is nasa
   // Line 153
-  async function getExpensesHandler(email) {
-    const data = await getAllExpenses(email);
-    const summary = formatExpenses(data.response);
+  async function getExpensesHandler(email) { 
+    const dateToday = getDateTodayISO();
+    const dateWeekly = getWeeklyStartEnd(getDateTodayISO());
+    const monthToday = dateToday.split('-').splice(0,2).join('-');
+    const yearToday = dateToday.split('-')[0];
+
+    const data = await getExpenses({
+      params: {
+        email: email,
+        endDate: dateWeekly[1],
+        startDate: dateWeekly[0],
+        type: activeBudget.budgetType,
+        month: monthToday.split('-')[1],
+        year: yearToday,
+        day: dateToday,
+        budgetName: activeBudget.budgetName
+      }
+    });
+    const summary = formatExpenses(data.response.getExpenses);
+
     setParsedExpenses(summary);
     setExpenses(JSON.stringify(summary));
-    if (data.statusCode === 200) setExpensesLoading(false);
+    if (data?.statusCode === 200) setExpensesLoading(false);
   }
 
   // Use Effects yung ginagamit para pag may magbabagong data sa dependency array niya,
@@ -204,6 +225,31 @@ const HomepageIndex = () => {
       setIsLoading(false);
     }
   }, [activeBudget])
+
+  useEffect(() => {
+    if (!isNotifSetLoading) {
+      if (!notifSettings) {
+        setNotifSettings(JSON.stringify({
+          reminderEveryday: true,
+          reminderOverspend: false,
+          reminderDone: false
+        }))
+      } else {
+        if ((totalBudget < totalExpenses) && JSON.parse(notifSettings).reminderOverspend) {
+          schedulePushNotification("overBudget")
+        }
+        const timeNow = getDateToday(false, "24H").split(',')[1].substring(1);
+        const currSettings = JSON.parse(notifSettings);
+        if ((timeNow > "21:00:00") && !currSettings.reminderDone) {
+          schedulePushNotification("reminder")
+          setNotifSettings(JSON.stringify({
+            ...currSettings,
+            reminderDone: true,
+          }))
+        }
+      }
+    }
+  }, [isNotifSetLoading, totalBudget])
 
   useEffect(() => {
     updateBudgetL();
@@ -279,10 +325,10 @@ const HomepageIndex = () => {
 
       <View style={[styles.budgetWrapper, styles.container]}>
         <Pressable onPress={() => budgetListModalToggle()}>
-          <Text style={[styles.bigFont]}>{activeBudget}</Text>
+          <Text style={[styles.bigFont]}>{activeBudget.budgetName}</Text>
         </Pressable>
 
-        <Text style={[styles.italics, styles.normalText]}>MONTH</Text>
+        <Text style={[styles.italics, styles.normalText]}>{activeBudget.budgetType?.toUpperCase()}</Text>
 
         <View style={styles.flexRow}>
           <View style={{backgroundColor: '#d7ecea', alignSelf: 'center', position: 'relative'}}>
@@ -319,7 +365,7 @@ const HomepageIndex = () => {
       </View> 
       
       <ScrollView style={[styles.container, styles.scrollHeight]}>
-        {!expensesLoading && !isExpensesLoading && parsedData[tabData[activeTab].name] && parsedData[tabData[activeTab].name].length > 0 ?
+        {!expensesLoading && !isExpensesLoading && parsedExpenses && parsedData[tabData[activeTab].name] && parsedData[tabData[activeTab].name].length > 0 ?
           parsedData[tabData[activeTab].name].map(data => <HomeAllocation key={data.name} category={data} expenses={parsedExpenses} type={tabData[activeTab].name}/>)
           :
           <Text>Nothing Allocated</Text>

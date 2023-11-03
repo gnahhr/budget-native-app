@@ -31,7 +31,7 @@ const BarChartView = ({data, type}) => {
   const initBarData = (data) => {
     let highest = 0
     const initData = data.map((date) => {
-      return date.topExpenses.map((item, idx) => {
+      const newDate = date.topExpenses.map((item, idx) => {
         if (item.amount > highest) highest = item.amount;
         if (idx === 0) {
           return {
@@ -56,10 +56,18 @@ const BarChartView = ({data, type}) => {
           }
         }
       })
+
+      return newDate;
+    })
+    setBarHeight(highest);
+    
+    let newData = [];
+
+    initData.forEach(item => {
+      newData.push(item[0])
     })
 
-    setBarHeight(highest);
-    setBarData(...initData);
+    setBarData(newData);
   };
 
   useEffect(() => {
@@ -80,9 +88,10 @@ const BarChartView = ({data, type}) => {
             xAxisThickness={0}
             yAxisThickness={0}
             yAxisTextStyle={{color: 'gray'}}
-            noOfSections={5}
+            noOfSections={4}
             maxValue={barHeight + 100}
             height={160}
+            width={200}
           />
       </View>
     </View>

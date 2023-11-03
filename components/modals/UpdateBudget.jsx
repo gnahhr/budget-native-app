@@ -21,7 +21,7 @@ const UpdateBudget = ({isModalVisible, totalBudget, activeBudget, setModalVisibl
   }, [totalBudget])
   
   useEffect(() => {
-    setBudgetName(activeBudget);
+    setBudgetName(activeBudget.budgetName);
   }, [activeBudget])
 
   return (
