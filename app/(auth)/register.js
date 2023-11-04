@@ -66,10 +66,11 @@ const Register = () => {
         </View>
       </View>
       
-      <KeyboardAvoidingView
+      {/* <KeyboardAvoidingView
         style={[styles.container]}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        >
+        > */}
+      <View style={[styles.container]}>
         {alert && <Text style={[styles.textRed, styles.textCenter, styles.textBold]}>{alert}</Text>}
         <View>
           <Text style={[styles.textWhite]}>Username</Text>
@@ -87,7 +88,7 @@ const Register = () => {
           <Text style={[styles.textWhite]}>Confirm Password</Text>
           <TextInput style={[styles.textInputStyle]} value={conPassword} onChangeText={setConPassword} secureTextEntry></TextInput>
         </View>
-      </KeyboardAvoidingView>
+      </View>
 
       <View style={[styles.container, {marginTop: 60}]}>
         <Button label="Register" action={() => handleRegister()} isLoading={isLoading}/>

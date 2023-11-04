@@ -88,7 +88,7 @@ const Onboarding = () => {
   }
 
   const handleClose = () => {
-    console.log("New User", parsedUser.ifNewUser);
+    
     if (parsedUser.ifNewUser) {
       signOut();
       router.replace("/"); 

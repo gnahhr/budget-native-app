@@ -23,6 +23,7 @@ const EditCategories = () => {
   const [ budgetPlan, setBudgetPlan ] = useState('Weekly');
   const [ totalBudget, setTotalBudget ] = useState(0);
   const [ parsedUser, setParsedUser ] = useState({});
+  const [ isLoading, setIsLoading ] = useState(false);
 
   const [ allocations, setAllocations ] = useState();
 
@@ -53,13 +54,15 @@ const EditCategories = () => {
   }, [activeBudget])
 
   async function saveAllocation() {
+    setIsLoading(true);
+    
     const payload = {
       ...allocations,
     }
     
     setData(JSON.stringify(payload));
     const allocation = await updateAllocation(parsedUser.email, activeBudget.budgetName, payload);
-    
+    setIsLoading(false);
     if (allocation?.statusCode === 200) {
       router.replace("/homepage");
     }
@@ -98,7 +101,7 @@ const EditCategories = () => {
 
 
       {step === 0 && <Step3 prevStep={prevStepHandler} totalBudget={totalBudget} currentAllocations={allocations} nextStep={nextStepHandler} setAllocations={allocationHandler}/>}
-      {step === 1 && <Summary prevStep={prevStepHandler} totalBudget={totalBudget} initialAllocation={allocations} setAllocations={saveAllocation}/>}
+      {step === 1 && <Summary prevStep={prevStepHandler} totalBudget={totalBudget} initialAllocation={allocations} setAllocations={saveAllocation} isLoading={isLoading}/>}
 
     </SafeAreaView>
   )

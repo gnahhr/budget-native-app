@@ -129,10 +129,12 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
     const ratio = tabData[type].ratio ? tabData[type].ratio / 100 : 1;
 
     tabData[type].setAllocation(tabData[type].state.map(item => {
+      let newAllocation = item.allocation === 0 ? 0 : Math.floor(totalBudget * ratio * (item.allocation / tabData[type].totalBudget));
+      
       if (item.toggled) {
         return {
           ...item,
-          allocation: Math.floor(totalBudget * ratio * (item.allocation / tabData[type].totalBudget)),
+          allocation: newAllocation,
         }
       } else {
         return item;
