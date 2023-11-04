@@ -42,13 +42,13 @@ function useProtectedRoute(user) {
 
     if (!user && inUserGroup){
       router.replace('/');
+    } else if (ifNewUser && inUserGroup) {
+      router.replace('/onboarding');
     } else if (user && inAuthGroup) {
       router.replace('/homepage');
     } else if (user && inRoot) {
       router.replace('/homepage');
-    } else if (ifNewUser && inUserGroup) {
-      router.replace('/onboarding');
-    }
+    } 
   }, [user, segments, isNavigationReady])
 
 }

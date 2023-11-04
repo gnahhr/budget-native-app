@@ -36,12 +36,12 @@ const Register = () => {
       }
       // If done na mag register, same sa login, save ng login creds sa localStorage then relocate na sa onboarding para makapag allocate
       if (data.statusCode === 201) {
-        router.replace(`/onboarding`);
         signIn(JSON.stringify({
           email: data.response.token.userDetails.email,
           username: data.response.token.userDetails.userName,
           ifNewUser: data.response.token.userDetails.ifNewUser
         }));
+        router.replace(`/onboarding`);
       }
     }
   }

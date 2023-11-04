@@ -305,7 +305,7 @@ const HomepageIndex = () => {
       />
       {
         // Checks if data are still loading
-        !parsedUser && !parsedData && !parsedExpenses && isLoading && !activeBudget ? 
+        user && !parsedUser && !parsedData && !parsedExpenses && isLoading && !activeBudget ? 
         <Text>Loading...</Text>
       :
       <>

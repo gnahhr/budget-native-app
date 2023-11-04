@@ -49,18 +49,24 @@ const Onboarding = () => {
       ...allocations,
     }
     // If nakapag set na ng allocations, set yung data sa local and database, then set user creds na tapos na siya mag allocate
-    setData(JSON.stringify(payload));
-    signIn(JSON.stringify({
-      ...parsedUser,
-      ifNewUser: false
-    }));
-
     const allocation = await allocateBudget(parsedUser.email, payload);
     
     setIsLoading(false);
     
     if (allocation.statusCode === 200) {
+      setData(JSON.stringify(payload));
+      signIn(JSON.stringify({
+        ...parsedUser,
+        ifNewUser: false
+      }));
       router.replace("/homepage");
+    } else {
+      Alert.alert('Warning', allocation.message, [
+        {
+          text: 'Okay',
+          style: 'cancel'
+        }
+      ])
     }
   };
 

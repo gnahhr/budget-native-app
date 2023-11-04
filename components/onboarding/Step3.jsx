@@ -152,6 +152,16 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
       return;
     }
     
+    if (totalNeed === 0 || totalWant === 0 || totalSavings === 0){
+      Alert.alert('Warning', 'Finish allocating budget!', [
+        {
+          text: 'Okay',
+          style: 'cancel'
+        }
+      ])
+      return false;
+    }
+
     setAllocationsHandler();
     nextStep();
   }
