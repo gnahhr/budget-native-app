@@ -11,6 +11,8 @@ const AddExpenses = ({categoryList, isModalVisible, setModalVisible, onAddExpens
   const [ amount, setAmount ] = useState(amount);
   const [ note, setNote ] = useState("");
   const [ date, setDate ] = useState();
+  const [ isLoading, setIsLoading ] = useState(false);
+
   // Drop Down States
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
@@ -20,9 +22,11 @@ const AddExpenses = ({categoryList, isModalVisible, setModalVisible, onAddExpens
     setModalVisible(false);
   };
 
-  const addExpenseHandler = () => {
+  async function addExpenseHandler() {
     if (Number(amount) > 0) {
-      onAddExpense(value, amount, note);
+      setIsLoading(true);
+      await onAddExpense(value, amount, note);
+      setIsLoading(false);
     }
   };
 
@@ -96,7 +100,7 @@ const AddExpenses = ({categoryList, isModalVisible, setModalVisible, onAddExpens
             <Text style={[styles.textCenter]}>{date}</Text>
           </View>
 
-          <Button label={"Add Expense"} action={() => addExpenseHandler()} />
+          <Button label={"Add Expense"} action={() => addExpenseHandler()} isLoading={isLoading}/>
         </View>
     </Modal>
   )
