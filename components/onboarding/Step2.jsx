@@ -1,12 +1,32 @@
 import React, { useState } from 'react'
-import { View, Text, TextInput, Pressable, SafeAreaView } from 'react-native'
+import { View, Text, TextInput, Pressable, SafeAreaView, Alert } from 'react-native'
 import styles from './styles';
 
 const Step2 = ({setBudget, setBudgetName, nextStep, prevStep}) => {
   const [ numInput, onChangeNumInput ] = useState(0);
-  const [ name, setName ] = useState();
+  const [ name, setName ] = useState("");
 
   const nextHandler = () => {
+    if (name === "") {
+      Alert.alert('Warning', 'Enter budget name!', [
+        {
+          text: 'Okay',
+          style: 'cancel'
+        }
+      ])
+
+      return;
+    } else if (numInput === 0){
+      Alert.alert('Warning', 'Enter budget!', [
+        {
+          text: 'Okay',
+          style: 'cancel'
+        }
+      ])
+
+      return;
+    }
+
     const total = Number(numInput);
     setBudget(total);
     setBudgetName(name);

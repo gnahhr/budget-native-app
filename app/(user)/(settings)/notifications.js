@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Stack, useRouter } from "expo-router";
-import { View, Text, StyleSheet, Pressable } from 'react-native'
+import { View, Text, StyleSheet, Alert } from 'react-native'
 import CustomIcon from '../../../components/common/CustomIcon';
 import LogoS from '../../../assets/logos/logo-sw.png';
 import SettingsItem from '../../../components/common/SettingsItem';
+import { FontAwesome5 } from '@expo/vector-icons';
 import { useStorageState } from '../../../hooks/useStorageState';
 import Button from '../../../components/common/Button';
 
@@ -38,7 +39,12 @@ const Notifications = () => {
   
   const saveSettings = () => {
     setNotifSettings(JSON.stringify(settings));
-    console.log("settings saved");
+    Alert.alert('SUCCESS', 'Settings has been saved!', [
+      {
+        text: 'Okay',
+        style: 'cancel'
+      }
+    ])
   }
 
   const backHandler = () => {
@@ -51,9 +57,7 @@ const Notifications = () => {
           headerStyle: { backgroundColor: "#1579b2"},
           headerShadowVisible: false,
           headerLeft: () => (
-            <Pressable onPress={() => backHandler()}>
-              <Text>BACK</Text>
-            </Pressable>
+            <FontAwesome5 name="backspace" size={24} color="#FFF" onPress={() => backHandler()}/>
           ),
           headerRight: () => (
             <CustomIcon imageUrl={LogoS}/>

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, SafeAreaView, ScrollView, Pressable, StyleSheet, Button, PermissionsAndroid} from 'react-native';
 import { Stack, useRouter } from 'expo-router';
-import { Entypo } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
+import { Entypo, AntDesign, FontAwesome5 } from '@expo/vector-icons';
 
 import { useAuth } from '../../../context/auth';
 import { useBudget } from '../../../context/budget';
@@ -176,9 +175,7 @@ const History = () => {
           headerStyle: { backgroundColor: "#1579b2"},
           headerShadowVisible: false,
           headerLeft: () => (
-            <Pressable onPress={() => backHandler()}>
-              <Text>BACK</Text>
-            </Pressable>
+            <FontAwesome5 name="backspace" size={24} color="#FFF" onPress={() => backHandler()}/>
           ),
           headerRight: () => (
             <CustomIcon imageUrl={LogoS}/>

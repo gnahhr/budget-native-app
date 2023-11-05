@@ -4,6 +4,7 @@ import { login } from '../../api/login';
 import { Stack, useRouter } from 'expo-router';
 import { Text, SafeAreaView, Image, View, TextInput, Pressable } from 'react-native';
 import { useAuth } from '../../context/auth'
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Button from '../../components/common/Button';
 import styles from './authStyles';
 const Login = () => {
@@ -12,6 +13,7 @@ const Login = () => {
   const [ password, setPassword ] = useState(""); 
   const [ alert, setAlert ] = useState(""); 
   const [ isLoading, setIsLoading ] = useState(false);
+  const [ showPassword, setShowPassword ] = useState(false);
 
   const { user, signIn } = useAuth();
 
@@ -67,12 +69,20 @@ const Login = () => {
         </View>
         <View>
           <Text style={[styles.textWhite]}>Password</Text>
-          <TextInput style={[styles.textInputStyle]} value={password} onChangeText={setPassword} secureTextEntry></TextInput>
+          <View>
+            <TextInput style={[styles.textInputStyle]} value={password} onChangeText={setPassword} secureTextEntry={!showPassword}></TextInput>
+          </View>
         </View>
         <View style={[styles.flexRow, {justifyContent: 'space-between'}]}>
           <View style={[styles.flexRow]}>
-            <Pressable style={[styles.checkbox]} />
-            <Text style={[styles.textWhite, {marginLeft: 8}]}>Keep me logged in</Text>
+            <MaterialCommunityIcons 
+                    name={!showPassword ? 'eye-off' : 'eye'} 
+                    size={24} 
+                    color="#FFF"
+                    style={{marginRight: 10}} 
+                    onPress={() => setShowPassword(!showPassword)} 
+            />
+            <Text style={[styles.textWhite]}>Show Password</Text>
           </View>
           <Pressable>
             <Text style={[styles.textHighlight, styles.textBold]}>Forgot Password</Text>

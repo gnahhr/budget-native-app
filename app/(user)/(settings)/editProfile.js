@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, TextInput, Pressable } from 'react-native'
 import CustomIcon from '../../../components/common/CustomIcon';
 import LogoS from '../../../assets/logos/logo-sw.png';
 import { useAuth } from '../../../context/auth';
+import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { updateUser } from '../../../api/login';
 import Button from '../../../components/common/Button';
 
@@ -15,6 +16,7 @@ const EditProfile = () => {
   const [ conNewPassword, setConNewPassword ] = useState();
   const [ msg, setMsg ] = useState();
   const [ isLoading, setIsLoading ] = useState(false);
+  const [ showPassword, setShowPassword ] = useState(false);
 
   const { user } = useAuth();
   const router = useRouter();
@@ -65,9 +67,7 @@ const EditProfile = () => {
           headerStyle: { backgroundColor: "#1579b2"},
           headerShadowVisible: false,
           headerLeft: () => (
-            <Pressable onPress={() => backHandler()}>
-              <Text>BACK</Text>
-            </Pressable>
+            <FontAwesome5 name="backspace" size={24} color="#FFF" onPress={() => backHandler()}/>
           ),
           headerRight: () => (
             <CustomIcon imageUrl={LogoS}/>
@@ -81,11 +81,27 @@ const EditProfile = () => {
       {msg && <Text>{msg}</Text>}
       
       <View style={{gap: 8, width: '80%', marginTop: 20}}>
+        <Text>Username</Text>
         <TextInput style={[styles.textInputStyle]} placeholder='Username' defaultValue={userName} value={userName} onChangeText={setUserName}/>
+        <Text>Email</Text>
         <TextInput style={[styles.textInputStyle]} placeholder='Email' value={email} onChangeText={setEmail} editable={false}/>
-        <TextInput style={[styles.textInputStyle]} placeholder='Password' value={password} onChangeText={setPassword} secureTextEntry/>
-        <TextInput style={[styles.textInputStyle]} placeholder='New Password' value={newPassword} onChangeText={setNewPassword} secureTextEntry/>
-        <TextInput style={[styles.textInputStyle]} placeholder='Confirm New Password' value={conNewPassword} onChangeText={setConNewPassword} secureTextEntry/>
+        <Text>Old Password</Text>
+        <TextInput style={[styles.textInputStyle]} placeholder='Password' value={password} onChangeText={setPassword} secureTextEntry={!showPassword}/>
+        <Text>New Password</Text>
+        <TextInput style={[styles.textInputStyle]} placeholder='New Password' value={newPassword} onChangeText={setNewPassword} secureTextEntry={!showPassword}/>
+        <Text>Confirm New Password</Text>
+        <TextInput style={[styles.textInputStyle]} placeholder='Confirm New Password' value={conNewPassword} onChangeText={setConNewPassword} secureTextEntry={!showPassword}/>
+        
+        <View style={[styles.flexRow]}>
+          <MaterialCommunityIcons 
+                  name={!showPassword ? 'eye-off' : 'eye'} 
+                  size={24} 
+                  color="#000"
+                  style={{marginRight: 10}} 
+                  onPress={() => setShowPassword(!showPassword)} 
+          />
+          <Text>Show Password</Text>
+        </View>
       </View>
 
       <View style={{marginTop: 'auto', marginBottom: 25}}>
@@ -104,6 +120,9 @@ const styles = StyleSheet.create({
     // top: '-80%',
     borderBottomLeftRadius: 1000,
     borderBottomRightRadius: 1000,
+  },
+  flexRow: {
+    flexDirection: 'row',
   },
   iconStyle: {
     height: 100,
