@@ -17,12 +17,8 @@ import BudgetList from '../../../components/homepage/BudgetList';
 
 // API
 import { getAllocatedBudget, updateBudget, getBudgetList } from '../../../api/budget';
-import { getExpenses, allocateExpense } from '../../../api/expenses';
-import { registerForPushNotificationsAsync, schedulePushNotification } from '../../../utils/notification';
-import {
-  getDateToday,
-  getDateTodayISO,
-  getWeeklyStartEnd } from '../../../utils/dateFunctions';
+import { getAllExpenses, allocateExpense } from '../../../api/expenses';
+import { registerForPushNotificationsAsync } from '../../../utils/notification';
 
 // Images
 import LogoS from '../../../assets/logos/logo-s.png';
@@ -32,6 +28,7 @@ import { useAuth } from '../../../context/auth';
 import { useBudget } from '../../../context/budget';
 
 import * as Notifications from "expo-notifications";
+import Button from '../../../components/common/Button';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -48,8 +45,7 @@ const HomepageIndex = () => {
   // LocalStorage States
   const [[isDataLoading, data], setData] = useStorageState('data');
   const [[isExpensesLoading, expenses], setExpenses] = useStorageState('expenses');
-  const [[isNotifSetLoading, notifSettings], setNotifSettings] = useStorageState('notifSettings');
-
+  
   // Loading States
   const [ isLoading, setIsLoading ] = useState(true);
   const [ expensesLoading, setExpensesLoading ] = useState(true);
@@ -166,7 +162,7 @@ const HomepageIndex = () => {
     // tska yung yung parang progress if malapit na maubos budget
     const remainingBudget = data.totalBudget ? data.totalBudget - data.totalExpenses : 0
     setData(JSON.stringify(data));
-    setTotalBudget(data.totalBudget ? data.totalBudget : 0);
+    setTotalBudget(data.totalBudget);
     setRemainingBudget(remainingBudget); 
     setTotalExpenses(data.totalExpenses ? data.totalExpenses : 0);
     setProgress(Math.floor(Number(remainingBudget) / Number(data.totalBudget) * 100));
@@ -187,29 +183,12 @@ const HomepageIndex = () => {
 
   // pag get ng expenses, pagkaget niya store niya dun sa local storage yung nakuhang data which is nasa
   // Line 153
-  async function getExpensesHandler(email) { 
-    const dateToday = getDateTodayISO();
-    const dateWeekly = getWeeklyStartEnd(getDateTodayISO());
-    const monthToday = dateToday.split('-').splice(0,2).join('-');
-    const yearToday = dateToday.split('-')[0];
-
-    const data = await getExpenses({
-      params: {
-        email: email,
-        endDate: dateWeekly[1],
-        startDate: dateWeekly[0],
-        type: activeBudget.budgetType,
-        month: monthToday.split('-')[1],
-        year: yearToday,
-        day: dateToday,
-        budgetName: activeBudget.budgetName
-      }
-    });
-    const summary = formatExpenses(data.response.getExpenses);
-
+  async function getExpensesHandler(email) {
+    const data = await getAllExpenses(email);
+    const summary = formatExpenses(data.response);
     setParsedExpenses(summary);
     setExpenses(JSON.stringify(summary));
-    if (data?.statusCode === 200) setExpensesLoading(false);
+    if (data.statusCode === 200) setExpensesLoading(false);
   }
 
   // Use Effects yung ginagamit para pag may magbabagong data sa dependency array niya,
@@ -227,31 +206,6 @@ const HomepageIndex = () => {
   }, [activeBudget])
 
   useEffect(() => {
-    if (!isNotifSetLoading) {
-      if (!notifSettings) {
-        setNotifSettings(JSON.stringify({
-          reminderEveryday: true,
-          reminderOverspend: false,
-          reminderDone: false
-        }))
-      } else {
-        if ((totalBudget < totalExpenses) && JSON.parse(notifSettings).reminderOverspend) {
-          schedulePushNotification("overBudget")
-        }
-        const timeNow = getDateToday(false, "24H").split(',')[1].substring(1);
-        const currSettings = JSON.parse(notifSettings);
-        if ((timeNow > "21:00:00") && !currSettings.reminderDone) {
-          schedulePushNotification("reminder")
-          setNotifSettings(JSON.stringify({
-            ...currSettings,
-            reminderDone: true,
-          }))
-        }
-      }
-    }
-  }, [isNotifSetLoading, totalBudget])
-
-  useEffect(() => {
     updateBudgetL();
   }, [isBModalOpen])
 
@@ -266,10 +220,10 @@ const HomepageIndex = () => {
     if (user) {
       setParsedUser(JSON.parse(user));
     }
-    if (!isDataLoading && data) {
+    if (!isDataLoading) {
       setParsedData(JSON.parse(data));
     }
-    if (!isExpensesLoading && expenses) {
+    if (!isExpensesLoading) {
       setParsedExpenses(JSON.parse(expenses));
     }
   }, [isDataLoading, isExpensesLoading, data, user, expenses]);
@@ -305,7 +259,7 @@ const HomepageIndex = () => {
       />
       {
         // Checks if data are still loading
-        user && !parsedUser && !parsedData && !parsedExpenses && isLoading && !activeBudget ? 
+        !parsedUser && !parsedData && !parsedExpenses && isLoading && !activeBudget ? 
         <Text>Loading...</Text>
       :
       <>
@@ -328,7 +282,7 @@ const HomepageIndex = () => {
           <Text style={[styles.bigFont]}>{activeBudget.budgetName}</Text>
         </Pressable>
 
-        <Text style={[styles.italics, styles.normalText]}>{activeBudget.budgetType?.toUpperCase()}</Text>
+        <Text style={[styles.italics, styles.normalText]}>MONTH</Text>
 
         <View style={styles.flexRow}>
           <View style={{backgroundColor: '#d7ecea', alignSelf: 'center', position: 'relative'}}>
@@ -365,13 +319,13 @@ const HomepageIndex = () => {
       </View> 
       
       <ScrollView style={[styles.container, styles.scrollHeight]}>
-        {!expensesLoading && !isExpensesLoading && parsedExpenses && parsedData[tabData[activeTab].name] && parsedData[tabData[activeTab].name].length > 0 ?
+        {!expensesLoading && !isExpensesLoading && parsedData[tabData[activeTab].name].length > 0 ?
           parsedData[tabData[activeTab].name].map(data => <HomeAllocation key={data.name} category={data} expenses={parsedExpenses} type={tabData[activeTab].name}/>)
           :
           <Text>Nothing Allocated</Text>
           }
       </ScrollView>
- 
+
       <View style={[styles.bottomButtonWrapper]}>
         <Pressable onPress={() => handleEditCategory()}>
           <Text style={[styles.boldText, styles.italics, styles.button, styles.whiteText]}>Edit Categories</Text>

@@ -92,7 +92,9 @@ const Summary = ({totalBudget, initialAllocation, prevStep, setAllocations, isLo
             tabData[activeTab].state.filter(x => x.toggled).map(x =>
               <Allocation key={x.name}
                           category={x.name}
-                          curAllocation={x.allocation}/>)
+                          curAllocation={x.allocation}
+                          iconId={x.iconId}
+                          />)
           }
         </ScrollView>
         

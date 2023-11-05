@@ -28,9 +28,9 @@ const UserListModal = ({isModalVisible, setModalVisible}) => {
 
   async function addUserHandler() {
     setIsLoading(true);
-    const data = await addBudgetUser(JSON.parse(user).email, activeBudget, userEmail);
-    setIsLoading(false);
 
+    const data = await addBudgetUser(JSON.parse(user).email, activeBudget.budgetName, userEmail);
+    setIsLoading(false);
     if (data.statusCode === 200) {
       handleGetUsers();
     } else {
@@ -62,6 +62,7 @@ const UserListModal = ({isModalVisible, setModalVisible}) => {
 
             <View style={{
                   flexDirection: 'row',
+                  flexWrap: 'wrap',
                   gap: 16,
                   borderBottomColor: 'black',
                   borderBottomWidth: 4,
