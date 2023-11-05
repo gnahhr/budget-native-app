@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Pressable, TextInput} from 'react-native';
+import { View, Text, StyleSheet, Alert, TextInput} from 'react-native';
 import Modal from 'react-native-modal';
 import { getBudgetUsers, addBudgetUser } from '../../api/budget';
 import { AntDesign } from '@expo/vector-icons';
@@ -28,14 +28,19 @@ const UserListModal = ({isModalVisible, setModalVisible}) => {
 
   async function addUserHandler() {
     setIsLoading(true);
-    const  data = await addBudgetUser(JSON.parse(user).email, activeBudget, userEmail);
+    const data = await addBudgetUser(JSON.parse(user).email, activeBudget, userEmail);
     setIsLoading(false);
 
     if (data.statusCode === 200) {
       handleGetUsers();
+    } else {
+      Alert.alert('Warning', data.message, [
+        {
+          text: 'Okay',
+          style: 'cancel'
+        }
+      ])
     }
-    // User added toast;
-    console.log(data);
   }
 
   useEffect(() => {

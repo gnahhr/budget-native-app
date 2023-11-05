@@ -34,7 +34,7 @@ const HomeAllocation = ({category, expenses, type}) => {
   }
 
   useEffect(()=> {
-    if (expense >= category.allocation && !isLoading) {
+    if (expense > category.allocation && !isLoading) {
       handleNotification();
       setIndiStyle([...indiStyle, styles.indicatorRed])
     } else {
