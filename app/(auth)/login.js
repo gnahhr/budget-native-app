@@ -37,7 +37,8 @@ const Login = () => {
       signIn(JSON.stringify({
         email: data.response.token.userDetails.email,
         username: data.response.token.userDetails.userName,
-        ifNewUser: data.response.token.userDetails.ifNewUser
+        ifNewUser: data.response.token.userDetails.ifNewUser,
+        defaultBudget: data.response.token.defaultBudget,
       }));
       router.replace(`/homepage`);
     } else {

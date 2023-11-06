@@ -17,7 +17,9 @@ const UpdateBudget = ({isModalVisible, totalBudget, activeBudget, setModalVisibl
   }
 
   useEffect(() => {
-    onChangeBudget(totalBudget);
+    if (totalBudget){
+      onChangeBudget(totalBudget);
+    }
   }, [totalBudget])
   
   useEffect(() => {

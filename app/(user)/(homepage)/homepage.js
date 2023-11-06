@@ -42,7 +42,7 @@ Notifications.setNotificationHandler({
 
 const HomepageIndex = () => {
   const { user } = useAuth();
-  const { activeBudget, budgetList, updateActive, updateBudgetL } = useBudget();
+  const { activeBudget, updateActive, updateBudgetL } = useBudget();
 
   // LocalStorage States
   const [[isDataLoading, data], setData] = useStorageState('data');
@@ -156,16 +156,19 @@ const HomepageIndex = () => {
   }
 
   // Get ng allocation
-  async function getAllocation(email) {
-    const allocation = await getAllocatedBudget(email, activeBudget.budgetName);
+  async function getAllocation(email, budgetName) {
+    const budget = activeBudget.budgetName ? activeBudget.budgetName : budgetName;
+    const allocation = await getAllocatedBudget(email, budget);
     
     const data = allocation.response;
     // Kasama na rin dito yung pag compute nung makikita sa homepage which is yung remaining budget,
     // tska yung yung parang progress if malapit na maubos budget
-    const remainingBudget = data.totalBudget ? data.totalBudget - data.totalExpenses : 0
+    
+    const totalBudget = data.totalBudget ? data.totalBudget : 0;
+    const remainingBudget = totalBudget > 0 ? data.totalBudget - data.totalExpenses : 0;
     setData(JSON.stringify(data));
-    setTotalBudget(data.totalBudget);
-    setProgress(Math.floor(Number(remainingBudget) / Number(data.totalBudget) * 100));
+    setTotalBudget(totalBudget);
+    setProgress(Math.floor(Number(remainingBudget) / Number(totalBudget) * 100));
     setParsedData(allocation.response);
   }
 
@@ -221,11 +224,11 @@ const HomepageIndex = () => {
   // nag r-run siya pagka mount or pagka display ng component
 
   useEffect(() => {
-    if (user) {
+    if (user && activeBudget) {
       const userParse = JSON.parse(user);
       setParsedUser(userParse);
       getExpensesHandler(userParse.email);
-      getAllocation(userParse.email);
+      getAllocation(userParse.email, userParse.defaultBudget);
       setIsLoading(false);
     }
   }, [activeBudget])
@@ -242,7 +245,9 @@ const HomepageIndex = () => {
   }, [expenses])
 
   useEffect(() => {
-    setRemainingBudget(totalBudget - totalExpenses);
+    if (totalBudget){
+      setRemainingBudget(totalBudget - totalExpenses);
+    }
   }, [totalBudget, totalExpenses]);
 
   useEffect(() => {
