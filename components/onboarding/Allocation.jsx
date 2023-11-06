@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Image, Text, StyleSheet, TextInput } from 'react-native'
+import { View, Alert, Text, StyleSheet, TextInput } from 'react-native'
 import { getIcon } from '../../constants/icons';
 import { Icon } from '@rneui/themed';
 
@@ -10,6 +10,18 @@ const Allocation = ({category, curAllocation, allocationHandler, iconId, checkEx
 
   const onChangeHandler = (e) => {
     const allo = Number(e)
+
+    if (allo < 0) {
+      Alert.alert('Warning', `You can't input a negative value!`, [
+        {
+          text: 'Okay',
+          style: 'cancel'
+        }
+      ])
+      onChangeAllocation(allo * -1);
+      return;
+    }
+
     // Check niya if exceeded na yung ina-allocate niya sa max budget niya
     if (checkExceeding(curAllocation, allo)) {
       if (!allocationHandler(category, allo)) {

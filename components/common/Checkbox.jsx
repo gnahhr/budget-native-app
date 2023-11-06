@@ -1,9 +1,20 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Pressable } from 'react-native';
+import styles from '../../app/(auth)/authStyles';
+const Checkbox = ({checked, handleOnPress}) => {
+  const [ state, setState ] = useState(styles.checkbox);
 
-const Checkbox = ({handleOnPress}) => {
+
+  useEffect(() => {
+    if (checked) {
+      setState([styles.checkbox, styles.checkboxActive])
+    } else {
+      setState(styles.checkbox);
+    }
+  }, [checked])
+
   return (
-    <Pressable style={checked} onPress={handleOnPress}></Pressable>
+    <Pressable style={state} onPress={handleOnPress}></Pressable>
   )
 }
 

@@ -37,10 +37,9 @@ const BarChartView = ({data, type}) => {
           return {
             value: item.amount,
             label: date.date,
-            spacing: 10,
+            spacing: 2,
             labelWidth: 30,
             labelTextStyle: {color: 'gray'},
-            // colors[idx] kukunin lang yung data ng color depende, sa index which is yung idx
             frontColor: colors[idx],
           }
         } else if (idx === 1) {
@@ -59,12 +58,16 @@ const BarChartView = ({data, type}) => {
 
       return newDate;
     })
-    setBarHeight(highest);
+
     
+    setBarHeight(highest);
+    let trimData = [...initData];
     let newData = [];
 
-    initData.forEach(item => {
+    trimData.forEach(item => {
       newData.push(item[0])
+      if (item[1]) newData.push(item[1])
+      if (item[2]) newData.push(item[2])
     })
 
     setBarData(newData);

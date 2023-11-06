@@ -4,7 +4,7 @@ import styles from './styles';
 
 const Step2 = ({setBudget, setBudgetName, nextStep, prevStep}) => {
   const [ numInput, onChangeNumInput ] = useState(0);
-  const [ name, setName ] = useState("");
+  const [ name, setName ] = useState("myBudget");
 
   const nextHandler = () => {
     if (name === "") {

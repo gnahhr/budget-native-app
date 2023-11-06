@@ -4,7 +4,7 @@ import { Stack, useRouter } from 'expo-router';
 import { register } from '../../api/login';
 import { useAuth } from '../../context/auth';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Text, SafeAreaView, Image, View, TextInput, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
+import { Text, Image, View, TextInput, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
 
 import Button from '../../components/common/Button';
 import styles from './authStyles';
@@ -30,7 +30,6 @@ const Register = () => {
       setAlert("");
 
       const data = await register(username, email, password);
-      console.log(data);
       setIsLoading(false);
 
       // If done na mag register, same sa login, save ng login creds sa localStorage then relocate na sa onboarding para makapag allocate
@@ -52,7 +51,10 @@ const Register = () => {
   }
 
   return (
-    <SafeAreaView style={styles.main}>
+    <KeyboardAvoidingView
+      style={[styles.main]}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
       <Stack.Screen
         options={{
           headerShadowVisible: false,
@@ -66,12 +68,10 @@ const Register = () => {
           <Text style={[styles.header, styles.textCenter]}>Register</Text>
         </View>
       </View>
-      
-      <KeyboardAvoidingView
-        style={[styles.container]}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        >
+
+      <View style={styles.container}>
         {alert && <Text style={[styles.textRed, styles.textCenter, styles.textBold]}>{alert}</Text>}
+        
         <View>
           <Text style={[styles.textWhite]}>Username</Text>
           <TextInput style={[styles.textInputStyle]} value={username} onChangeText={setUsername}/>
@@ -100,19 +100,18 @@ const Register = () => {
             <Text style={[styles.textWhite]}>Show Password</Text>
           </View>
         </View>
-      </KeyboardAvoidingView>
 
-      <View style={[styles.container, {marginTop: 60}]}>
-        <Button label="Register" action={() => handleRegister()} isLoading={isLoading}/>
-        <View style={[styles.flexRow, {gap: 8, justifyContent: 'center'}]}>
-          <Text style={[styles.textAccount, styles.textWhite, styles.textCenter]}>Already have an account?</Text>
-          <Pressable onPress={() => handleLogin()}>
-            <Text style={styles.textHighlight}>Tap here to login!</Text>
-          </Pressable>
+        <View style={[styles.container, {marginTop: 60}]}>
+          <Button label="Register" action={() => handleRegister()} isLoading={isLoading}/>
+          <View style={[styles.flexRow, {gap: 8, justifyContent: 'center'}]}>
+            <Text style={[styles.textAccount, styles.textWhite, styles.textCenter]}>Already have an account?</Text>
+            <Pressable onPress={() => handleLogin()}>
+              <Text style={styles.textHighlight}>Tap here to login!</Text>
+            </Pressable>
+          </View>
         </View>
       </View>
-
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   )
 }
 

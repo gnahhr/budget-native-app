@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native"
+import { COLORS } from "../../constants/theme"
 
 export default styles = StyleSheet.create({
   main: {
@@ -10,6 +11,7 @@ export default styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'center',
     width: "120%",
+    flex: 1,
     paddingBottom: 25,
     borderBottomLeftRadius: 225,
     borderBottomRightRadius: 225,
@@ -66,10 +68,10 @@ export default styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderWidth: 2,
-    borderColor: '#FFFFFF',
+    borderColor: COLORS['black-500'],
     borderRadius: 3,
   },
   checkboxActive: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS['black-500'],
   }
 })

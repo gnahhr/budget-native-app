@@ -17,8 +17,10 @@ import BudgetList from '../../../components/homepage/BudgetList';
 
 // API
 import { getAllocatedBudget, updateBudget, getBudgetList } from '../../../api/budget';
-import { getAllExpenses, allocateExpense } from '../../../api/expenses';
+import { getAllExpenses, allocateExpense, getExpenses } from '../../../api/expenses';
 import { registerForPushNotificationsAsync } from '../../../utils/notification';
+
+import { getDateTodayISO, getWeeklyStartEnd } from '../../../utils/dateFunctions';
 
 // Images
 import LogoS from '../../../assets/logos/logo-s.png';
@@ -163,8 +165,6 @@ const HomepageIndex = () => {
     const remainingBudget = data.totalBudget ? data.totalBudget - data.totalExpenses : 0
     setData(JSON.stringify(data));
     setTotalBudget(data.totalBudget);
-    setRemainingBudget(remainingBudget); 
-    setTotalExpenses(data.totalExpenses ? data.totalExpenses : 0);
     setProgress(Math.floor(Number(remainingBudget) / Number(data.totalBudget) * 100));
     setParsedData(allocation.response);
   }
@@ -184,8 +184,33 @@ const HomepageIndex = () => {
   // pag get ng expenses, pagkaget niya store niya dun sa local storage yung nakuhang data which is nasa
   // Line 153
   async function getExpensesHandler(email) {
-    const data = await getAllExpenses(email);
-    const summary = formatExpenses(data.response);
+    const dateToday = getDateTodayISO();
+    const dateWeekly = getWeeklyStartEnd(getDateTodayISO());
+    const monthToday = dateToday.split('-').splice(0,2).join('-');
+    const yearToday = dateToday.split('-')[0];
+
+    const data = await getExpenses({
+      params: {
+        email: email,
+        endDate: dateWeekly[1],
+        startDate: dateWeekly[0],
+        type: activeBudget.budgetType,
+        month: monthToday.split('-')[1],
+        year: yearToday,
+        day: dateToday,
+        budgetName: activeBudget.budgetName
+      }
+    });
+
+    const totalExpenses = data.response.sum;
+    let summary;
+    
+    if (data.response.getExpenses) {
+      summary = formatExpenses(data.response.getExpenses);
+    } else {
+      summary = formatExpenses(data.response);
+    }
+    setTotalExpenses(totalExpenses);
     setParsedExpenses(summary);
     setExpenses(JSON.stringify(summary));
     if (data.statusCode === 200) setExpensesLoading(false);
@@ -215,6 +240,10 @@ const HomepageIndex = () => {
       getExpensesHandler(parsedUser.email);
     }
   }, [expenses])
+
+  useEffect(() => {
+    setRemainingBudget(totalBudget - totalExpenses);
+  }, [totalBudget, totalExpenses]);
 
   useEffect(() => {
     if (user) {

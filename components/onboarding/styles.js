@@ -9,6 +9,9 @@ const styles = StyleSheet.create({
     marginTop: 32,
   },
   containItem: {
+    width: '65%',
+  },
+  containAllocation: {
     width: '80%',
   },
   center: {

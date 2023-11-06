@@ -87,7 +87,7 @@ const Summary = ({totalBudget, initialAllocation, prevStep, setAllocations, isLo
 
       <View style={[styles.blueDrawer, styles.blueDrawerExpanded, styles.blueDrawerExpandedAllocation]}>
         <Text style={[styles.textCenter, styles.textWhite]}>EXPENSE ALLOCATION</Text>
-        <ScrollView style={[styles.center, styles.containItem]}>
+        <ScrollView style={[styles.center, styles.containAllocation]}>
           {tabData[activeTab].state.filter(x => x.toggled).length > 0 &&
             tabData[activeTab].state.filter(x => x.toggled).map(x =>
               <Allocation key={x.name}

@@ -8,6 +8,7 @@ import CustomIcon from '../../components/common/CustomIcon';
 import ListItem from '../../components/debts/ListItem';
 import BorrowMoney from '../../components/debts/BorrowMoney';
 import PayDebt from '../../components/debts/PayDebt';
+import Checkbox from '../../components/common/Checkbox';
 
 // Images
 import LogoS from '../../assets/logos/logo-s.png';
@@ -18,6 +19,8 @@ import { useAuth } from '../../context/auth';
 const Debts = () => {
   const [ activeTab, setActiveTab ] = useState("Debt");
   const [ listState, setListState ] = useState([]);
+  const [ filteredList, setFilteredList ] = useState([]);
+  const [ isFiltered, setIsFiltered ] = useState(false); 
   const [ totalBalance, setTotalBalance ] = useState(0);
   const [ nameList, setNameList ] = useState([]);
   const { user } = useAuth();
@@ -38,12 +41,18 @@ const Debts = () => {
     },
   }
 
+  const toggleFiltered = () => {
+    setIsFiltered(!isFiltered);
+  }
+
   const leftBtnHandler = () => {
     setBorrowModalVisible(true)
   }
+
   const rightBtnHandler = () => {
     setPayDebtModalVisible(true)
   }
+
   async function fetchList() {
     const email = JSON.parse(user).email;
     
@@ -54,8 +63,17 @@ const Debts = () => {
 
     setNameList(response.filter(item => item.balance > 0).map(item => item.name));
     setTotalBalance(totalBalance);
+    setFilteredList(response);
     setListState(response);
   }
+
+  useEffect(() => {
+    if (isFiltered) {
+      setFilteredList(listState.filter(item => item.balance === 0));
+    } else {
+      setFilteredList(listState);
+    }
+  }, [isFiltered])
 
   useEffect(() => {
     fetchList();
@@ -78,8 +96,10 @@ const Debts = () => {
           {tabs.map((tab) => {
             let passStyle = [styles.normalText, styles.boldText]
             if (activeTab === tab) {
-              passStyle.push(styles.inactiveTab)
+              passStyle.push(styles.activeTab)
+              passStyle.push(styles.whiteText)
             } else {
+              passStyle.push(styles.inactiveTab)
               passStyle.push(styles.grayText)
             }
             return (
@@ -95,11 +115,16 @@ const Debts = () => {
         <Text style={[styles.textCenter, styles.boldText, styles.bigFont]}>Php. {totalBalance}.00</Text>
       </View>
       <View style={[styles.container, styles.border, styles.flexGrow, {backgroundColor: '#ffffff', maxHeight: '65%'}]}>
-        <Text style={[styles.boldText, styles.normalText, {marginTop: 8, marginLeft: 8}]}>List</Text>
-
+        <View style={{flexDirection: 'row'}}>
+          <Text style={[styles.boldText, styles.normalText, {marginTop: 8, marginLeft: 8}]}>List</Text>
+          <View style={{flexDirection: 'row', alignSelf: 'center', marginLeft: 'auto', gap: 8, marginTop: 8, marginRight: 8}}>
+            <Checkbox checked={isFiltered} handleOnPress={() => toggleFiltered()} />
+            <Text>Fully Paid</Text>
+          </View>
+        </View>
         <ScrollView style={[styles.container]}>
-          {listState.length > 0 ?
-            listState.map(item => <ListItem key={item.name} name={item.name} balance={item.balance} history={item.payments} type={activeTab}/>)
+          {filteredList.length > 0 ?
+            filteredList.map(item => <ListItem key={item.name} name={item.name} balance={item.balance} history={item.payments} type={activeTab}/>)
             :
             <Text style={[styles.boldText, styles.textCenter]}>Add person to track your debts/lends</Text>
           }
@@ -125,6 +150,23 @@ const Debts = () => {
 const styles = StyleSheet.create({
   grayText: {
     color: '#5f5f5f',
+  },
+  activeTab: {
+    borderWidth: 2,
+    borderRadius: 4,
+    borderColor: 'black',
+    backgroundColor: 'black',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    alignItems: 'center',
+  },
+  inactiveTab: {
+    borderWidth: 2,
+    borderRadius: 4,
+    borderColor: 'grey',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    alignItems: 'center',
   },
   whiteText: {
     color: '#ffffff',
