@@ -10,7 +10,7 @@ const SettingsIndex = () => {
   const { signOut, user } = useAuth();
   const router = useRouter();
 
-  const { username, email } = JSON.parse(user);
+  const { username, email, imageUrl } = JSON.parse(user);
 
   const transactionsHandler = () => {
     router.push(`/(user)/(settings)/history`)
@@ -52,7 +52,7 @@ const SettingsIndex = () => {
       <View style={[styles.headerDesign]}></View>
 
       <View style={{alignItems: 'center'}}>
-        <Image source={SampleImage} style={[styles.iconStyle]}/>
+        <Image source={{uri: imageUrl}} style={[styles.iconStyle]}/>
         <Text style={[styles.textBold, styles.largeFont]}>{username}</Text>
         <Text style={[styles.textItalics]}>{email}</Text>
       </View>

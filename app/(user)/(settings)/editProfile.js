@@ -8,6 +8,8 @@ import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { updateUser } from '../../../api/login';
 import Button from '../../../components/common/Button';
 
+import * as ImagePicker from 'expo-image-picker';
+
 const EditProfile = () => {
   const [ userName, setUserName ] = useState();
   const [ email, setEmail ] = useState();
@@ -17,17 +19,10 @@ const EditProfile = () => {
   const [ msg, setMsg ] = useState();
   const [ isLoading, setIsLoading ] = useState(false);
   const [ showPassword, setShowPassword ] = useState(false);
+	const [ image, setImage ] = useState("");
 
-  const { user } = useAuth();
+  const { user, signIn } = useAuth();
   const router = useRouter();
-  
-  useState(() => {
-    if (user) {
-      const parsedUser = JSON.parse(user);
-      setUserName(parsedUser.username);
-      setEmail(parsedUser.email);
-    }
-  }, [user])
 
   const backHandler = () => {
     router.back();
@@ -45,21 +40,65 @@ const EditProfile = () => {
     }
     
     setIsLoading(true);
-    const payload = {
-      userName,
-      password,
-      newPassword
-    }
-    const data = await updateUser(email, payload)
+
+    const formData = new FormData();
+    formData.append('userName', userName);
+    formData.append('password', password);
+    formData.append('newPassword', newPassword);
+    formData.append('imageUrl', {
+      uri: image,
+      type: "image/jpeg",
+      name: "something.jpeg",
+    });
+
+    const data = await updateUser(email, formData);
     setIsLoading(false);
 
     setMsg("")
     if (data?.statusCode === 200) {
       setMsg("Successfully changed account details");
+      const parsedUser = JSON.parse(user);
+      signIn(JSON.stringify({
+        ...parsedUser,
+        userName,
+        imageUrl: image,
+      }))
     } else {
       setMsg(data.message)
     }
   }
+
+	// Select image from library or camera
+	const selectImage = async (useLibrary) => {
+		let result;
+		const options = {
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			allowsEditing: true,
+			aspect: [1, 1],
+			quality: 0.75
+		};
+
+		if (useLibrary) {
+			result = await ImagePicker.launchImageLibraryAsync(options);
+		} else {
+			await ImagePicker.requestCameraPermissionsAsync();
+			result = await ImagePicker.launchCameraAsync(options);
+		}
+
+		// Save image if not cancelled
+		if (!result.canceled) {
+			setImage(result.assets[0].uri);
+		}
+	};
+
+  useState(() => {
+    if (user) {
+      const parsedUser = JSON.parse(user);
+      setUserName(parsedUser.username);
+      setEmail(parsedUser.email);
+    }
+  }, [user])
+
   return (
     <View style={[{position: 'relative', alignItems: 'center', height: '100%'}]}>
       <Stack.Screen 
@@ -92,6 +131,8 @@ const EditProfile = () => {
         <Text>Confirm New Password</Text>
         <TextInput style={[styles.textInputStyle]} placeholder='Confirm New Password' value={conNewPassword} onChangeText={setConNewPassword} secureTextEntry={!showPassword}/>
         
+        <Button label="Photo Library" action={() => selectImage(true)} />
+
         <View style={[styles.flexRow]}>
           <MaterialCommunityIcons 
                   name={!showPassword ? 'eye-off' : 'eye'} 

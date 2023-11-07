@@ -32,7 +32,11 @@ export async function register (username, email, password) {
 };
 
 export async function updateUser (email, payload) {
-    const response = await axios.put(`${apiURL}/user/update?email=${email}`, payload)
+    const response = await axios.put(`${apiURL}/user/update?email=${email}`, payload, {
+        headers: {
+          'content-type': 'multipart/form-data'
+        }
+      })
     .then(response => response.data)
     .catch(err => console.error(err));
     

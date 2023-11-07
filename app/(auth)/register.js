@@ -37,7 +37,8 @@ const Register = () => {
         signIn(JSON.stringify({
           email: data.response.email,
           username: data.response.userName,
-          ifNewUser: data.response.ifNewUser
+          ifNewUser: data.response.ifNewUser,
+          imageUrl: `https://res.cloudinary.com/diwlgnbqc/image/upload/v1683221873/b9vfcnko2112n69whgla.jpg`,
         }));
         router.replace(`/onboarding`);
       } else {

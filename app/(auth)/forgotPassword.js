@@ -22,10 +22,6 @@ const Login = () => {
     router.replace(`/register`)
   }
 
-  const handlePassword = () => {
-    router.replace(`/forgotPassword`);
-  }
-
   async function handleLogin() {
     if (email === "" || password === "") return;
      
@@ -64,36 +60,7 @@ const Login = () => {
       <View style={styles.mainWrapper}>
         <View>
           <Image source={Logo} style={styles.logo} />
-          <Text style={[styles.header, styles.textCenter]}>Login</Text>
-        </View>
-      </View>
-      
-      <View style={[styles.container]}>
-        {alert && <Text style={[styles.textRed, styles.textCenter, styles.textBold]}>{alert}</Text>}
-        <View>
-          <Text style={[styles.textWhite]}>Email Address</Text>
-          <TextInput style={[styles.textInputStyle]} value={email} onChangeText={setEmail} />
-        </View>
-        <View>
-          <Text style={[styles.textWhite]}>Password</Text>
-          <View>
-            <TextInput style={[styles.textInputStyle]} value={password} onChangeText={setPassword} secureTextEntry={!showPassword}></TextInput>
-          </View>
-        </View>
-        <View style={[styles.flexRow, {justifyContent: 'space-between'}]}>
-          <View style={[styles.flexRow]}>
-            <MaterialCommunityIcons 
-                    name={!showPassword ? 'eye-off' : 'eye'} 
-                    size={24} 
-                    color="#FFF"
-                    style={{marginRight: 10}} 
-                    onPress={() => setShowPassword(!showPassword)} 
-            />
-            <Text style={[styles.textWhite]}>Show Password</Text>
-          </View>
-          <Pressable onPress={() => handlePassword()}>
-            <Text style={[styles.textHighlight, styles.textBold]}>Forgot Password</Text>
-          </Pressable>
+          <Text style={[styles.header, styles.textCenter]}>Forgot Password</Text>
         </View>
       </View>
 

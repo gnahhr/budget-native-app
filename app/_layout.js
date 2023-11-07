@@ -1,7 +1,10 @@
 import { Stack } from "expo-router";
 import { Provider } from "../context/auth";
 import { useFonts } from 'expo-font';
+import {decode, encode} from 'base-64'
 
+if (!global.btoa) { global.btoa = encode;}
+if (!global.atob) { global.atob = decode;}
 const Layout = () => {
   const [fontsLoaded] = useFonts({
     'regular': require('../assets/fonts/SFPRODISPLAYREGULAR.otf'),
