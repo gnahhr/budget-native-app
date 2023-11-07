@@ -18,6 +18,7 @@ const BorrowMoney = ({isModalVisible, setModalVisible, type}) => {
   const [ amount, setAmount ] = useState(0);
   const [ interest, setInterest ] = useState(0);
   const [ isLoading, setIsLoading ] = useState(false);
+  const [ isButtonActive, setIsButtonActive ] = useState(false);
   const { user } = useAuth();
 
   const toggleModal = () => {
@@ -27,7 +28,10 @@ const BorrowMoney = ({isModalVisible, setModalVisible, type}) => {
   const headerTitle = type === 'Debt' ? 'Borrow Money' : 'Lend Money';
 
   async function borrowMoneyHandler() {
+    if (!name || amount <= 0 || interest <= 0) return;
+
     setIsLoading(true);
+
     const debtType = type === 'Debt' ? 'borrowed' : 'lend';
     const payload = {
       dueDate: formatDatePicker(dueDate),
@@ -54,6 +58,10 @@ const BorrowMoney = ({isModalVisible, setModalVisible, type}) => {
   useEffect(() => {
     setDate(handleGetDate());
   }, [])
+
+  useEffect(() => {
+    setIsButtonActive(!!name && amount > 0 && interest > 0);
+  }, [name, amount, interest])
 
   useEffect(() => {
     setDate(handleGetDate());
@@ -101,7 +109,7 @@ const BorrowMoney = ({isModalVisible, setModalVisible, type}) => {
             <Text style={[styles.textCenter]}>{date}</Text>
           </View>
 
-          <Button label={"Save"} action={() => borrowMoneyHandler()} isLoading={isLoading}/>
+          <Button label={"Save"} action={() => borrowMoneyHandler()} isLoading={isLoading} active={isButtonActive}/>
         </View>
     </Modal>
   )

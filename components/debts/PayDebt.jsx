@@ -13,6 +13,7 @@ const PayDebt = ({nameList, isModalVisible, setModalVisible, type}) => {
   const [ amount, setAmount ] = useState(amount);
   const [ date, setDate ] = useState();
   const [ isLoading, setIsLoading ] = useState(false);
+  const [ isButtonActive, setIsButtonActive ] = useState(false);
 
   // Drop Down States
   const [open, setOpen] = useState(false);
@@ -25,7 +26,14 @@ const PayDebt = ({nameList, isModalVisible, setModalVisible, type}) => {
     setModalVisible(false);
   };
 
+  const label = {
+    "Debt": "Pay Debt",
+    "Lend": "Receive Money"
+  }
+
   async function addExpenseHandler() {
+    if (!value && amount <= 0) return; 
+
     setIsLoading(true);
     const debtType = type === 'Debt' ? 'borrowed' : 'lend';
 
@@ -61,6 +69,10 @@ const PayDebt = ({nameList, isModalVisible, setModalVisible, type}) => {
   }, [isModalVisible])
 
   useEffect(() => {
+    setIsButtonActive(value && amount);
+  }, [value, amount])
+
+  useEffect(() => {
     setNameState(nameList);
   }, [nameList])
 
@@ -83,7 +95,7 @@ const PayDebt = ({nameList, isModalVisible, setModalVisible, type}) => {
         <View style={styles.modalWrapper}>
           <View>
             <View style={[styles.modalHeader]}>
-              <Text style={[styles.textBold, styles.textHeader]}>Add Expenses</Text>
+              <Text style={[styles.textBold, styles.textHeader]}>{label[type]}</Text>
               <AntDesign name="close" size={24} color="#3A85AF" onPress={toggleModal}/>
             </View>
 
@@ -113,7 +125,7 @@ const PayDebt = ({nameList, isModalVisible, setModalVisible, type}) => {
             <Text style={[styles.textCenter]}>{date}</Text>
           </View>
 
-          <Button label={"Add Expense"} action={() => addExpenseHandler()} isLoading={isLoading} />
+          <Button label={"Add Expense"} action={() => addExpenseHandler()} isLoading={isLoading} active={isButtonActive}/>
         </View>
     </Modal>
   )

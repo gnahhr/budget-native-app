@@ -6,7 +6,7 @@ import { formatDate } from '../../utils/dateFunctions';
 const ListItem = ({name, balance, history, type = "Lend"}) => {
   const [ toggled, setToggled ] = useState(false);
 
-  const textColor = type === "Lend" ? styles.textGreen : styles.textRed;
+  const textColor = balance === 0 ? styles.textGreen : type === "Lend" ? styles.textGreen : styles.textRed;
 
   const toggleHandler = () => {
     setToggled(!toggled);
@@ -23,9 +23,9 @@ const ListItem = ({name, balance, history, type = "Lend"}) => {
 
       {toggled &&
         <View>
-          {history.map(item => {
+          {history.map((item, idx) => {
             return (
-              <View style={[styles.flexRow, styles.container]}>
+              <View key={idx} style={[styles.flexRow, styles.container]}>
                 <Text style={[styles.stretch, styles.textBold]}>{formatDate(item.paymentDate)}</Text>
                 <Text style={[styles.stretch, styles.textBold, styles.textEnd]}>{item.amount}</Text>
               </View>

@@ -143,18 +143,18 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
   }
 
   const nextStepHandler = () => {
-    if (allocationChecker("WANT") || allocationChecker("SAVINGS") || allocationChecker("NEED")) {
-      Alert.alert('Warning', 'Select categories in every field!', [
-        {
-          text: 'Okay',
-          style: 'cancel'
-        }
-      ])
+    // if (allocationChecker("WANT") || allocationChecker("SAVINGS") || allocationChecker("NEED")) {
+    //   Alert.alert('Warning', 'Select categories in every field!', [
+    //     {
+    //       text: 'Okay',
+    //       style: 'cancel'
+    //     }
+    //   ])
 
-      return;
-    }
+    //   return;
+    // }
     
-    if (totalNeed === 0 || totalWant === 0 || totalSavings === 0){
+    if (allocationChecker("WANT") || allocationChecker("SAVINGS") || allocationChecker("NEED")){
       Alert.alert('Warning', 'Finish allocating budget!', [
         {
           text: 'Okay',
@@ -169,7 +169,8 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
   }
 
   const allocationChecker = (type) => {
-    return tabData[type].state.filter(x => x.toggled).length === 0
+    // return tabData[type].state.filter(x => x.toggled).length === 0
+    return tabData[type].state.filter(x => x.allocation === 0 && x.toggled).length > 0
   }
 
   const allocationHandler = (name, allocation) => {

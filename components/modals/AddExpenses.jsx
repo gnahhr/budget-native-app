@@ -8,7 +8,7 @@ import { getDateToday } from '../../utils/dateFunctions';
 
 const AddExpenses = ({categoryList, isModalVisible, setModalVisible, onAddExpense}) => {
   const [ categoryState, setCategoryState ] = useState(categoryList);
-  const [ amount, setAmount ] = useState(amount);
+  const [ amount, setAmount ] = useState("");
   const [ note, setNote ] = useState("");
   const [ date, setDate ] = useState();
   const [ isLoading, setIsLoading ] = useState(false);
@@ -18,17 +18,29 @@ const AddExpenses = ({categoryList, isModalVisible, setModalVisible, onAddExpens
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([]);
 
+  const [ buttonActive, setButtonActive ] = useState(Number(amount) > 0 && !value); 
+
   const toggleModal = () => {
     setModalVisible(false);
+    resetModal();
   };
 
   async function addExpenseHandler() {
+    if (!value) return;
+
     if (Number(amount) > 0) {
       setIsLoading(true);
       await onAddExpense(value, amount, note);
       setIsLoading(false);
+      resetModal();
     }
   };
+
+  const resetModal = () => {
+    setValue(null);
+    setAmount("");
+    setNote("");
+  }
 
   const handleGetDate = () => {
     return getDateToday(false);
@@ -38,6 +50,10 @@ const AddExpenses = ({categoryList, isModalVisible, setModalVisible, onAddExpens
   useEffect(() => {
     setDate(handleGetDate());
   }, [])
+
+  useEffect(() => {
+    setButtonActive(Number(amount) > 0 && !!value)
+  }, [value, amount])
 
   useEffect(() => {
     setDate(handleGetDate());
@@ -100,7 +116,7 @@ const AddExpenses = ({categoryList, isModalVisible, setModalVisible, onAddExpens
             <Text style={[styles.textCenter]}>{date}</Text>
           </View>
 
-          <Button label={"Add Expense"} action={() => addExpenseHandler()} isLoading={isLoading}/>
+          <Button label={"Add Expense"} action={() => addExpenseHandler()} isLoading={isLoading} active={buttonActive}/>
         </View>
     </Modal>
   )
@@ -151,6 +167,9 @@ const styles = StyleSheet.create({
     padding: 4,
     borderRadius: 16,
     marginTop: 16
+  },
+  inactiveButton: {
+    backgroundColor: 'grey',
   }
 })
 

@@ -11,7 +11,7 @@ const UpdateBudget = ({isModalVisible, totalBudget, activeBudget, setModalVisibl
   };
 
   const updateBudgetHandler = () => {
-    if (Number(budget) > 0 ){
+    if (Number(budget) > 0 && budgetName !== ""){
       updateBudget(budget, budgetName);
     }
   }

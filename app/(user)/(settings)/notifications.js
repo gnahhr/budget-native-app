@@ -69,10 +69,13 @@ const Notifications = () => {
         <Text style={[styles.largeFont, styles.textBold, styles.textWhite, {alignSelf: 'center', marginBottom: 30}]}>NOTIFICATIONS</Text>
       </View>
       
-      
-      <View style={{gap: 8, marginTop: 50}}>
-        {settings && settingKeys.map(key => <SettingsItem key={key} setting={key} text={settingValues[key].text} subText={settingValues[key].subText} value={settings[key]} onToggleAction={updateSettings}/>)}
-      </View>
+      {isNotifSetLoading ?
+        <Text>Loading....</Text>
+        :
+        <View style={{gap: 8, marginTop: 50}}>
+          {settings && settingKeys.map(key => <SettingsItem key={key} setting={key} text={settingValues[key].text} subText={settingValues[key].subText} value={settings[key]} onToggleAction={updateSettings}/>)}
+        </View>
+      }
 
       <View style={{marginTop: 'auto', marginBottom: 25}}>
         <Button label={"Save settings"} action={() => saveSettings()}/>

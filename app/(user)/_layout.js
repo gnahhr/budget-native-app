@@ -15,6 +15,7 @@ const Layout = () => {
         <Tabs.Screen
           name="(homepage)"
           options={{
+            tabBarLabel: "Homepage",
             headerShown: false,
             headerTitle: "Home Page",
             headerShadowVisible: false,
@@ -24,6 +25,7 @@ const Layout = () => {
         <Tabs.Screen
           name="(books)"
           options={{
+            tabBarLabel: "Books",
             headerTitle: "(books)",
             headerShadowVisible: false,
             headerShown: false,
@@ -33,6 +35,7 @@ const Layout = () => {
         <Tabs.Screen
           name="insights"
           options={{
+            tabBarLabel: "Insights",
             headerTitle: "Insights",
             headerShadowVisible: false,
             headerStyle: { backgroundColor: "#f3f3f7"},
@@ -41,6 +44,7 @@ const Layout = () => {
         <Tabs.Screen
           name="debts"
           options={{
+            tabBarLabel: "Debts",
             headerTitle: "Debts",
             headerShadowVisible: false,
             headerStyle: { backgroundColor: "#f3f3f7"},
@@ -49,6 +53,7 @@ const Layout = () => {
           <Tabs.Screen
             name="(settings)"
             options={{
+              tabBarLabel: "Settings",
               headerTitle: "Settings",
               headerShadowVisible: false,
               headerStyle: { backgroundColor: "#f3f3f7"},

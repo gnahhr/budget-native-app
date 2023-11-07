@@ -2,7 +2,8 @@ import React from 'react'
 import { Pressable, Text, StyleSheet } from 'react-native'
 import { COLORS } from '../../constants/theme'
 
-const Button = ({label, action, isLoading = false}) => {
+const Button = ({label, action, isLoading = false, active=true}) => {
+  
   return (
     <>
       {
@@ -12,7 +13,7 @@ const Button = ({label, action, isLoading = false}) => {
         </Text>
       :
         <Pressable onPress={action}>
-          <Text style={styles.buttonStyle}>{label}</Text>
+          <Text style={[styles.buttonStyle, active ? "" : styles.inactiveStyle]}>{label}</Text>
         </Pressable>
       }
     </>
@@ -20,7 +21,7 @@ const Button = ({label, action, isLoading = false}) => {
 }
 
 const styles = StyleSheet.create({
-    buttonStyle: {
+  buttonStyle: {
     color: COLORS['white-700'],
     backgroundColor: COLORS['blue-500'],
 
@@ -31,6 +32,9 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingHorizontal: "20px",
     textAlign: 'center',
+  },
+  inactiveStyle: {
+    backgroundColor: COLORS['grey-500'],
   }
 })
 

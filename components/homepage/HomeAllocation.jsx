@@ -4,6 +4,7 @@ import { getIcon } from '../../constants/icons';
 import { Icon } from '@rneui/themed';
 import { schedulePushNotification } from '../../utils/notification';
 import { useStorageState } from '../../hooks/useStorageState';
+import { COLORS } from '../../constants/theme';
 
 const HomeAllocation = ({category, expenses, type}) => {
   const [ indiStyle, setIndiStyle ] = useState([styles.indicatorStyle]);
@@ -37,6 +38,8 @@ const HomeAllocation = ({category, expenses, type}) => {
     if (expense > category.allocation && !isLoading) {
       handleNotification();
       setIndiStyle([...indiStyle, styles.indicatorRed])
+    } else if (expense / category.allocation > .8 && !isLoading) {
+      setIndiStyle([...indiStyle, styles.indicatorYellow])
     } else {
       setIndiStyle([...indiStyle, styles.indicatorGreen])
     }
@@ -81,7 +84,7 @@ const styles = StyleSheet.create({
   main: {
     width: "100%",
     alignSelf: 'center',
-    backgroundColor: '#ffffff',
+    backgroundColor: COLORS['white-500'],
     alignItems: 'center',
     padding: 8,
     borderRadius: 8,
@@ -105,7 +108,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     aspectRatio: 1,
     borderRadius: 8,
-    backgroundColor: '#5087b9',
+    backgroundColor: COLORS['blue-100'],
   },
   whiteText: {
     color: "#ffffff",
@@ -129,11 +132,14 @@ const styles = StyleSheet.create({
     borderRadius: 4
   },
   indicatorGreen: {
-    backgroundColor: '#15b225',
+    backgroundColor: COLORS['green-500'],
   },
   indicatorRed: {
-    backgroundColor: '#c01f28',
+    backgroundColor:  COLORS['red-500'],
   },
+  indicatorYellow: {
+    backgroundColor: COLORS['yellow-500']
+  }
 });
 
 export default HomeAllocation

@@ -16,10 +16,14 @@ export const COLORS = {
   // RED
   'red-500': '#C01F28',
 
+  // YELLOW
+  'yellow-500': '#F8C33B',
+
   // NEUTRALS
   'black-500': '#1E1E1E',
   'white-500': '#FFFFFF',
   'white-700': '#F3F3F7',
+  'grey-500': '#374957',
 
 }
 

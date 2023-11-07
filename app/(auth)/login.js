@@ -7,6 +7,7 @@ import { useAuth } from '../../context/auth'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Button from '../../components/common/Button';
 import styles from './authStyles';
+import { jwtDecode } from 'jwt-decode';
 const Login = () => {
   const router = useRouter();
   const [ email, setEmail ] = useState("");
@@ -28,8 +29,10 @@ const Login = () => {
     setAlert("");
 
     const data = await login(email, password);
-    // Invalid password toast yey
     setIsLoading(false);
+    console.log(data.response.data.token);
+    console.log(jwtDecode(`data.response.data.token`)); //
+    // Invalid password toast yey
 
     // pagka successfully na nag login store niya yung login credentials sa localStorage
     // acts as indicator if logged in na or hindi pa yung user then relocate siya sa homepage

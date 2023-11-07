@@ -24,6 +24,14 @@ const SettingsIndex = () => {
     router.push(`/(user)/(settings)/editProfile`)
   }
 
+  const helpHandler = () => {
+    router.push(`/(user)/(settings)/help`)
+  }
+
+  const aboutHandler = () => {
+    router.push(`/(user)/(settings)/about`)
+  }
+
   const signOutHandler = () => {
     signOut();
     router.replace('/');
@@ -66,8 +74,12 @@ const SettingsIndex = () => {
         <Pressable onPress={() => transactionsHandler()}>
           <Text style={[styles.button, styles.textWhite, styles.textItalics, styles.textBold, styles.largeFont]}>TRANSACTIONS</Text>
         </Pressable>
-        <Text style={[styles.button, styles.textWhite, styles.textItalics, styles.textBold, styles.largeFont]}>HELP</Text>
-        <Text style={[styles.button, styles.textWhite, styles.textItalics, styles.textBold, styles.largeFont]}>ABOUT</Text>
+        <Pressable onPress={() => helpHandler()}>
+          <Text style={[styles.button, styles.textWhite, styles.textItalics, styles.textBold, styles.largeFont]}>HELP</Text>
+        </Pressable>
+        <Pressable onPress={() => aboutHandler()}>
+          <Text style={[styles.button, styles.textWhite, styles.textItalics, styles.textBold, styles.largeFont]}>ABOUT</Text>
+        </Pressable>
         <Pressable>
           <Text
             style={[styles.button, styles.textWhite, styles.textItalics, styles.textBold, styles.largeFont]}
@@ -84,7 +96,7 @@ const styles = StyleSheet.create({
     width: '200%',
     alignSelf: 'center',
     height: 400,
-    top: '-65%',
+    top: '-57%',
     position: 'absolute',
     borderBottomLeftRadius: 500,
     borderBottomRightRadius: 500,
