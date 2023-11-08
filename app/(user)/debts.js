@@ -124,7 +124,7 @@ const Debts = () => {
         </View>
         <ScrollView style={[styles.container]}>
           {filteredList.length > 0 ?
-            filteredList.map(item => <ListItem key={item.name} name={item.name} balance={item.balance} history={item.payments} type={activeTab}/>)
+            filteredList.map(item => <ListItem key={item.name} name={item.name} balance={item.balance} history={item.payments} dueDate={item.dueDate} type={activeTab}/>)
             :
             <Text style={[styles.boldText, styles.textCenter]}>Add person to track your debts/lends</Text>
           }

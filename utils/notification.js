@@ -24,7 +24,7 @@ export async function schedulePushNotification(type, value, hasList, list) {
     },
     "dueDate": {
       title: 'Reminder!',
-      body: `Your ${value.type} to ${value.name} is nearing the due date at ${value.date}`
+      body: `Your ${value.type} to ${value.name} is nearing the due date at ${value.date}.`
     }
   }
   

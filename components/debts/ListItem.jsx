@@ -1,16 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { COLORS } from '../../constants/theme';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { formatDate } from '../../utils/dateFunctions';
+import { getDateTodayISO, formatDate } from '../../utils/dateFunctions';
+import { schedulePushNotification } from '../../utils/notification';
+import { useStorageState } from '../../hooks/useStorageState';
 
-const ListItem = ({name, balance, history, type = "Lend"}) => {
+const ListItem = ({name, balance, history, dueDate, type = "Lend"}) => {
   const [ toggled, setToggled ] = useState(false);
+  const [ [isLoading, notifList], setNotifList ] = useStorageState("notifList");
 
   const textColor = balance === 0 ? styles.textGreen : type === "Lend" ? styles.textGreen : styles.textRed;
 
   const toggleHandler = () => {
     setToggled(!toggled);
   }
+
+  async function checkRemainingDays() {
+    const dateTodayMilli = new Date(getDateTodayISO()).getTime();
+    const dueDateMilli = new Date(dueDate.split('T')[0]).getTime();
+    const minute = 1000 * 60;
+    const hour = minute * 60;
+    const day = hour * 24;
+
+    const remainingDays = (dueDateMilli - dateTodayMilli) / day;
+
+    if (remainingDays < 3) {
+      const data = await schedulePushNotification("dueDate", {
+        type: type,
+        name: name,
+        date: formatDate(dueDate.split('T')[0]),
+      }, true, notifList);
+
+      setNotifList(JSON.stringify(data));
+    }
+    
+  }
+
+  useEffect(() => {
+    checkRemainingDays();
+  }, [])
 
   return (
     <Pressable style={[styles.container]} onPress={() => toggleHandler()}>

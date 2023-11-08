@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Tabs } from 'expo-router';
-import { View, Text, SafeAreaView } from 'react-native';
+import { View, Text, SafeAreaView, Pressable } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 
 // Components
@@ -12,7 +12,6 @@ import CustomIcon from '../../components/common/CustomIcon';
 // Hooks
 import { useAuth } from '../../context/auth';
 import { useBudget } from '../../context/budget';
-import { useStorageState } from '../../hooks/useStorageState';
 
 // APIs/Utils
 import { getInsights } from '../../api/insights';
@@ -20,11 +19,11 @@ import {
   getDateTodayISO,
   getWeeklyStartEnd } from '../../utils/dateFunctions';
 import LogoS from '../../assets/logos/logo-s.png';
+import { COLORS } from '../../constants/theme';
 
 const Insights = () => {
   const [ parsedUser, setParsedUser ] = useState();
   const [ data, setData ] = useState();
-  const [ [isInsightLoading, insight], setInsight ] = useStorageState('insight');
   const { user } = useAuth();
   const { activeBudget } = useBudget();
 
@@ -66,7 +65,6 @@ const Insights = () => {
         budgetName: activeBudget.budgetName
       }
     });
-    setInsight(JSON.stringify(data.response));
     if (!(data.response.length === 0)) setData(data.response);
   }
 
@@ -116,7 +114,6 @@ const Insights = () => {
                   setOpen={setOpen}
                   setValue={setActiveType}
                   setItems={setItems}
-                  style={{}}
                 />
         </View>
         {!!data ? 
@@ -127,6 +124,11 @@ const Insights = () => {
         :
         <Text>No expenses yet.</Text>}
       </View>
+      <Pressable>
+        <View style={{position: 'absolute', backgroundColor: COLORS['blue-800'], bottom: 10, right: 10, borderRadius: 100, width: 65, height: 65}}>
+          
+        </View>
+      </Pressable>
     </SafeAreaView>
   )
 }

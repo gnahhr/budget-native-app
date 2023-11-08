@@ -8,31 +8,10 @@ import styles from './authStyles';
 
 const ForgotPassword = () => {
   const router = useRouter();
-  const [ email, setEmail ] = useState("");
+  const [ code, setCode ] = useState("");
   const [ alert, setAlert ] = useState(""); 
   // Change button to redirect login page
   const [ isSent, setIsSent ] = useState("");
-  const [ isLoading, setIsLoading ] = useState("");
-
-  async function handleResetPassword() {
-    if (email === "") return;
-     
-    setIsLoading(true);
-    setAlert("");
-
-    const data = await forgotPassword(email);
-    setIsLoading(false);
-    setAlert(data.message);
-
-    if (data.statusCode === 200) {
-      setIsSent(true);
-    }
-
-  }
-
-  const handleRedirect = () => {
-    router.replace('/login')
-  }
 
   return (
     <SafeAreaView style={styles.main}>
@@ -46,25 +25,21 @@ const ForgotPassword = () => {
       <View style={styles.mainWrapper}>
         <View>
           <Image source={Logo} style={styles.logo} />
-          <Text style={[styles.header, styles.textCenter]}>Forgot Password</Text>
+          <Text style={[styles.header, styles.textCenter]}>2FA Authenticator</Text>
         </View>
       </View>
 
       <View style={[styles.container]}>
-        {alert && <Text style={[styles.textRed, styles.textCenter, styles.textBold]}>{alert}</Text>}
         <View>
-          <Text style={[styles.textWhite]}>Enter your e-mail:</Text>
+          <Text style={[styles.textWhite]}>Enter code:</Text>
           <View>
-            <TextInput style={[styles.textInputStyle]} value={email} onChangeText={setEmail}></TextInput>
+            <TextInput style={[styles.textInputStyle]} value={code} onChangeText={setCode}></TextInput>
           </View>
         </View>
       </View>
 
       <View style={[styles.container, {marginTop: 60}]}>
-        {isSent ?
-        <Button label="Go to Login" action={( ) => handleRedirect()} />
-        : 
-        <Button label="Reset Password" action={() => handleResetPassword()} isLoading={isLoading}/>}
+        <Button label="Reset Password" action={() => handleResetPassword()}/>
       </View>
 
     </SafeAreaView>

@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderRadius: 8,
     padding: 16,
-    marginTop: 16,
+    marginTop: 8,
   }, 
   textBold: {
     fontWeight: '700',

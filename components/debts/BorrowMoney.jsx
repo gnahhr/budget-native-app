@@ -28,7 +28,7 @@ const BorrowMoney = ({isModalVisible, setModalVisible, type}) => {
   const headerTitle = type === 'Debt' ? 'Borrow Money' : 'Lend Money';
 
   async function borrowMoneyHandler() {
-    if (!name || amount <= 0 || interest <= 0) return;
+    if (!name || Number(amount) <= 0 || Number(interest) <= 0) return;
 
     setIsLoading(true);
 
@@ -36,7 +36,7 @@ const BorrowMoney = ({isModalVisible, setModalVisible, type}) => {
     const payload = {
       dueDate: formatDatePicker(dueDate),
       name: name,
-      totalDebt: amount,
+      totalDebt: Number(amount),
       interest: interest,
       debtType: debtType,
     }
@@ -46,6 +46,9 @@ const BorrowMoney = ({isModalVisible, setModalVisible, type}) => {
 
     if (data?.statusCode === 200) {
       setModalVisible(false);
+      setName("");
+      setAmount(0);
+      setInterest(0);
     }
     
   };
@@ -60,7 +63,7 @@ const BorrowMoney = ({isModalVisible, setModalVisible, type}) => {
   }, [])
 
   useEffect(() => {
-    setIsButtonActive(!!name && amount > 0 && interest > 0);
+    setIsButtonActive(!!name && Number(amount) > 0 && Number(interest) > 0);
   }, [name, amount, interest])
 
   useEffect(() => {
@@ -95,11 +98,11 @@ const BorrowMoney = ({isModalVisible, setModalVisible, type}) => {
               </View>
               <View>
                 <Text style={[styles.textBold]}>Amount</Text>
-                <TextInput placeholder='Php. 00' keyboardType="numeric" value={amount} onChangeText={setAmount}/>
+                <TextInput placeholder='Php. 00' keyboardType="numeric" value={String(amount)} onChangeText={setAmount}/>
               </View>
               <View>
                 <Text style={[styles.textBold]}>Interest</Text>
-                <TextInput keyboardType="numeric" value={interest} onChangeText={setInterest}/>
+                <TextInput keyboardType="numeric" value={String(interest)} onChangeText={setInterest}/>
               </View>
             </View>
           </View>

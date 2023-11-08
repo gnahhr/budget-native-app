@@ -69,7 +69,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     backgroundColor: '#fefefd',
     borderRadius: 8,
-    padding: 16,
+    paddingHorizontal: 10,
+    paddingTop: 8,
     width: '100%',
   },
   mBot: {

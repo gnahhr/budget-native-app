@@ -42,3 +42,11 @@ export async function updateUser (email, payload) {
     
     return await response;
 };
+
+export async function forgotPassword (email) {
+    const response = await axios.post(`${apiURL}/user/forgot-password`, {email})
+    .then(response => response.data)
+    .catch(err => console.error(err));
+    
+    return await response;
+};

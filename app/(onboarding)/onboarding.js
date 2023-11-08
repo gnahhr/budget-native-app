@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Stack, useRouter } from 'expo-router';
-import { SafeAreaView, StyleSheet, Pressable } from 'react-native';
+import { SafeAreaView, StyleSheet, Pressable, Alert } from 'react-native';
 import { useStorageState } from '../../hooks/useStorageState';
 import { allocateBudget } from '../../api/budget';
 import { useAuth } from '../../context/auth';
