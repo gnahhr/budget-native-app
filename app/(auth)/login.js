@@ -16,7 +16,7 @@ const Login = () => {
   const [ isLoading, setIsLoading ] = useState(false);
   const [ showPassword, setShowPassword ] = useState(false);
 
-  const { user, signIn } = useAuth();
+  const { signIn, setAuthEmail } = useAuth();
 
   const handleRegister = () => {
     router.replace(`/register`)
@@ -34,19 +34,25 @@ const Login = () => {
 
     const data = await login(email, password);
     setIsLoading(false);
-    const decoded = jwtDecode(data.response.data.token);
 
     // pagka successfully na nag login store niya yung login credentials sa localStorage
     // acts as indicator if logged in na or hindi pa yung user then relocate siya sa homepage
-    if (data.statusCode === 200) {
+    if (data.statusCode === 200 && data.response) {
+      const decoded = jwtDecode(data.response.data.token);
+      
       signIn(JSON.stringify({
         email: decoded.email,
         username: decoded.userName,
         ifNewUser: decoded.ifNewUser,
         defaultBudget: data.response.data.defaultBudget,
         imageUrl: decoded.imageUrl,
+        twoAuthRequired: decoded.twoAuthRequired,        
       }));
+
       router.replace(`/homepage`);
+    } else if (data.statusCode === 200) {
+      router.replace(`/authenticate?${email}`);
+      setAuthEmail(email);
     } else {
       setAlert(data.message);
     }

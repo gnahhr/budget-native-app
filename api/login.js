@@ -50,3 +50,19 @@ export async function forgotPassword (email) {
     
     return await response;
 };
+
+export async function verify2FA (email, code) {
+    const response = await axios.post(`${apiURL}/user/verify-2fa?email=${email}`, {code})
+    .then(response => response.data)
+    .catch(err => console.error(err));
+    
+    return await response;
+};
+
+export async function toggle2FA (email) {
+    const response = await axios.post(`${apiURL}/user/toggle-2fa?email=${email}`)
+    .then(response => response.data)
+    .catch(err => console.error(err));
+    
+    return await response;
+};

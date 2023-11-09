@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert, TextInput} from 'react-native';
+import { View, Text, StyleSheet, Alert, TextInput, Image} from 'react-native';
 import Modal from 'react-native-modal';
 import { getBudgetUsers, addBudgetUser } from '../../api/budget';
 import { AntDesign } from '@expo/vector-icons';
@@ -69,8 +69,9 @@ const UserListModal = ({isModalVisible, setModalVisible}) => {
                   paddingVertical: 16,
                 }}>  
               {userList && userList.map((user, idx) =>
-              <View key={user} style={{width: 75, height: 75, backgroundColor: '#5087B9', borderRadius: 50, alignItems: 'center', justifyContent: 'center'}}>
-                <Text key={idx}>{user}</Text>
+              <View key={idx} style={{alignItems: 'center'}}>
+                <Image source={{uri: user.Images}} style={{width: 75, height: 75, borderRadius: 50, justifyContent: 'center'}}/>
+                <Text>{user.userName}</Text>
               </View>)}
             </View>
 

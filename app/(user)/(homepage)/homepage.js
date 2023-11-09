@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Tabs, useRouter } from 'expo-router';
-import { View, SafeAreaView, Text, StyleSheet, Pressable, ScrollView } from 'react-native'
+import { View, SafeAreaView, Text, StyleSheet, Pressable, ScrollView, Image } from 'react-native'
 import { useStorageState } from '../../../hooks/useStorageState';
 
 // Components
@@ -113,7 +113,7 @@ const HomepageIndex = () => {
   // Pag add ng expenses
   async function addExpenseHandler(category, amount, note) {
     const payload = {
-      type: tabData[activeTab].name,
+      expenseType: tabData[activeTab].name,
       category: category,
       amount: Number(amount),
       note: note ? note : "",
@@ -297,16 +297,14 @@ const HomepageIndex = () => {
         <Text>Loading...</Text>
       :
       <>
-      <View style={[styles.container, {flexDirection: 'row'}]}>
+      <View style={[styles.container, {flexDirection: 'row', padding: 8}]}>
         <View>
           <Text style={[styles.normalText, styles.grayText]}>Hello {parsedUser ? parsedUser.username : "User"},</Text>
           <Text style={[styles.boldText, styles.bigFont]}>Welcome Back!</Text>
         </View>
         <View style={{flex: 1, alignItems: 'flex-end', justifyContent:'center'}}>
           <Pressable onPress={() => userModalToggle()}>
-            <View style={{backgroundColor: 'red', width: 35, height: 35, borderRadius: 50}}>
-              
-            </View>
+            <Image source={{uri: parsedUser.imageUrl}} style={{width: 60, height: 60, borderRadius: 50}}/>
           </Pressable>
         </View>
       </View>
@@ -316,7 +314,7 @@ const HomepageIndex = () => {
           <Text style={[styles.bigFont]}>{activeBudget.budgetName}</Text>
         </Pressable>
 
-        <Text style={[styles.italics, styles.normalText]}>MONTH</Text>
+        <Text style={[styles.italics, styles.normalText, {textTransform: 'uppercase'}]}>{activeBudget.budgetType}</Text>
 
         <View style={styles.flexRow}>
           <View style={{backgroundColor: '#d7ecea', alignSelf: 'center', position: 'relative'}}>
@@ -373,7 +371,7 @@ const HomepageIndex = () => {
       <BudgetList isModalVisible={isBListModalVisible} setModalVisible={setIsBListModalVisible} />
       <UserListModal isModalVisible={isUserModalVisible} setModalVisible={setIsUserModalVisible} />
       <UpdateBudget isModalVisible={isBModalOpen} totalBudget={totalBudget} activeBudget={activeBudget} setModalVisible={setIsBModalOpen} updateBudget={updateBudgetHandler} />
-      <AddExpenses categoryList={parsedData[tabData[activeTab].name]} isModalVisible={isEModalOpen} setModalVisible={setIsEModalOpen} onAddExpense={addExpenseHandler}/>
+      <AddExpenses categoryList={parsedData[tabData[activeTab].name]} isModalVisible={isEModalOpen} expenses={parsedExpenses} setModalVisible={setIsEModalOpen} onAddExpense={addExpenseHandler}/>
       </>}
     </SafeAreaView>
   )
@@ -427,7 +425,7 @@ const styles = StyleSheet.create({
   bottomButtonWrapper: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 24,
+    marginTop: 8,
     gap: 24,
   },
   button: {

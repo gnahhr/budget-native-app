@@ -32,6 +32,10 @@ const SettingsIndex = () => {
     router.push(`/(user)/(settings)/about`)
   }
 
+  const securityHandler = () => {
+    router.push(`/(user)/(settings)/security`)
+  }
+
   const signOutHandler = () => {
     signOut();
     router.replace('/');
@@ -68,7 +72,9 @@ const SettingsIndex = () => {
             <Pressable onPress={() => editProfileHandler()}>
               <Text style={[styles.button, styles.textWhite, styles.textItalics, styles.textBold, styles.largeFont]}>EDIT PROFILE</Text>
             </Pressable>
-            <Text style={[styles.button, styles.textWhite, styles.textItalics, styles.textBold, styles.largeFont]}>SECURITY</Text>
+            <Pressable onPress={() => securityHandler()}>
+              <Text style={[styles.button, styles.textWhite, styles.textItalics, styles.textBold, styles.largeFont]}>SECURITY</Text>
+            </Pressable>
           </View>
         </View>
         <Pressable onPress={() => transactionsHandler()}>

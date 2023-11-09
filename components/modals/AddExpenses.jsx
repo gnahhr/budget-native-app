@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, Pressable } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Pressable, Alert } from 'react-native';
 import Button from '../common/Button';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Modal from 'react-native-modal';
 import { AntDesign } from '@expo/vector-icons';
 import { getDateToday } from '../../utils/dateFunctions';
 
-const AddExpenses = ({categoryList, isModalVisible, setModalVisible, onAddExpense}) => {
+const AddExpenses = ({categoryList, isModalVisible, expenses, setModalVisible, onAddExpense}) => {
   const [ categoryState, setCategoryState ] = useState(categoryList);
   const [ amount, setAmount ] = useState("");
   const [ note, setNote ] = useState("");
@@ -29,6 +29,30 @@ const AddExpenses = ({categoryList, isModalVisible, setModalVisible, onAddExpens
     if (!value) return;
 
     if (Number(amount) > 0) {
+      const expenseFilter = expenses.filter(item => item.category === value);
+      const allocation = categoryList.filter(item => item.name === value)[0].allocation;
+      const currentExpense = expenseFilter.length > 0 ? expenseFilter[0].amount : 0;
+      
+      if (allocation < currentExpense + amount) {
+        // Alert.alert(
+        //   'Exceeding amount!',
+        //   'You are over budget. Are sure you want to continue?',
+        //   [
+        //     {
+        //       text: 'Cancel',
+        //       onPress: () => Alert.alert('Cancel Pressed'),
+        //       style: 'cancel',
+        //     },
+        //   ],
+        //   {
+        //     text: 'Continue',
+        //     onPress: () =>
+        //       Alert.alert(
+        //         'Yessir',
+        //       ),
+        //   },
+        // );
+      }
       setIsLoading(true);
       await onAddExpense(value, amount, note);
       setIsLoading(false);
@@ -111,7 +135,7 @@ const AddExpenses = ({categoryList, isModalVisible, setModalVisible, onAddExpens
           </View>
 
           <View style={{backgroundColor: '#eff5f9', text: 'center'}}>
-            <Text style={[styles.textBold, styles.textCenter]}>Transcation date and time:</Text>
+            <Text style={[styles.textBold, styles.textCenter]}>Transaction date and time:</Text>
             {/* Ideth */}
             <Text style={[styles.textCenter]}>{date}</Text>
           </View>

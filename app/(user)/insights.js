@@ -14,7 +14,7 @@ import { useAuth } from '../../context/auth';
 import { useBudget } from '../../context/budget';
 
 // APIs/Utils
-import { getInsights } from '../../api/insights';
+import { getInsights, analyzeData } from '../../api/insights';
 import {
   getDateTodayISO,
   getWeeklyStartEnd } from '../../utils/dateFunctions';
@@ -66,6 +66,12 @@ const Insights = () => {
       }
     });
     if (!(data.response.length === 0)) setData(data.response);
+  }
+
+  async function analyzeHandler() {
+    const data = await analyzeData(parsedUser.email, activeBudget.budgetName);
+
+    console.log(data);
   }
 
   useEffect(() => {
@@ -124,7 +130,7 @@ const Insights = () => {
         :
         <Text>No expenses yet.</Text>}
       </View>
-      <Pressable>
+      <Pressable onPress={() => analyzeHandler()}>
         <View style={{position: 'absolute', backgroundColor: COLORS['blue-800'], bottom: 10, right: 10, borderRadius: 100, width: 65, height: 65}}>
           
         </View>

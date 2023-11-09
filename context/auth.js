@@ -56,6 +56,7 @@ function useProtectedRoute(user) {
 export function Provider(props) {
   const [ user, setUser ] = useState(null);
   const [[isLoading, userData], setUserData] = useStorageState('user');
+  const [ email, setEmail ] = useState("");
 
   // Pagset ng data not just sa provider pero dun din sa local storage
   useEffect(() => {
@@ -71,7 +72,9 @@ export function Provider(props) {
       value={{
         signIn: (value) => {setUser(value); setUserData(value);},
         signOut: () => {setUser(null); setUserData(null)},
-        user
+        setAuthEmail: (value) => {setEmail(value)},
+        user,
+        email
       }}>
       {props.children}
     </AuthContext.Provider>

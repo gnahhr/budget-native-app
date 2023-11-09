@@ -10,3 +10,11 @@ export async function getInsights(params) {
   
   return await response;
 };
+
+export async function analyzeData(email, budgetName) {
+  const response = await axios.get(`${apiURL}/analytics/analyze?email=${email}&budgetName=${budgetName}`)
+  .then(response => response.data)
+  .catch(err => console.error(err));
+  
+  return await response;
+};
