@@ -8,6 +8,7 @@ import { useStorageState } from '../../hooks/useStorageState';
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/auth';
 import { useBudget } from '../../context/budget';
+import { AntDesign } from '@expo/vector-icons';
 
 
 const HomeAllocation = ({category, expenses, type, getAllocation}) => {
@@ -112,7 +113,7 @@ const HomeAllocation = ({category, expenses, type, getAllocation}) => {
           <Text style={[styles.bottomText]}>Php. {expense} / Php. {category.allocation}</Text>
         </View>
         <Pressable onPress={() => deleteCategoryHandler()}>
-          <View style={{width: 30, height:30, backgroundColor: 'red', borderRadius:8}} />
+          <AntDesign name="delete" size={25} color={COLORS['white-700']} style={[styles.iconStyle, styles.redIcon]} />
         </Pressable>
       </View>
       <View style={[indiStyle, styles.progressBar, { width: `${percentage}%`}]} />
@@ -130,6 +131,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     margin: 4
   },
+  redIcon: {
+    backgroundColor: COLORS['red-500'],
+  },
   progressBar: {
     alignSelf: 'flex-start'
   },
@@ -144,8 +148,7 @@ const styles = StyleSheet.create({
   iconStyle: {
     padding: 3,
     marginRight: 6,
-    paddingHorizontal: 4,
-    paddingVertical: 6,
+    padding: 4,
     aspectRatio: 1,
     borderRadius: 8,
     backgroundColor: COLORS['blue-100'],

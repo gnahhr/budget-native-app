@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Tabs } from 'expo-router';
 import { View, Text, SafeAreaView, Pressable } from 'react-native';
-import { Entypo } from '@expo/vector-icons';
+import { Entypo, MaterialIcons } from '@expo/vector-icons';
 
 // Components
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -130,11 +130,15 @@ const Insights = () => {
         :
         <Text>No expenses yet.</Text>}
       </View>
-      <Pressable onPress={() => analyzeHandler()}>
-        <View style={{position: 'absolute', backgroundColor: COLORS['blue-800'], bottom: 10, right: 10, borderRadius: 100, width: 65, height: 65}}>
+
+      {/* {!!data && */}
+        <Pressable onPress={() => analyzeHandler()}>
           
-        </View>
-      </Pressable>
+          <View style={{position: 'absolute', backgroundColor: COLORS['blue-800'], bottom: 10, right: 10, borderRadius: 100, width: 65, height: 65, alignItems: 'center', justifyContent: 'center'}}>
+            <MaterialIcons name="insights" size={40} color={COLORS['white-500']} />
+          </View>
+        </Pressable>
+      {/* } */}
       <AnalyzeModal isModalVisible={isAnalyzeOpen} setModalVisible={setIsAnalyzeOpen}/>
     </SafeAreaView>
   )

@@ -103,7 +103,7 @@ const Debts = () => {
               passStyle.push(styles.grayText)
             }
             return (
-            <Pressable key={tab} onPress={() => setActiveTab(tab)}>
+            <Pressable key={tab} onPress={() => {setActiveTab(tab); setFilteredList([]); setTotalBalance(0)}}>
               <Text style={passStyle}>{tab}</Text>
             </Pressable>)
           }

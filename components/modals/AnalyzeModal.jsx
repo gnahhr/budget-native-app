@@ -43,9 +43,12 @@ const AnalyzeModal = ({isModalVisible, setModalVisible}) => {
             </View>
 
             <View>
-              {overspentItems && overspentItems.map(item => 
+              {overspentItems && overspentItems.length > 0 ?
+              overspentItems.map(item => 
                 <Text key={item.name}>You have overspent Php. {item.overspent} on {item.name}!</Text> 
-                )}
+                )
+              :
+              <Text style={[styles.textHeader, styles.textCenter, styles.textBold]}>You're doing great!</Text>}
             </View>
             
         </View>
@@ -60,8 +63,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignSelf: 'center',
     padding: 20,
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
+    borderRadius: 8,
     overflow: 'scroll'
   },
   modalHeader: {

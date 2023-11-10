@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Stack, useRouter } from "expo-router";
-import { View, Text, StyleSheet, TextInput, Pressable } from 'react-native'
+import { View, Text, StyleSheet, TextInput, Pressable, Image } from 'react-native'
 import CustomIcon from '../../../components/common/CustomIcon';
 import LogoS from '../../../assets/logos/logo-sw.png';
 import { useAuth } from '../../../context/auth';
-import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { MaterialCommunityIcons, FontAwesome5, AntDesign } from '@expo/vector-icons';
 import { updateUser } from '../../../api/login';
 import Button from '../../../components/common/Button';
 
@@ -19,6 +19,7 @@ const EditProfile = () => {
   const [ msg, setMsg ] = useState();
   const [ isLoading, setIsLoading ] = useState(false);
   const [ showPassword, setShowPassword ] = useState(false);
+  const [ displayImage, setDisplayImage ] = useState("");
 	const [ image, setImage ] = useState("");
 
   const { user, signIn } = useAuth();
@@ -96,6 +97,7 @@ const EditProfile = () => {
       const parsedUser = JSON.parse(user);
       setUserName(parsedUser.username);
       setEmail(parsedUser.email);
+      setDisplayImage(parsedUser.imageUrl);
     }
   }, [user])
 
@@ -120,6 +122,14 @@ const EditProfile = () => {
       {msg && <Text>{msg}</Text>}
       
       <View style={{gap: 8, width: '80%', marginTop: 20}}>
+        <Pressable onPress={() => selectImage(true)}>
+          <View style={{position: 'relative', alignSelf: 'flex-start'}}>
+            <Image source={{uri: displayImage}} width={80} height={80} style={{borderRadius: 50, borderWidth: 2, borderColor: 'black'}}/>
+            <View style={{position: 'absolute', backgroundColor: 'rgba(0,0,0,.5)', bottom: 0, right: 0, width: 30, height: 30, borderRadius: 50, alignItems: 'center', justifyContent: 'center'}} >
+            <AntDesign name="camerao" size={16} color="white" />
+            </View>
+          </View>
+        </Pressable>
         <Text>Username</Text>
         <TextInput style={[styles.textInputStyle]} placeholder='Username' defaultValue={userName} value={userName} onChangeText={setUserName}/>
         <Text>Email</Text>
@@ -131,7 +141,7 @@ const EditProfile = () => {
         <Text>Confirm New Password</Text>
         <TextInput style={[styles.textInputStyle]} placeholder='Confirm New Password' value={conNewPassword} onChangeText={setConNewPassword} secureTextEntry={!showPassword}/>
         
-        <Button label="Photo Library" action={() => selectImage(true)} />
+        {/* <Button label="Photo Library" action={() => selectImage(true)} /> */}
 
         <View style={[styles.flexRow]}>
           <MaterialCommunityIcons 
@@ -145,7 +155,7 @@ const EditProfile = () => {
         </View>
       </View>
 
-      <View style={{marginTop: 'auto', marginBottom: 25}}>
+      <View style={{marginBottom: 25}}>
         <Button label={"Save settings"} action={() => saveProfile()} isLoading={isLoading}/>
       </View>
     </View>
