@@ -30,6 +30,14 @@ export async function updateAllocation(email, budgetName, payload) {
     return await response;
 };
 
+export async function deleteCategory(email, budgetName, expenseType, categoryName) {
+    const response = await axios.put(`${apiURL}/budget/delete-category?email=${email}&budgetName=${budgetName}&expenseType=${expenseType}&name=${categoryName}`)
+    .then(response => response.data)
+    .catch(err => console.error(err));
+    
+    return await response;
+};
+
 export async function getAllocatedBudget(email, budgetName) {
   const response = await axios.get(`${apiURL}/budget/get-budget-allocation?email=${email}&budgetName=${budgetName}`)
   .then(response => response.data)
@@ -55,6 +63,16 @@ export async function getBudgetUsers(email, budgetName) {
 
 export async function addBudgetUser(email, budgetName, userEmail) {
   const response = await axios.post(`${apiURL}/budget/add-user?email=${email}&budgetName=${budgetName}`, {
+    userEmail,
+  } )
+  .then(response => response.data)
+  .catch(err => console.error(err));
+  
+  return await response;
+};
+
+export async function removeBudgetUser(email, budgetName, userEmail) {
+  const response = await axios.put(`${apiURL}/budget/delete-user-from-budget?email=${email}&budgetName=${budgetName}`, {
     userEmail,
   } )
   .then(response => response.data)

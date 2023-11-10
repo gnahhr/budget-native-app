@@ -1,18 +1,25 @@
 import React, { useState, useEffect } from 'react'
-import { View, Image, Text, StyleSheet, TextInput } from 'react-native'
+import { View, Text, StyleSheet, Alert, Pressable } from 'react-native'
 import { getIcon } from '../../constants/icons';
 import { Icon } from '@rneui/themed';
 import { schedulePushNotification } from '../../utils/notification';
+import { deleteCategory } from '../../api/budget';
 import { useStorageState } from '../../hooks/useStorageState';
 import { COLORS } from '../../constants/theme';
+import { useAuth } from '../../context/auth';
+import { useBudget } from '../../context/budget';
 
-const HomeAllocation = ({category, expenses, type}) => {
+
+const HomeAllocation = ({category, expenses, type, getAllocation}) => {
   const [ indiStyle, setIndiStyle ] = useState([styles.indicatorStyle]);
   const [ expense, setExpense ] = useState(0);
   const [ icon, setIcon ] = useState(null);
   const [ percentage, setPercentage ] = useState(0); 
   const [ [isLoading, notifList], setNotifList ] = useStorageState("notifList");
   const [ [isSettingsLoading, notifSettings], setNotifSettings ] = useStorageState("notifSettings");
+  
+  const { user } = useAuth();
+  const { activeBudget } = useBudget();
 
   const percentageHandler = () => {
     if (expense >= category.allocation) {
@@ -32,6 +39,36 @@ const HomeAllocation = ({category, expenses, type}) => {
         setNotifList(JSON.stringify(data));
       }
     }
+  }
+
+  async function deleteCategoryHandler() {
+    Alert.alert(
+      "Warning!",
+      `Are you sure you want to delete ${category.name} to the allocation?`,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Yes',
+          onPress: async () => {
+            const data = await deleteCategory(JSON.parse(user).email, activeBudget.budgetName, type, category.name);
+
+            if (data.statusCode === 200) {
+              Alert.alert("Category removed successfully");
+              getAllocation();
+            } else {
+              Alert.alert(data.message);
+            }
+          },
+          style: 'default',
+        },
+      ],
+      {
+        text: 'Continue',
+      },
+    );
   }
 
   useEffect(()=> {
@@ -74,6 +111,9 @@ const HomeAllocation = ({category, expenses, type}) => {
           <Text style={[styles.topText]}>{category.name}</Text>
           <Text style={[styles.bottomText]}>Php. {expense} / Php. {category.allocation}</Text>
         </View>
+        <Pressable onPress={() => deleteCategoryHandler()}>
+          <View style={{width: 30, height:30, backgroundColor: 'red', borderRadius:8}} />
+        </Pressable>
       </View>
       <View style={[indiStyle, styles.progressBar, { width: `${percentage}%`}]} />
     </View>
@@ -85,7 +125,7 @@ const styles = StyleSheet.create({
     width: "100%",
     alignSelf: 'center',
     backgroundColor: COLORS['white-500'],
-    alignItems: 'center',
+    // alignItems: 'center',
     padding: 8,
     borderRadius: 8,
     margin: 4

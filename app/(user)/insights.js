@@ -8,6 +8,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import PieChart from '../../components/charts/PieChartView';
 import BarChart from '../../components/charts/BarChartView';
 import CustomIcon from '../../components/common/CustomIcon';
+import AnalyzeModal from '../../components/modals/AnalyzeModal';
 
 // Hooks
 import { useAuth } from '../../context/auth';
@@ -23,6 +24,7 @@ import { COLORS } from '../../constants/theme';
 
 const Insights = () => {
   const [ parsedUser, setParsedUser ] = useState();
+  const [ isAnalyzeOpen, setIsAnalyzeOpen ] = useState(false);
   const [ data, setData ] = useState();
   const { user } = useAuth();
   const { activeBudget } = useBudget();
@@ -69,9 +71,7 @@ const Insights = () => {
   }
 
   async function analyzeHandler() {
-    const data = await analyzeData(parsedUser.email, activeBudget.budgetName);
-
-    console.log(data);
+    setIsAnalyzeOpen(true);
   }
 
   useEffect(() => {
@@ -135,6 +135,7 @@ const Insights = () => {
           
         </View>
       </Pressable>
+      <AnalyzeModal isModalVisible={isAnalyzeOpen} setModalVisible={setIsAnalyzeOpen}/>
     </SafeAreaView>
   )
 }

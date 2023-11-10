@@ -1,20 +1,30 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Stack, useRouter } from "expo-router";
 import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native'
 import CustomIcon from '../../../components/common/CustomIcon';
 import LogoS from '../../../assets/logos/logo-sw.png';
 import { FontAwesome5 } from '@expo/vector-icons';
+import * as Device from 'expo-device';
+import * as Application from 'expo-application';
+import * as Network from 'expo-network';
+import AboutItem from '../../../components/common/AboutItem';
 
 const About = () => {
-  const [ toggleTerms, setToggleTerms ] = useState(false);
-  const [ togglePrivacy, setTogglePrivacy ] = useState(false);
-  const [ toggleContacts, setToggleContacts ] = useState(false);
-  
   const router = useRouter();
+  const [ connectionType, setConnectionType ] = useState("UNKNOWN");
 
   const backHandler = () => {
     router.back();
   }
+
+  async function getNetwork() {
+    const data = await Network.getNetworkStateAsync();
+    setConnectionType(data.type);
+  }
+
+  useEffect(() => {
+    getNetwork();
+  }, [])
 
   return (
     <ScrollView style={[{position: 'relative', height: '100%'}]} contentContainerStyle={{alignItems: 'center'}}>
@@ -36,8 +46,10 @@ const About = () => {
       </View>
       
       <View style={{marginTop: 8, width: '90%', gap: 8}}>
-
-
+        <AboutItem label={"App Version"} value={Application.nativeApplicationVersion}/>
+        <AboutItem label={"System Version"} value={`${Device.osName} ${Device.osVersion}`}/>
+        <AboutItem label={"Device Model"} value={Device.modelName}/>
+        <AboutItem label={"Network Type"} value={connectionType}/>
       </View>
     </ScrollView>
   )

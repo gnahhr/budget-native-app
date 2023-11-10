@@ -20,6 +20,10 @@ const ICONS = {
   'food-fork-drink': <MaterialCommunityIcons name="food-fork-drink" size={size} color={color} />,
 }
 
+export const getIconsList = () => {
+  return Object.keys(ICONS);
+}
+
 export const getIcon = (iconId) => {
   if (!ICONS[iconId]) return <MaterialCommunityIcons name="food-fork-drink" size={size} color={color} />;
 

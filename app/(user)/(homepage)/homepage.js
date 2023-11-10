@@ -352,7 +352,7 @@ const HomepageIndex = () => {
       
       <ScrollView style={[styles.container, styles.scrollHeight]}>
         {!expensesLoading && !isExpensesLoading && parsedData[tabData[activeTab].name].length > 0 ?
-          parsedData[tabData[activeTab].name].map(data => <HomeAllocation key={data.name} category={data} expenses={parsedExpenses} type={tabData[activeTab].name}/>)
+          parsedData[tabData[activeTab].name].map(data => <HomeAllocation key={data.name} category={data} expenses={parsedExpenses} type={tabData[activeTab].name} getAllocation={() => getAllocation(parsedUser.email, parsedUser.defaultBudget)}/>)
           :
           <Text>Nothing Allocated</Text>
           }
