@@ -32,31 +32,33 @@ const AddExpenses = ({categoryList, isModalVisible, expenses, setModalVisible, o
       const expenseFilter = expenses.filter(item => item.category === value);
       const allocation = categoryList.filter(item => item.name === value)[0].allocation;
       const currentExpense = expenseFilter.length > 0 ? expenseFilter[0].amount : 0;
-      
-      if (allocation < currentExpense + amount) {
-        // Alert.alert(
-        //   'Exceeding amount!',
-        //   'You are over budget. Are sure you want to continue?',
-        //   [
-        //     {
-        //       text: 'Cancel',
-        //       onPress: () => Alert.alert('Cancel Pressed'),
-        //       style: 'cancel',
-        //     },
-        //   ],
-        //   {
-        //     text: 'Continue',
-        //     onPress: () =>
-        //       Alert.alert(
-        //         'Yessir',
-        //       ),
-        //   },
-        // );
-      }
-      setIsLoading(true);
-      await onAddExpense(value, amount, note);
-      setIsLoading(false);
-      resetModal();
+      const exceeded = allocation < currentExpense + amount;
+      const alertHeader = exceeded ? 'Exceeding amount!' : 'Confirm expense:';
+      const alertText = exceeded ? 'You are over budget. Are sure you want to continue?' : `Add ${amount} on ${value}?`;
+
+      Alert.alert(
+        alertHeader,
+        alertText,
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Yes',
+            onPress: async () => {
+              setIsLoading(true);
+              await onAddExpense(value, amount, note);
+              setIsLoading(false);
+              resetModal();
+            },
+            style: 'default',
+          },
+        ],
+        {
+          text: 'Continue',
+        },
+      );
     }
   };
 
