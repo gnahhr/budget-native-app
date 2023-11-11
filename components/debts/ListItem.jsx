@@ -9,7 +9,7 @@ const ListItem = ({name, balance, history, dueDate, type = "Lend"}) => {
   const [ toggled, setToggled ] = useState(false);
   const [ [isLoading, notifList], setNotifList ] = useStorageState("notifList");
 
-  const textColor = balance === 0 ? styles.textGreen : type === "Lend" ? styles.textGreen : styles.textRed;
+  const textColor = balance === 0 ? styles.textGreen : styles.textRed;
 
   const toggleHandler = () => {
     setToggled(!toggled);

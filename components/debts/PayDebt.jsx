@@ -32,7 +32,7 @@ const PayDebt = ({nameList, isModalVisible, setModalVisible, type}) => {
   }
 
   async function addExpenseHandler() {
-    if (!value && amount <= 0) return; 
+    if (!value || amount <= 0) return; 
 
     setIsLoading(true);
     const debtType = type === 'Debt' ? 'borrowed' : 'lend';

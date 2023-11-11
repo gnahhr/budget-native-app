@@ -114,7 +114,7 @@ Send you important notifications, updates, and promotional materials related to 
         <Pressable onPress={() => setToggleContacts(!toggleContacts)}>
           <View style={[styles.itemStyle]}>
             <Text style={[styles.textBold, styles.textLg]}>Contact Us</Text>
-            {toggleContacts && <Text style={styles.innerItem}>Yey</Text>}
+            {toggleContacts && <Text style={styles.innerItem}>bsmartapp23@gmail.com</Text>}
           </View>
         </Pressable>
 

@@ -3,7 +3,7 @@ import { View, Text, TextInput, Pressable, SafeAreaView, Alert } from 'react-nat
 import styles from './styles';
 
 const Step2 = ({setBudget, setBudgetName, nextStep, prevStep}) => {
-  const [ numInput, onChangeNumInput ] = useState(0);
+  const [ numInput, onChangeNumInput ] = useState("0");
   const [ name, setName ] = useState("myBudget");
 
   const nextHandler = () => {
@@ -48,13 +48,7 @@ const Step2 = ({setBudget, setBudgetName, nextStep, prevStep}) => {
           value={name}
         />
         <Text style={[styles.textCenter, styles.textWhite]}>TOTAL BUDGET</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangeNumInput}
-          placeholder='0'
-          value={String(numInput)}
-          keyboardType="numeric"
-        />
+        <TextInput style={styles.input} placeholder='Php. 00' keyboardType="numeric" onChangeText={onChangeNumInput}/>
         
         <View style={[styles.center, styles.buttonWrapper, styles.navWrapper]}>
           <Pressable onPress={prevStep}>

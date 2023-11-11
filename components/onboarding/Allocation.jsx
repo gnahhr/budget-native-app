@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { View, Alert, Text, StyleSheet, TextInput } from 'react-native'
+import React, { useState, useEffect, useRef} from 'react'
+import { View, Alert, Text, StyleSheet, TextInput, Pressable } from 'react-native'
 import { getIcon } from '../../constants/icons';
 import { Icon } from '@rneui/themed';
 
@@ -7,6 +7,7 @@ import { Icon } from '@rneui/themed';
 const Allocation = ({category, curAllocation, allocationHandler, iconId, checkExceeding}) => {
   const [ allocation, onChangeAllocation ] = useState(curAllocation);
   const [ icon, setIcon ] = useState(null);
+  const inputRef = useRef();
 
   const onChangeHandler = (e) => {
     const allo = Number(e)
@@ -32,6 +33,12 @@ const Allocation = ({category, curAllocation, allocationHandler, iconId, checkEx
     }
   }
 
+  const onFocusHandler = () => {
+    if (checkExceeding){
+      inputRef.current.focus()
+    }
+  }
+
   useEffect(() => {
     setIcon(getIcon(iconId));
     onChangeAllocation(curAllocation);
@@ -53,7 +60,7 @@ const Allocation = ({category, curAllocation, allocationHandler, iconId, checkEx
             style={styles.iconStyle}
             />
         }
-      <View>
+      <Pressable style={{flex: 1}} onPress={() => onFocusHandler()}>
         <Text style={[styles.topText, styles.whiteText]}>{category}</Text>
         <View style={styles.sideBySide}>
           <Text style={[styles.bottomText, styles.whiteText]}>Php. </Text>
@@ -63,12 +70,14 @@ const Allocation = ({category, curAllocation, allocationHandler, iconId, checkEx
               value={String(allocation)}
               inputMode='numeric'
               onChangeText={onChangeHandler}
-              style={[styles.bottomText, styles.whiteText]} />
+              style={[styles.bottomText, styles.whiteText]}
+              ref={inputRef}
+              />
             :
             <Text style={[styles.bottomText, styles.whiteText]}>{allocation}</Text>
           }
         </View>
-      </View>
+      </Pressable>
     </View>
   )
 }

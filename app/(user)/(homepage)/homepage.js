@@ -177,7 +177,10 @@ const HomepageIndex = () => {
     const data = await updateBudget(parsedUser.email, activeBudget.budgetName, newBudget, newName);
 
     if (data?.statusCode === 200) {
-      updateActive(newName)
+      updateActive({
+        budgetName: newName,
+        budgetType: activeBudget.budgetType
+      })
     }
 
     getAllocation(parsedUser.email);

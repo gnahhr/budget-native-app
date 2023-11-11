@@ -56,8 +56,8 @@ const AddCategory = ({isModalVisible, setModalVisible, createCategory}) => {
               </Pressable>
             </View>
             <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 8}}>
-              {iconList && iconList.map(icon =>
-                  <Pressable key={icon} onPress={() => iconOnPressHandler(icon)}>
+              {iconList && iconList.map((icon, idx) =>
+                  <Pressable key={idx} onPress={() => iconOnPressHandler(icon)}>
                     <View style={[styles.unselectedPill]}>{getIcon(icon)}</View>
                   </Pressable>
                 )}

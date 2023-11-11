@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     padding: 10,
     color: '#ffffff',
-    backgroundColor: '#5cafc9'
+    backgroundColor: '#5cafc9',
   },
   flexRow: {
     flexDirection: 'row',

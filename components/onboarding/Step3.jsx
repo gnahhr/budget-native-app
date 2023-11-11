@@ -186,9 +186,8 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
       }
     })
     // Computation ng total allocation then percentace.
-    const totalAllocation = newData.reduce((sum, category) => sum + Number(category.allocation), 0);
+    const totalAllocation = newData.reduce((sum, category) => Number(sum) + Number(category.allocation), 0);
     const percentage = tabData[activeTab].ratio ? tabData[activeTab].ratio / 100 : 1;
-
     if (totalAllocation > totalBudget * percentage){
       Alert.alert('Warning', 'You have exceeded the allocated budget!', [
         {
@@ -321,8 +320,8 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
         <ScrollView style={[styles.center, styles.containAllocation]}>
           {tabData[activeTab].state.filter(x => x.toggled).length > 0 ? 
             <>
-            {tabData[activeTab].state.filter(x => x.toggled).map(x =>
-              <Allocation key={x.name}
+            {tabData[activeTab].state.filter(x => x.toggled).map((x, idx) =>
+              <Allocation key={idx}
                           category={x.name}
                           iconId={x.iconId}
                           curAllocation={x.allocation}

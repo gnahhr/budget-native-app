@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     padding: 4,
     borderRadius: 8,
     backgroundColor: '#ffffff',
-    width: 160,
+    width: 130,
     margin: 5,
   },
   titleStyle: {

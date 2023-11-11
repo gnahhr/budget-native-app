@@ -37,6 +37,7 @@ const BorrowMoney = ({isModalVisible, setModalVisible, type}) => {
       dueDate: formatDatePicker(dueDate),
       name: name,
       totalDebt: Number(amount),
+      status: 'Still Paying',
       interest: interest,
       debtType: debtType,
     }

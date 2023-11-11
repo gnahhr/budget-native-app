@@ -6,8 +6,7 @@ const Category = ({category, categoryState, updateCategory}) => {
   if (category.toggled) checked.push(styles.checkboxActive);
 
   return (
-    <View key={category.name} style={[styles.wrapper, styles.categoryStyle]}>
-      <Pressable style={checked} onPress={() => {
+    <Pressable key={category.name} style={[styles.wrapper, styles.categoryStyle]} onPress={() => {
         const newData = categoryState.map(x => {
           if (x.name === category.name) {
             return {
@@ -19,9 +18,10 @@ const Category = ({category, categoryState, updateCategory}) => {
           }
         })
         updateCategory(newData);
-        }}></Pressable>
+        }}>
+      <View style={checked}></View>
       <Text style={styles.categoryText}>{category.name}</Text>
-    </View>
+    </Pressable>
   )
 }
 

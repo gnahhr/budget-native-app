@@ -11,6 +11,9 @@ import Button from '../../../components/common/Button';
 import * as ImagePicker from 'expo-image-picker';
 
 const EditProfile = () => {
+  const { user, signIn } = useAuth();
+  const router = useRouter();
+
   const [ userName, setUserName ] = useState();
   const [ email, setEmail ] = useState();
   const [ password, setPassword ] = useState();
@@ -19,24 +22,33 @@ const EditProfile = () => {
   const [ msg, setMsg ] = useState();
   const [ isLoading, setIsLoading ] = useState(false);
   const [ showPassword, setShowPassword ] = useState(false);
-  const [ displayImage, setDisplayImage ] = useState("");
-	const [ image, setImage ] = useState("");
-
-  const { user, signIn } = useAuth();
-  const router = useRouter();
+  const [ displayImage, setDisplayImage ] = useState(JSON.parse(user).imageUrl);
+	const [ image, setImage ] = useState(null);
 
   const backHandler = () => {
     router.back();
   }
 
   async function saveProfile() {
-    if (conNewPassword !== newPassword) {
-      setMsg("Password mismatch!")
+    if (!image) {
       return;
     }
-    
-    if (!conNewPassword || !newPassword || !userName || !password) {
-      setMsg("Fields should not be blank")
+
+    if (!userName) {
+      setMsg("Username should not be blank");
+      return;
+    }
+
+    if (conNewPassword !== newPassword) {
+      setMsg("Password mismatch!");
+      return;
+    }
+
+    if (password && !newPassword) {
+      setMsg("New password should not be blank.");
+      return;
+    } else if (!password && newPassword) {
+      setMsg("Old password should not be blank.");
       return;
     }
     
@@ -44,13 +56,19 @@ const EditProfile = () => {
 
     const formData = new FormData();
     formData.append('userName', userName);
-    formData.append('password', password);
-    formData.append('newPassword', newPassword);
-    formData.append('imageUrl', {
-      uri: image,
-      type: "image/jpeg",
-      name: "something.jpeg",
-    });
+
+    if (password && newPassword) {
+      formData.append('password', password);
+      formData.append('newPassword', newPassword);
+    }
+
+    if(image) {
+      formData.append('imageUrl', {
+        uri: image,
+        type: "image/jpeg",
+        name: "something.jpeg",
+      });
+    }
 
     const data = await updateUser(email, formData);
     setIsLoading(false);
@@ -62,7 +80,7 @@ const EditProfile = () => {
       signIn(JSON.stringify({
         ...parsedUser,
         userName,
-        imageUrl: image,
+        imageUrl: image ? image : parsedUser.imageUrl,
       }))
     } else {
       setMsg(data.message)
@@ -89,15 +107,15 @@ const EditProfile = () => {
 		// Save image if not cancelled
 		if (!result.canceled) {
 			setImage(result.assets[0].uri);
+      setDisplayImage(result.assets[0].uri);
 		}
 	};
 
-  useState(() => {
+  useEffect(() => {
     if (user) {
       const parsedUser = JSON.parse(user);
       setUserName(parsedUser.username);
       setEmail(parsedUser.email);
-      setDisplayImage(parsedUser.imageUrl);
     }
   }, [user])
 

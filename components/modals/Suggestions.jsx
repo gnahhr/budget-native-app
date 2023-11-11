@@ -60,7 +60,7 @@ const Suggestions = ({isModalVisible, setModalVisible, onChangeToggle}) => {
                 )
                 }
               )}
-              <View style={{flexDirection: 'row', backgroundColor: '#ffffff', alignSelf: 'center', gap: 4, padding: 8, borderRadius: 8, maxWidth: '70%', flexWrap: 'wrap'}}>
+              <View style={{flexDirection: 'row', backgroundColor: '#ffffff', alignSelf: 'center', gap: 4, padding: 8, borderRadius: 8, maxWidth: '60%', flexWrap: 'wrap'}}>
                 {label.map((item) => 
                 <View key={item.label} style={[styles.wrapper, {gap: 2}]}>
                     <View style={{width: 20, height: 20, backgroundColor: item.color, borderRadius: 100}}></View>
@@ -70,7 +70,7 @@ const Suggestions = ({isModalVisible, setModalVisible, onChangeToggle}) => {
             </View>
             
             <View>
-              <Text style={[styles.modalText, styles.modalHeader]}>BUDGET RATIO</Text>
+              <Text style={[styles.modalText, styles.modalHeader, {maxWidth: 120}]}>BUDGET RATIO</Text>
             </View>
             
             <Icon
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     maxWidth: 330,
-    marginRight: 35,
+    marginRight: 15,
     flexDirection: 'row',
     right: 0,
     position: 'absolute',
