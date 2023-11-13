@@ -28,7 +28,7 @@ const BorrowMoney = ({isModalVisible, setModalVisible, type}) => {
   const headerTitle = type === 'Debt' ? 'Borrow Money' : 'Lend Money';
 
   async function borrowMoneyHandler() {
-    if (!name || Number(amount) <= 0 || Number(interest) <= 0) return;
+    if (!name || Number(amount) <= 0 || Number(interest) < 0) return;
 
     setIsLoading(true);
 

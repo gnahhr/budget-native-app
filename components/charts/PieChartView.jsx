@@ -55,7 +55,7 @@ return(
             {categories.map((category, idx) =>
               <View key={category} style={[styles.flexRow]}>
                 <View style={[styles.categoryLegend, {backgroundColor: pieData[idx].color}]}></View>
-                <Text>{category}</Text>
+                <Text style={{fontSize: 12}}>{category}</Text>
               </View>
             )}
           </View>

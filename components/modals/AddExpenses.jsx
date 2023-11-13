@@ -32,7 +32,7 @@ const AddExpenses = ({categoryList, isModalVisible, expenses, setModalVisible, o
       const expenseFilter = expenses.filter(item => item.category === value);
       const allocation = categoryList.filter(item => item.name === value)[0].allocation;
       const currentExpense = expenseFilter.length > 0 ? expenseFilter[0].amount : 0;
-      const exceeded = allocation < currentExpense + amount;
+      const exceeded = Number(allocation) < Number(currentExpense) + Number(amount);
       const alertHeader = exceeded ? 'Exceeding amount!' : 'Confirm expense:';
       const alertText = exceeded ? 'You are over budget. Are sure you want to continue?' : `Add ${amount} on ${value}?`;
 

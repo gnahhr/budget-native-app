@@ -8,8 +8,8 @@ const suggestionList = [
     description: "50/30/20 budget ratio is a good starting point for most people, but you may need to adjust it based on your individual circumstances. For example, if you have a lot of debt, you may want to allocate more of your income to debt repayment. Or, if you have young children, you may need to allocate more of your income to childcare.",
     chart: c503020,
     needs: 50,
-    want: 30,
-    saving: 20
+    want: 20,
+    saving: 30
   },
   {
     name: '60/20/20',
@@ -24,8 +24,8 @@ const suggestionList = [
     description: "70/20/10 budget rule is a flexible budgeting guideline that can be customized to fit your individual needs and financial goals. For example, if you have a lot of debt, you may want to allocate more of your income to debt repayment. Or, if you're saving for a specific goal, such as a down payment on a house, you may want to allocate more of your income to savings.",
     chart: c702010,
     needs: 70,
-    want: 20,
-    saving: 10
+    want: 10,
+    saving: 20
   },
 ]
 

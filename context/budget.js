@@ -44,6 +44,7 @@ export function Provider(props) {
       value={{
         budgetList,
         activeBudget,
+        activeType,
         updateActive: (value) => {setActiveBudget(value);},
         updateActiveType: (value) => {setActiveType(value);},
         updateBudgetL: () => {refreshBudgetList();},
