@@ -163,13 +163,29 @@ const HomepageIndex = () => {
     const data = allocation.response;
     // Kasama na rin dito yung pag compute nung makikita sa homepage which is yung remaining budget,
     // tska yung yung parang progress if malapit na maubos budget
+    const expenses = tabs.map(item => data[item.toLowerCase()][0]);
+    const filteredExpenses = expenses.map(item => {
+      if (item) return item.expenses;
+      else return [];
+    })
+    const expensesArray = [];
+    filteredExpenses.forEach(item => item.forEach(x => expensesArray.push(x)))
+    const formattedExpense = formatExpenses(expensesArray);
     
     const totalBudget = data.totalBudget ? data.totalBudget : 0;
     const remainingBudget = totalBudget > 0 ? data.totalBudget - data.totalExpenses : 0;
+
+    // Local Storage
     setData(JSON.stringify(data));
+    setExpenses(JSON.stringify(formattedExpense));
+
+    // States
     setTotalBudget(totalBudget);
-    setProgress(Math.floor(Number(remainingBudget) / Number(totalBudget) * 100));
+    setTotalExpenses(data.totalExpenses);
+    setParsedExpenses(formattedExpense);
     setParsedData(allocation.response);
+    setProgress(Math.floor(Number(remainingBudget) / Number(totalBudget) * 100));
+    setExpensesLoading(false);
   }
 
   // For updating ng budget, pagka update niya get na ng allocation then close modal
@@ -189,7 +205,7 @@ const HomepageIndex = () => {
 
   // pag get ng expenses, pagkaget niya store niya dun sa local storage yung nakuhang data which is nasa
   // Line 153
-  async function getExpensesHandler(email) {
+  async function getExpensesHandler(expenses) {
     const dateToday = getDateTodayISO();
     const dateWeekly = getWeeklyStartEnd(getDateTodayISO());
     const monthToday = dateToday.split('-').splice(0,2).join('-');
@@ -230,7 +246,7 @@ const HomepageIndex = () => {
     if (user && activeBudget) {
       const userParse = JSON.parse(user);
       setParsedUser(userParse);
-      getExpensesHandler(userParse.email);
+      // getExpensesHandler(userParse.email);
       getAllocation(userParse.email, userParse.defaultBudget);
       setIsLoading(false);
     }
@@ -240,12 +256,12 @@ const HomepageIndex = () => {
     updateBudgetL();
   }, [isBModalOpen])
 
-  useEffect(() => {
-    if (expensesLoading === false) {
-      setExpensesLoading(true);
-      getExpensesHandler(parsedUser.email);
-    }
-  }, [expenses])
+  // useEffect(() => {
+  //   if (expensesLoading === false) {
+  //     setExpensesLoading(true);
+  //     getExpensesHandler(parsedUser.email);
+  //   }
+  // }, [expenses])
 
   useEffect(() => {
     if (totalBudget){
