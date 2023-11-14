@@ -173,7 +173,7 @@ const HomepageIndex = () => {
     const formattedExpense = formatExpenses(expensesArray);
     const totalBudget = data.totalBudget ? data.totalBudget : 0;
     const remainingBudget = totalBudget > 0 ? data.totalBudget - data.totalExpenses : 0;
-    
+
     // Local Storage
     // setData(JSON.stringify(data));
     // setExpenses(JSON.stringify(formattedExpense));
@@ -304,7 +304,7 @@ const HomepageIndex = () => {
 
       <View style={[styles.budgetWrapper, styles.container]}>
         <Pressable onPress={() => budgetListModalToggle()}>
-          <Text style={[styles.bigFont]}>{activeBudget.budgetName}</Text>
+          <Text style={[styles.bigFont]}>{activeBudget.budgetName?.split('~')[0]}</Text>
         </Pressable>
 
         <Text style={[styles.italics, styles.normalText, {textTransform: 'uppercase'}]}>{activeBudget.budgetType}</Text>

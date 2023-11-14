@@ -43,7 +43,7 @@ const BudgetList = ({isModalVisible, setModalVisible}) => {
 
                 {budgetList && budgetList.map(budget => 
                   <Pressable key={budget.budgetName} onPress={() => updateActiveHandler(budget)}>
-                    <Text style={[styles.pill, styles.textWhite, styles.textBold]}>{budget.budgetName}</Text>
+                    <Text style={[styles.pill, styles.textWhite, styles.textBold]}>{budget.budgetName?.split('~')[0]}</Text>
                   </Pressable>
                   )}
             </View>
