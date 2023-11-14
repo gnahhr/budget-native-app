@@ -99,11 +99,11 @@ const BorrowMoney = ({isModalVisible, setModalVisible, type}) => {
               </View>
               <View>
                 <Text style={[styles.textBold]}>Amount</Text>
-                <TextInput placeholder='Php. 00' keyboardType="numeric" value={String(amount)} onChangeText={setAmount}/>
+                <TextInput placeholder='Php. 00' keyboardType="numeric" onChangeText={setAmount}/>
               </View>
               <View>
                 <Text style={[styles.textBold]}>Interest</Text>
-                <TextInput keyboardType="numeric" value={String(interest)} onChangeText={setInterest}/>
+                <TextInput keyboardType="numeric" onChangeText={setInterest}/>
               </View>
             </View>
           </View>

@@ -25,7 +25,6 @@ import { getExpenses } from '../../../api/expenses';
 
 const History = () => {
   const [ activeTab, setActiveTab ] = useState('Daily');
-  const [ userData, setUserData ] = useState(null);
   const [ dailyDate, setDailyDate ] = useState();
   const [ weeklyDate, setWeeklyDate ] = useState();
   const [ monthlyDate, setMonthlyDate ] = useState();
@@ -156,17 +155,16 @@ const History = () => {
 
   useEffect(() => {
     initDate();
-    if (user) {
-      const userParse = JSON.parse(user);
-      setUserData(userParse);
-      expensesHandler(userParse.email);
-    }
-  }, [user])
+  }, []);
 
   useEffect(() => {
     const userParse = JSON.parse(user);
-    expensesHandler(userParse.email);
-  }, [activeTab, dailyDate, weeklyDate, monthlyDate, yearlyDate])
+
+    if (dailyDate && weeklyDate && monthlyDate && yearlyDate) {
+      expensesHandler(userParse.email);
+    }
+
+  }, [activeTab, dailyDate, weeklyDate, monthlyDate, yearlyDate]);
 
   return (
     <SafeAreaView>

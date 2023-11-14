@@ -17,7 +17,7 @@ const AddExpenses = ({categoryList, isModalVisible, expenses, setModalVisible, o
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([]);
-
+  
   const [ buttonActive, setButtonActive ] = useState(Number(amount) > 0 && !value); 
 
   const toggleModal = () => {

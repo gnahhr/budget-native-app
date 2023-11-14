@@ -21,6 +21,7 @@ const EditCategories = () => {
 
   const [ step, setStep ] = useState(0);
   const [ budgetPlan, setBudgetPlan ] = useState('Weekly');
+  const [ budgetRatio, setBudgetRatio ] = useState('');
   const [ totalBudget, setTotalBudget ] = useState(0);
   const [ parsedUser, setParsedUser ] = useState({});
   const [ isLoading, setIsLoading ] = useState(false);
@@ -31,6 +32,7 @@ const EditCategories = () => {
     setAllocations({
       budgetPlan,
       totalBudget,
+      budgetRatio,
       ...allocations,
     })
   }
@@ -39,8 +41,8 @@ const EditCategories = () => {
     if (activeBudget) {
       const data = await getAllocatedBudget(email, activeBudget.budgetName);
       const response = data.response;
+      setBudgetRatio(response.budgetRatio);
       setAllocations(response);
-      console.log(response.totalBudget);
       setTotalBudget(response.totalBudget);
     }
   }
@@ -100,7 +102,7 @@ const EditCategories = () => {
       />
 
 
-      {step === 0 && <Step3 prevStep={prevStepHandler} totalBudget={totalBudget} currentAllocations={allocations} nextStep={nextStepHandler} setAllocations={allocationHandler}/>}
+      {step === 0 && <Step3 prevStep={prevStepHandler} totalBudget={totalBudget} currentAllocations={allocations} nextStep={nextStepHandler} setBudgetRatio={setBudgetRatio} curRatio={budgetRatio} setAllocations={allocationHandler}/>}
       {step === 1 && <Summary prevStep={prevStepHandler} totalBudget={totalBudget} initialAllocation={allocations} setAllocations={saveAllocation} isLoading={isLoading}/>}
 
     </SafeAreaView>

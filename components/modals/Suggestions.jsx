@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import Modal from 'react-native-modal'
 import { Icon } from '@rneui/themed';
@@ -7,9 +7,8 @@ import { suggestionList } from '../../constants/suggestionList';
 
 import Suggestion from './Suggestion';
 
-const Suggestions = ({isModalVisible, setModalVisible, onChangeToggle}) => {
-  const [ choice, setChoice ] = useState("");
-
+const Suggestions = ({curBudgetRatio, isModalVisible, setModalVisible, onChangeToggle, setBudgetRatio}) => {
+  const [ choice, setChoice ] = useState();
   const toggleModal = () => {
     setModalVisible(false);
   };
@@ -32,12 +31,19 @@ const Suggestions = ({isModalVisible, setModalVisible, onChangeToggle}) => {
   const changeChoiceHandler = (choice, state, data) => {
     if (state) {
       setChoice("");
+      setBudgetRatio("");
       onChangeToggle(0, 0, 0);
     } else {
-      setChoice(choice)
+      setChoice(choice);
+      setBudgetRatio(choice);
       onChangeToggle(data.needs, data.want, data.saving);
     }
   }
+
+  useEffect(() => { 
+    setChoice(curBudgetRatio);
+    console.log(curBudgetRatio);
+  }, [curBudgetRatio])
 
   return (
     <Modal

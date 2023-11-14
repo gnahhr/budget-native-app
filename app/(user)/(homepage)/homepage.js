@@ -16,11 +16,9 @@ import UserListModal from '../../../components/homepage/UserListModal';
 import BudgetList from '../../../components/homepage/BudgetList';
 
 // API
-import { getAllocatedBudget, updateBudget, getBudgetList } from '../../../api/budget';
-import { getAllExpenses, allocateExpense, getExpenses } from '../../../api/expenses';
+import { getAllocatedBudget, updateBudget } from '../../../api/budget';
+import { allocateExpense } from '../../../api/expenses';
 import { registerForPushNotificationsAsync } from '../../../utils/notification';
-
-import { getDateTodayISO, getWeeklyStartEnd } from '../../../utils/dateFunctions';
 
 // Images
 import LogoS from '../../../assets/logos/logo-s.png';
@@ -30,7 +28,6 @@ import { useAuth } from '../../../context/auth';
 import { useBudget } from '../../../context/budget';
 
 import * as Notifications from "expo-notifications";
-import Button from '../../../components/common/Button';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -47,6 +44,7 @@ const HomepageIndex = () => {
   // LocalStorage States
   const [[isDataLoading, data], setData] = useStorageState('data');
   const [[isExpensesLoading, expenses], setExpenses] = useStorageState('expenses');
+  const [[isNotifSettings, notifSettings], setNotifSettings] = useStorageState('notifSettings');
   
   // Loading States
   const [ isLoading, setIsLoading ] = useState(true);
@@ -62,6 +60,7 @@ const HomepageIndex = () => {
   const [ totalBudget, setTotalBudget ] = useState(0);
   const [ progress, setProgress ] = useState(0);
   const [ remainingBudget, setRemainingBudget ] = useState(0);
+  const [ exceedingBudget, setExceedingBudget ] = useState(0);
 
   // Notification States
   const [notification, setNotification] = useState(false);
@@ -123,7 +122,6 @@ const HomepageIndex = () => {
     // Which is yung nasa line 92 and 93 then close na niya yung modal sa 94
     const response = await allocateExpense(parsedUser.email, activeBudget.budgetName, payload);
     getAllocation(parsedUser.email);
-    getExpensesHandler(parsedUser.email);
     setIsEModalOpen(false);
   }
 
@@ -163,21 +161,22 @@ const HomepageIndex = () => {
     const data = allocation.response;
     // Kasama na rin dito yung pag compute nung makikita sa homepage which is yung remaining budget,
     // tska yung yung parang progress if malapit na maubos budget
-    const expenses = tabs.map(item => data[item.toLowerCase()][0]);
-    const filteredExpenses = expenses.map(item => {
-      if (item) return item.expenses;
-      else return [];
-    })
+    const expenses = tabs.map(item => data[item.toLowerCase()]);
     const expensesArray = [];
-    filteredExpenses.forEach(item => item.forEach(x => expensesArray.push(x)))
+
+    expenses.forEach(item => {
+      if (item?.length > 0) {
+        item.forEach((x) => x.expenses.forEach(y => expensesArray.push(y)));
+      }
+    });
+
     const formattedExpense = formatExpenses(expensesArray);
-    
     const totalBudget = data.totalBudget ? data.totalBudget : 0;
     const remainingBudget = totalBudget > 0 ? data.totalBudget - data.totalExpenses : 0;
-
+    
     // Local Storage
-    setData(JSON.stringify(data));
-    setExpenses(JSON.stringify(formattedExpense));
+    // setData(JSON.stringify(data));
+    // setExpenses(JSON.stringify(formattedExpense));
 
     // States
     setTotalBudget(totalBudget);
@@ -203,41 +202,6 @@ const HomepageIndex = () => {
     setIsBModalOpen(false);
   };
 
-  // pag get ng expenses, pagkaget niya store niya dun sa local storage yung nakuhang data which is nasa
-  // Line 153
-  async function getExpensesHandler(expenses) {
-    const dateToday = getDateTodayISO();
-    const dateWeekly = getWeeklyStartEnd(getDateTodayISO());
-    const monthToday = dateToday.split('-').splice(0,2).join('-');
-    const yearToday = dateToday.split('-')[0];
-
-    const data = await getExpenses({
-      params: {
-        email: email,
-        endDate: dateWeekly[1],
-        startDate: dateWeekly[0],
-        type: activeBudget.budgetType,
-        month: monthToday.split('-')[1],
-        year: yearToday,
-        day: dateToday,
-        budgetName: activeBudget.budgetName
-      }
-    });
-
-    const totalExpenses = data.response.sum;
-    let summary;
-    
-    if (data.response.getExpenses) {
-      summary = formatExpenses(data.response.getExpenses);
-    } else {
-      summary = formatExpenses(data.response);
-    }
-    setTotalExpenses(totalExpenses);
-    setParsedExpenses(summary);
-    setExpenses(JSON.stringify(summary));
-    if (data.statusCode === 200) setExpensesLoading(false);
-  }
-
   // Use Effects yung ginagamit para pag may magbabagong data sa dependency array niya,
   // which is yung [] after ng comma, mag r-run yung codes sa useEffect, if walang laman yung []
   // nag r-run siya pagka mount or pagka display ng component
@@ -253,33 +217,43 @@ const HomepageIndex = () => {
   }, [activeBudget])
 
   useEffect(() => {
+    const userParse = JSON.parse(user);
+    getAllocation(userParse.email, userParse.defaultBudget);
+  }, [isEModalOpen]);
+
+  useEffect(() => {
+    if (!notifSettings) {
+      const settings =  {
+        'reminderEveryday': true,
+        'reminderOverspend': true,
+      }
+      setNotifSettings(JSON.stringify(settings));
+    }
+  }, [])
+
+  useEffect(() => {
     updateBudgetL();
   }, [isBModalOpen])
 
-  // useEffect(() => {
-  //   if (expensesLoading === false) {
-  //     setExpensesLoading(true);
-  //     getExpensesHandler(parsedUser.email);
-  //   }
-  // }, [expenses])
-
   useEffect(() => {
     if (totalBudget){
-      setRemainingBudget(totalBudget - totalExpenses);
+      const budget = totalBudget - totalExpenses;
+
+      if (budget > 0) {
+        setRemainingBudget(budget);
+      } else {
+        setRemainingBudget(0);
+        setExceedingBudget(budget*-1);
+      }
     }
-  }, [totalBudget, totalExpenses]);
+  }, [totalBudget, totalExpenses, activeBudget]);
 
   useEffect(() => {
     if (user) {
       setParsedUser(JSON.parse(user));
     }
-    if (!isDataLoading) {
-      setParsedData(JSON.parse(data));
-    }
-    if (!isExpensesLoading) {
-      setParsedExpenses(JSON.parse(expenses));
-    }
-  }, [isDataLoading, isExpensesLoading, data, user, expenses]);
+
+  }, [isDataLoading, user]);
 
   useEffect(() => {
     registerForPushNotificationsAsync();
@@ -347,8 +321,9 @@ const HomepageIndex = () => {
             <Text style={{position: 'absolute', alignSelf: 'center', marginTop: 70}}>Php. {remainingBudget ? remainingBudget : 0}</Text>
           </View>
           <View style={styles.moneyWrapper}>
-            <Money currency={remainingBudget ? remainingBudget : 0} subText="Remaining budget" onClickHandler={budgetModalToggle}/>
+            <Money currency={remainingBudget ? remainingBudget : 0} subText="Remaining Budget" onClickHandler={budgetModalToggle}/>
             <Money currency={totalExpenses ? totalExpenses : 0} subText="Total Expenses"/>
+            <Money currency={exceedingBudget} subText="Exceeding Budget"/>
           </View>
         </View>
       </View>

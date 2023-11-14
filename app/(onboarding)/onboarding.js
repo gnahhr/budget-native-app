@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Stack, useRouter } from 'expo-router';
 import { SafeAreaView, StyleSheet, Pressable, Alert } from 'react-native';
 import { useStorageState } from '../../hooks/useStorageState';
@@ -28,6 +28,7 @@ const Onboarding = () => {
   const [ budgetPlan, setBudgetPlan ] = useState('');
   const [ budgetName, setBudgetName ] = useState('');
   const [ totalBudget, setTotalBudget ] = useState(0);
+  const [ budgetRatio, setBudgetRatio ] = useState('');
 
   const [ allocations, setAllocations ] = useState([]);
 
@@ -45,6 +46,7 @@ const Onboarding = () => {
     const payload = {
       budgetName: budgetName,
       budgetType: budgetPlan.toLowerCase(),
+      budgetRatio: budgetRatio,
       totalBudget,
       ...allocations,
     }
@@ -120,7 +122,7 @@ const Onboarding = () => {
       {step === 0 && <Intro nextStep={nextStepHandler}/>}
       {step === 1 && <Step1 prevStep={prevStepHandler} setBudgetPlan={budgetPlanHandler}/>}
       {step === 2 && <Step2 prevStep={prevStepHandler} setBudget={totalBudgetHandler} setBudgetName={setBudgetName} nextStep={nextStepHandler}/>}
-      {step === 3 && <Step3 prevStep={prevStepHandler} totalBudget={totalBudget} nextStep={nextStepHandler} setAllocations={allocationHandler}/>}
+      {step === 3 && <Step3 prevStep={prevStepHandler} totalBudget={totalBudget} nextStep={nextStepHandler} setAllocations={allocationHandler} setBudgetRatio={setBudgetRatio}/>}
       {step === 4 && <Summary prevStep={prevStepHandler} totalBudget={totalBudget} initialAllocation={allocations} setAllocations={saveAllocation} isLoading={isLoading}/>}
 
     </SafeAreaView>

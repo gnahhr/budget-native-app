@@ -6,8 +6,8 @@ import Modal from 'react-native-modal';
 import { AntDesign } from '@expo/vector-icons';
 import { getDateToday } from '../../utils/dateFunctions';
 import { receiveAndPay } from '../../api/debt';
-
 import { useAuth } from '../../context/auth';
+import { useBudget } from '../../context/budget';
 const PayDebt = ({nameList, isModalVisible, setModalVisible, type}) => {
   const [ nameState, setNameState ] = useState(nameList);
   const [ amount, setAmount ] = useState(amount);
@@ -21,6 +21,7 @@ const PayDebt = ({nameList, isModalVisible, setModalVisible, type}) => {
   const [items, setItems] = useState([]);
   
   const { user } = useAuth();
+  const { activeBudget } = useBudget();
 
   const toggleModal = () => {
     setModalVisible(false);
@@ -46,7 +47,7 @@ const PayDebt = ({nameList, isModalVisible, setModalVisible, type}) => {
     }
     
     const email = JSON.parse(user).email;
-    const data = await receiveAndPay(email, payload);
+    const data = await receiveAndPay(email, activeBudget.budgetName, payload);
     setIsLoading(false);
 
     if (data?.statusCode === 200) {

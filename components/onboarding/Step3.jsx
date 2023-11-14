@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 // Constants
 import { savingsCategories, needsCategories, wantCategories } from '../../constants/categories';
 import styles from './styles';
+import { suggestionList } from '../../constants/suggestionList';
 
 // Components
 import { View, Text, Pressable, ScrollView, Alert } from 'react-native';
@@ -10,7 +11,7 @@ import Categories from '../modals/Categories';
 import Suggestions from '../modals/Suggestions';
 import Allocation from './Allocation';
 
-const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocations}) => {
+const Step3 = ({totalBudget, prevStep, currentAllocations, curRatio, nextStep, setAllocations, setBudgetRatio}) => {
 
   // Header Data
   const [ activeTab, setActiveTab ] = useState("NEED");
@@ -109,7 +110,7 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
     const needs = needAllocations.filter(category => category.toggled);
     const wants = wantAllocations.filter(category => category.toggled);
     const savings = savingAllocations.filter(category => category.toggled);
-
+    
     setAllocations({
       needs: needs,
       wants: wants,
@@ -179,7 +180,8 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
       if (x.name === name) {
         return {
           ...x,
-          allocation: allocation
+          allocation: allocation,
+          expenses: x.expenses,
         }
       } else {
         return x;
@@ -223,11 +225,13 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
             uniqueContainer[category] = {
               ...uniqueContainer[category],
               allocation: container[item].allocation,
+              expenses: container[item].expenses,
               toggled: true,
             }
           } else if (container[item].allocation > 0) {
             uniqueContainer[category] = {
               ...container[item],
+              expenses: container[item].expenses,
               toggled: true,
             }; 
           } else {
@@ -260,6 +264,13 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
       currentAllocationHandler(currentAllocations);
     }
   }, [currentAllocations])
+
+  useEffect(() => {
+    if (curRatio) {
+      const ratio = suggestionList.filter(ratio => ratio.name === curRatio)[0];
+      setRatioHandler(ratio.needs, ratio.want, ratio.saving);
+    }
+  }, [curRatio])
 
   useEffect(() => {
     computeAllocationRatio("SAVINGS");
@@ -313,6 +324,8 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, nextStep, setAllocati
         isModalVisible={isRecoVisible}
         setModalVisible={setRecoVisible}
         onChangeToggle={setRatioHandler}
+        curBudgetRatio={curRatio}
+        setBudgetRatio={setBudgetRatio}
       />
       <View style={[styles.blueDrawer, styles.blueDrawerExpanded, styles.blueDrawerExpandedAllocation]}>
         <Text style={[styles.textCenter, styles.textWhite]}>EXPENSE ALLOCATION</Text>

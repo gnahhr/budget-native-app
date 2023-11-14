@@ -3,8 +3,8 @@ import { Platform } from "react-native";
 
 const apiURL = Platform.OS === "android" ? process.env.EXPO_PUBLIC_API_URL_ANDROID : process.env.EXPO_PUBLIC_API_URL
 
-export async function receiveAndPay(email, payload) {
-  const response = await axios.post(`${apiURL}/debt/receive-pay?email=${email}`, payload)
+export async function receiveAndPay(email, budgetName, payload) {
+  const response = await axios.post(`${apiURL}/debt/receive-pay?email=${email}&budgetName=${budgetName}`, payload)
   .then(response => response.data)
   .catch(err => console.error(err));
   return await response;

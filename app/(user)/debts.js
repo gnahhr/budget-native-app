@@ -118,7 +118,7 @@ const Debts = () => {
       
       <View style={[styles.container, styles.border, {backgroundColor: '#ffffff'}]}>
         <Text style={[styles.textCenter, styles.boldText, styles.normalText]}>BALANCE</Text>
-        <Text style={[styles.textCenter, styles.boldText, styles.bigFont]}>Php. {totalBalance}.00</Text>
+        <Text style={[styles.textCenter, styles.boldText, styles.bigFont]}>Php. {totalBalance}</Text>
       </View>
       <View style={[styles.container, styles.border, styles.flexGrow, {backgroundColor: '#ffffff', maxHeight: '65%'}]}>
         <View style={{flexDirection: 'row'}}>
