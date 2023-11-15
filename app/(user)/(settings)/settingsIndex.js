@@ -56,7 +56,7 @@ const SettingsIndex = () => {
       <View style={[styles.headerDesign]}></View>
 
       <View style={{alignItems: 'center'}}>
-        <Image source={imageUrl} style={[styles.iconStyle]}/>
+        <Image source={{uri: imageUrl}} style={[styles.iconStyle]}/>
         <Text style={[styles.textBold, styles.largeFont]}>{username}</Text>
         <Text style={[styles.textItalics]}>{email}</Text>
       </View>
