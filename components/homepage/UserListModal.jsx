@@ -145,7 +145,7 @@ const UserListModal = ({isModalVisible, setModalVisible}) => {
                   }}>  
                 {userList && userList.map((user, idx) =>
                 <View key={idx} style={{alignItems: 'center'}}>
-                  <Image source={{uri: user.Images}} style={{width: 65, height: 65, borderRadius: 50, justifyContent: 'center'}}/>
+                  <Image source={`https:${item.Images.split(":")[1]}`} style={{width: 65, height: 65, borderRadius: 50, justifyContent: 'center'}}/>
                   <Text>{user.userName}</Text>
                 </View>)}
               </View>
