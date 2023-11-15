@@ -28,6 +28,7 @@ export function Provider(props) {
   async function getBudgetListHandler() {
     const data = await getBudgetList(JSON.parse(user).email);
     const list = data.response;
+    
     setBudgetList(list);
     setActiveBudget(list[0]);
   }

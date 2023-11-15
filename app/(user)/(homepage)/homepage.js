@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Tabs, useRouter } from 'expo-router';
-import { View, SafeAreaView, Text, StyleSheet, Pressable, ScrollView, Image } from 'react-native'
+import { View, SafeAreaView, Text, StyleSheet, Pressable, ScrollView, Image, RefreshControl } from 'react-native'
 import { useStorageState } from '../../../hooks/useStorageState';
 
 // Components
@@ -14,6 +14,7 @@ import AddExpenses from '../../../components/modals/AddExpenses';
 import UpdateBudget from '../../../components/modals/UpdateBudget';
 import UserListModal from '../../../components/homepage/UserListModal';
 import BudgetList from '../../../components/homepage/BudgetList';
+import Instructions from '../../../components/common/Instructions';
 
 // API
 import { getAllocatedBudget, updateBudget } from '../../../api/budget';
@@ -42,9 +43,9 @@ const HomepageIndex = () => {
   const { activeBudget, updateActive, updateBudgetL } = useBudget();
 
   // LocalStorage States
-  const [[isDataLoading, data], setData] = useStorageState('data');
-  const [[isExpensesLoading, expenses], setExpenses] = useStorageState('expenses');
-  const [[isNotifSettings, notifSettings], setNotifSettings] = useStorageState('notifSettings');
+  const [ [isNotifSettings, notifSettings], setNotifSettings ] = useStorageState('notifSettings');
+  const [ [dontShowLoading, dontShowAgainInstruction], setDontShowAgainInstruction ] = useStorageState('dontShowAgainInstruction');
+
   
   // Loading States
   const [ isLoading, setIsLoading ] = useState(true);
@@ -75,6 +76,8 @@ const HomepageIndex = () => {
   const [ isBModalOpen, setIsBModalOpen ] = useState(false);
   const [ isUserModalVisible, setIsUserModalVisible ] = useState(false);
   const [ isBListModalVisible, setIsBListModalVisible ] = useState(false);
+  const [ isIModalVisible, setIModalVisible ] = useState(true);
+  
 
   // Tab Constants
   const [ activeTab, setActiveTab ] = useState("Needs");
@@ -90,6 +93,15 @@ const HomepageIndex = () => {
       name: 'wants'
     }
   }
+
+  const onRefresh = useCallback(() => {
+    setIsLoading(true);
+    const userParse = JSON.parse(user);
+    setIsLoading(false);
+    setParsedUser(userParse);
+    getAllocation(userParse.email, userParse.defaultBudget);
+    setIsLoading(false);
+  }, []);
 
   // Modal Toggles
   const expenseModalToggle = () => {
@@ -122,6 +134,7 @@ const HomepageIndex = () => {
     // Which is yung nasa line 92 and 93 then close na niya yung modal sa 94
     const response = await allocateExpense(parsedUser.email, activeBudget.budgetName, payload);
     getAllocation(parsedUser.email);
+    setExpensesLoading(true);
     setIsEModalOpen(false);
   }
 
@@ -155,7 +168,6 @@ const HomepageIndex = () => {
 
   // Get ng allocation
   async function getAllocation(email, budgetName) {
-    setExpensesLoading(true);
     const budget = activeBudget.budgetName ? activeBudget.budgetName : budgetName;
     const allocation = await getAllocatedBudget(email, budget);
     
@@ -173,7 +185,7 @@ const HomepageIndex = () => {
 
     const formattedExpense = formatExpenses(expensesArray);
     const totalBudget = data.totalBudget ? data.totalBudget : 0;
-    const remainingBudget = totalBudget > 0 ? data.totalBudget - data.totalExpenses : 0;
+    // const remainingBudget = totalBudget > 0 ? data.totalBudget - data.totalExpenses : 0;
 
     // Local Storage
     // setData(JSON.stringify(data));
@@ -184,7 +196,6 @@ const HomepageIndex = () => {
     setTotalExpenses(data.totalExpenses);
     setParsedExpenses([...formattedExpense]);
     setParsedData(allocation.response);
-    setProgress(Math.floor(Number(remainingBudget) / Number(totalBudget) * 100));
     setExpensesLoading(false);
   }
 
@@ -223,6 +234,17 @@ const HomepageIndex = () => {
   }, [isEModalOpen]);
 
   useEffect(() => {
+    if (!dontShowLoading && dontShowAgainInstruction !== null){
+      setIModalVisible(!JSON.parse(dontShowAgainInstruction));
+    }
+  }, [dontShowLoading, dontShowAgainInstruction])
+
+  useEffect(() => {
+    setProgress(Math.floor(Number(remainingBudget) / Number(totalBudget) * 100)); 
+    console.log(Math.floor(Number(remainingBudget) / Number(totalBudget) * 100))
+  }, [remainingBudget, totalBudget]);
+
+  useEffect(() => {
     if (!notifSettings) {
       const settings =  {
         'reminderEveryday': true,
@@ -240,9 +262,9 @@ const HomepageIndex = () => {
   useEffect(() => {
     if (totalBudget){
       const budget = totalBudget - totalExpenses;
-
       if (budget > 0) {
         setRemainingBudget(budget);
+        setExceedingBudget(0);
       } else {
         setRemainingBudget(0);
         setExceedingBudget(budget*-1);
@@ -255,7 +277,7 @@ const HomepageIndex = () => {
       setParsedUser(JSON.parse(user));
     }
 
-  }, [isDataLoading, user]);
+  }, [user]);
 
   useEffect(() => {
     registerForPushNotificationsAsync();
@@ -275,7 +297,7 @@ const HomepageIndex = () => {
   }, []);
 
   return (
-    <SafeAreaView style={{backgroundColor: '#f3f3f7'}}>
+    <SafeAreaView style={{backgroundColor: '#f3f3f7', position:"relative"}}>
       <Tabs.Screen 
         options={{
           headerStyle: { backgroundColor: "white" },
@@ -323,7 +345,7 @@ const HomepageIndex = () => {
             <Text style={{position: 'absolute', alignSelf: 'center', marginTop: 60}}>Php. {remainingBudget ? remainingBudget : 0}</Text>
           </View>
           <View style={styles.moneyWrapper}>
-            <Money currency={remainingBudget ? remainingBudget : 0} subText="Remaining Budget" onClickHandler={budgetModalToggle}/>
+            <Money currency={remainingBudget ? remainingBudget : 0} subText="Remaining Budget" onClickHandler={activeBudget.budgetOwner === parsedUser.email ? budgetModalToggle : null}/>
             <Money currency={totalExpenses ? totalExpenses : 0} subText="Total Expenses"/>
             <Money currency={exceedingBudget} subText="Exceeding Budget"/>
           </View>
@@ -346,8 +368,13 @@ const HomepageIndex = () => {
           )}
       </View> 
       
-      <ScrollView style={[styles.container, styles.scrollHeight]}>
-        {!expensesLoading && !isExpensesLoading && parsedData[tabData[activeTab].name].length > 0 ?
+      <ScrollView
+        style={[styles.container, styles.scrollHeight]}
+        refreshControl={
+          <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+        }
+      >
+        {!expensesLoading && parsedData[tabData[activeTab].name].length > 0 ?
           parsedData[tabData[activeTab].name].map(data => <HomeAllocation key={data.name} category={data} expenses={parsedExpenses} type={tabData[activeTab].name} getAllocation={() => getAllocation(parsedUser.email, parsedUser.defaultBudget)}/>)
           :
           <Text>Nothing Allocated</Text>
@@ -369,6 +396,8 @@ const HomepageIndex = () => {
       <UpdateBudget isModalVisible={isBModalOpen} totalBudget={totalBudget} activeBudget={activeBudget} setModalVisible={setIsBModalOpen} updateBudget={updateBudgetHandler} />
       <AddExpenses categoryList={parsedData[tabData[activeTab].name]} isModalVisible={isEModalOpen} expenses={parsedExpenses} setModalVisible={setIsEModalOpen} onAddExpense={addExpenseHandler}/>
       </>}
+      {isIModalVisible && <Instructions isModalVisible={isIModalVisible} setModalVisible={setIModalVisible} type={"homepage"}/>}
+
     </SafeAreaView>
   )
 }

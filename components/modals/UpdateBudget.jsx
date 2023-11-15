@@ -5,6 +5,7 @@ import Modal from 'react-native-modal';
 const UpdateBudget = ({isModalVisible, totalBudget, activeBudget, setModalVisible, updateBudget}) => {
   const [ budget, onChangeBudget ] = useState(0);
   const [ budgetName, setBudgetName ] = useState("");
+  const [ email, setEmail ] = useState("");
 
   const toggleModal = () => {
     setModalVisible(false);
@@ -12,7 +13,7 @@ const UpdateBudget = ({isModalVisible, totalBudget, activeBudget, setModalVisibl
 
   const updateBudgetHandler = () => {
     if (Number(budget) > 0 && budgetName !== ""){
-      updateBudget(budget, budgetName);
+      updateBudget(budget, `${budgetName}~${email}`);
     }
   }
 
@@ -23,7 +24,9 @@ const UpdateBudget = ({isModalVisible, totalBudget, activeBudget, setModalVisibl
   }, [totalBudget])
   
   useEffect(() => {
-    setBudgetName(activeBudget.budgetName);
+    const splitName = activeBudget.budgetName.split('~');
+    setBudgetName(splitName[0]);
+    setEmail(splitName[0]);
   }, [activeBudget])
 
   return (

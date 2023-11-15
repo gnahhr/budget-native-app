@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Alert, TextInput, Image, ScrollView, Pressable} from 'react-native';
 import Modal from 'react-native-modal';
+import { COLORS } from '../../constants/theme';
 import { getBudgetUsers, addBudgetUser, removeBudgetUser } from '../../api/budget';
 import { AntDesign } from '@expo/vector-icons';
 
@@ -115,10 +116,10 @@ const UserListModal = ({isModalVisible, setModalVisible}) => {
                     <Image source={{uri: item.Images}} style={{width: 40, height: 40, borderRadius: 50, justifyContent: 'center'}}/>
                     <Text>{item.userName}</Text>
                   </View>
-                  {item.userName !== activeUser && 
+                  {(item.userName !== activeUser && item.Email !== activeBudget.budgetOwner) && 
                   <Pressable onPress={() => removeUserHandler(item.userName, item.Email)}>
-                    <View style={{width: 30, height:30, backgroundColor: 'red', borderRadius:8}}>
-
+                    <View style={{width: 30, height:30, backgroundColor: COLORS['red-500'], borderRadius:8, alignItems: 'center', justifyContent: 'center'}}>
+                      <AntDesign name="deleteuser" size={24} color={COLORS['white-500']} />
                     </View>
                   </Pressable>
                   }

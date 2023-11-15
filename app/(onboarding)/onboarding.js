@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Stack, useRouter } from 'expo-router';
 import { SafeAreaView, StyleSheet, Pressable, Alert } from 'react-native';
-import { useStorageState } from '../../hooks/useStorageState';
 import { allocateBudget } from '../../api/budget';
 import { useAuth } from '../../context/auth';
 
@@ -10,26 +9,29 @@ import Step1 from '../../components/onboarding/Step1';
 import Step2 from '../../components/onboarding/Step2';
 import Step3 from '../../components/onboarding/Step3';
 import Summary from '../../components/onboarding/Summary';
+import Instructions from '../../components/common/Instructions';
 
 import CustomIcon from '../../components/common/CustomIcon';
 import LogoS from '../../assets/logos/logo-s.png';
 import CloseIco from '../../assets/icons/X.png';
 
 const Onboarding = () => {
-  const [[isDataLoading, data], setData] = useStorageState('data');
   const { user, signIn, signOut } = useAuth();
   const router = useRouter();
 
   const parsedUser = JSON.parse(user);
 
-  // Add States of Needs-Savings-Wants-Total Budget-ExpenseAllocation
-  const [ step, setStep ] = useState(0);
   const [ isLoading, setIsLoading ] = useState(false);
+  const [ isIModalVisible, setIModalVisible ] = useState(true);
+  const [ [isLoadingOnboarding, dontShowAgainOnboarding], setDontShowAgainOnboarding ] = useStorageState('dontShowAgainOnboarding');
+
+  // Add States of Needs-Savings-Wants-Total Budget-ExpenseAllocation
+  
+  const [ step, setStep ] = useState(0);
   const [ budgetPlan, setBudgetPlan ] = useState('');
   const [ budgetName, setBudgetName ] = useState('');
   const [ totalBudget, setTotalBudget ] = useState(0);
   const [ budgetRatio, setBudgetRatio ] = useState('');
-
   const [ allocations, setAllocations ] = useState([]);
 
   const allocationHandler = (allocations) => {
@@ -56,7 +58,6 @@ const Onboarding = () => {
     setIsLoading(false);
     
     if (allocation.statusCode === 200) {
-      setData(JSON.stringify(payload));
       signIn(JSON.stringify({
         ...parsedUser,
         ifNewUser: false
@@ -99,6 +100,12 @@ const Onboarding = () => {
     router.replace("/homepage") 
   }
 
+  useEffect(() => {
+    if (!isLoadingOnboarding && dontShowAgainOnboarding !== null){
+      setIModalVisible(!JSON.parse(dontShowAgainOnboarding));
+    }
+  }, [isLoadingOnboarding, dontShowAgainOnboarding])
+
   return (
     <SafeAreaView style={styles.main}>
 
@@ -124,6 +131,7 @@ const Onboarding = () => {
       {step === 2 && <Step2 prevStep={prevStepHandler} setBudget={totalBudgetHandler} setBudgetName={setBudgetName} nextStep={nextStepHandler}/>}
       {step === 3 && <Step3 prevStep={prevStepHandler} totalBudget={totalBudget} nextStep={nextStepHandler} setAllocations={allocationHandler} setBudgetRatio={setBudgetRatio}/>}
       {step === 4 && <Summary prevStep={prevStepHandler} totalBudget={totalBudget} initialAllocation={allocations} setAllocations={saveAllocation} isLoading={isLoading}/>}
+      {isIModalVisible && <Instructions isModalVisible={isIModalVisible} setModalVisible={setIModalVisible} type={"onboarding"}/>}
 
     </SafeAreaView>
   )
