@@ -113,7 +113,7 @@ const UserListModal = ({isModalVisible, setModalVisible}) => {
                 {userList && userList.map((item, idx) =>
                 <View key={idx} style={{alignItems: 'center', flexDirection: 'row'}}>
                   <View style={{alignItems: 'center', flexDirection: 'row', gap: 8, flex: 1}}>
-                    <Image source={item.Images} style={{width: 40, height: 40, borderRadius: 50, justifyContent: 'center'}}/>
+                    <Image source={`https:${item.Images.split(":")[1]}`} style={{width: 40, height: 40, borderRadius: 50, justifyContent: 'center'}}/>
                     <Text>{item.userName}</Text>
                   </View>
                   {(item.userName !== activeUser && item.Email !== activeBudget.budgetOwner) && 

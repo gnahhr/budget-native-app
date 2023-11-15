@@ -322,7 +322,7 @@ const HomepageIndex = () => {
         </View>
         <View style={{flex: 1, alignItems: 'flex-end', justifyContent:'center'}}>
           <Pressable onPress={() => userModalToggle()}>
-            {parsedUser && <Image source={{uri: parsedUser.imageUrl}} style={{width: 60, height: 60, borderRadius: 50}}/>}
+            {parsedUser && <Image source={{uri: `https:${parsedUser.imageUrl.split(":")[1]}`}} style={{width: 60, height: 60, borderRadius: 50}}/>}
           </Pressable>
         </View>
       </View>
