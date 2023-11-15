@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Stack, useRouter } from 'expo-router';
 import { SafeAreaView, StyleSheet, Pressable, Alert } from 'react-native';
 import { allocateBudget } from '../../api/budget';
 import { useAuth } from '../../context/auth';
+import { useStorageState } from '../../hooks/useStorageState';
 
 import Intro from '../../components/onboarding/Intro';
 import Step1 from '../../components/onboarding/Step1';

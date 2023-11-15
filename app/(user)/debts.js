@@ -58,19 +58,22 @@ const Debts = () => {
     
     const data = await getLendList(email, activeTab.toLowerCase());
     const response = data.response;
+    
+    if(response){
+      const totalBalance = response.reduce((prev, cur, arr) => {
+        if (cur.balance > 0) {
+          return prev + cur.balance
+        } else {
+          return prev
+        }
+      }, 0)
+      
+      setNameList(response.filter(item => item.balance > 0).map(item => item.name));
+      setTotalBalance(totalBalance);
+      setFilteredList(response);
+      setListState(response);
+    }
 
-    const totalBalance = response.reduce((prev, cur, arr) => {
-      if (cur.balance > 0) {
-        return prev + cur.balance
-      } else {
-        return prev
-      }
-    }, 0)
-
-    setNameList(response.filter(item => item.balance > 0).map(item => item.name));
-    setTotalBalance(totalBalance);
-    setFilteredList(response);
-    setListState(response);
   }
 
   useEffect(() => {

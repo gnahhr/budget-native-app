@@ -15,7 +15,7 @@ import { useAuth } from '../../context/auth';
 import { useBudget } from '../../context/budget';
 
 // APIs/Utils
-import { getInsights, analyzeData } from '../../api/insights';
+import { getInsights } from '../../api/insights';
 import {
   getDateTodayISO,
   getWeeklyStartEnd } from '../../utils/dateFunctions';
@@ -78,6 +78,7 @@ const Insights = () => {
     const parsUser = JSON.parse(user);
     initDate();
     setParsedUser(parsUser);
+    getInsights(parsUser.email);
   }, [])
 
   useEffect(() => {
@@ -133,7 +134,6 @@ const Insights = () => {
 
       {!!data &&
         <Pressable onPress={() => analyzeHandler()}>
-          
           <View style={{position: 'absolute', backgroundColor: COLORS['blue-800'], bottom: 10, right: 10, borderRadius: 100, width: 65, height: 65, alignItems: 'center', justifyContent: 'center'}}>
             <MaterialIcons name="insights" size={40} color={COLORS['white-500']} />
           </View>

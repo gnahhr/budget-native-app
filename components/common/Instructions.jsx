@@ -29,8 +29,6 @@ const Instructions = ({isModalVisible, setModalVisible, type="homepage"}) => {
   }
 
   const toggleModal = () => {
-    
-
     Alert.alert(
       'Closing modal',
       `Don't show again next time?`,
@@ -62,12 +60,16 @@ const Instructions = ({isModalVisible, setModalVisible, type="homepage"}) => {
     <View
       style={[styles.modalWrapper, {zIndex: 9995}]}>
         <View style={[styles.modalWrapper]}>
-          <Pressable style={{position: 'absolute', left: 5, color: 'white', top: '50%', zIndex: 9999}} onPress={() => backStepHandler()}>
-            <FontAwesome name="chevron-circle-left" size={35} color="white" />
-          </Pressable>
-          <Pressable style={{position: 'absolute', right: 5, color: 'white', top: '50%', zIndex: 9999}} onPress={() => nextStepHandler()}>
-            <FontAwesome name="chevron-circle-right" size={35} color="white" />
-          </Pressable>
+          {curSteps !== 0 && 
+            <Pressable style={{position: 'absolute', left: 5, color: 'white', top: '50%', zIndex: 9999}} onPress={() => backStepHandler()}>
+              <FontAwesome name="chevron-circle-left" size={35} color="white" />
+            </Pressable>
+          }
+          {curSteps < maxSteps - 1 && 
+            <Pressable style={{position: 'absolute', right: 5, color: 'white', top: '50%', zIndex: 9999}} onPress={() => nextStepHandler()}>
+              <FontAwesome name="chevron-circle-right" size={35} color="white" />
+            </Pressable>
+          }
           <Pressable style={{position: 'absolute', right: 10, color: 'white', top: 10, zIndex: 9999}} onPress={() => toggleModal()}>
             <Ionicons name="md-close-circle" size={50} color="white" />
           </Pressable>

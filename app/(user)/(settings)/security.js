@@ -3,7 +3,6 @@ import { Stack, useRouter } from "expo-router";
 import { View, Text, StyleSheet, Switch } from 'react-native'
 import CustomIcon from '../../../components/common/CustomIcon';
 import LogoS from '../../../assets/logos/logo-sw.png';
-import SettingsItem from '../../../components/common/SettingsItem';
 import { toggle2FA } from '../../../api/login';
 import { useAuth } from '../../../context/auth';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -73,6 +72,7 @@ const Security = () => {
           ios_backgroundColor="#3e3e3e"
           onValueChange={() => update2FA()}
           value={is2FAEnabled}
+          disabled={isLoading}
         />
       </View>
     </View>

@@ -206,7 +206,8 @@ const HomepageIndex = () => {
     if (data?.statusCode === 200) {
       updateActive({
         budgetName: newName,
-        budgetType: activeBudget.budgetType
+        budgetType: activeBudget.budgetType,
+        budgetOwner: parsedUser.email
       })
     }
 
