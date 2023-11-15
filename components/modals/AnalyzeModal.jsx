@@ -64,7 +64,7 @@ const AnalyzeModal = ({isModalVisible, setModalVisible}) => {
                 </ScrollView>
 
                 {ifEmergencyFundsExist ?
-                  <Text style={{textAlign: 'center', color: 'red', marginTop: 10}}>Allocate you expenses to the Emergency Fund.</Text>
+                  <Text style={{textAlign: 'center', color: 'red', marginTop: 10}}>Allocate your expenses to the Emergency Fund.</Text>
                   :
                   <Text style={{textAlign: 'center', color: 'red', marginTop: 10}}>It is advised that you get an Emergency Fund for your expenses.</Text>}
                 </>

@@ -65,7 +65,7 @@ const ForgotPassword = () => {
         <View>
           <Text style={[styles.textWhite]}>Enter code:</Text>
           <View>
-            <TextInput style={[styles.textInputStyle]} value={code} inputMode='numeric' onChangeText={setCode}></TextInput>
+            <TextInput style={[styles.textInputStyle]} value={code} onChangeText={setCode}></TextInput>
           </View>
         </View>
       </View>

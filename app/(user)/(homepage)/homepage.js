@@ -54,7 +54,7 @@ const HomepageIndex = () => {
   
   // Parsed Data States
   const [ parsedData, setParsedData ] = useState({});
-  const [ parsedUser, setParsedUser ] = useState({});
+  const [ parsedUser, setParsedUser ] = useState(null);
   const [ parsedExpenses, setParsedExpenses ] = useState([]);
   
   // Data States na ginamit for comupatations
@@ -321,7 +321,7 @@ const HomepageIndex = () => {
         </View>
         <View style={{flex: 1, alignItems: 'flex-end', justifyContent:'center'}}>
           <Pressable onPress={() => userModalToggle()}>
-            <Image source={{uri: parsedUser.imageUrl}} style={{width: 60, height: 60, borderRadius: 50}}/>
+            {parsedUser && <Image source={{uri: parsedUser.imageUrl}} style={{width: 60, height: 60, borderRadius: 50}}/>}
           </Pressable>
         </View>
       </View>
@@ -345,7 +345,7 @@ const HomepageIndex = () => {
             <Text style={{position: 'absolute', alignSelf: 'center', marginTop: 60}}>Php. {remainingBudget ? remainingBudget : 0}</Text>
           </View>
           <View style={styles.moneyWrapper}>
-            <Money currency={remainingBudget ? remainingBudget : 0} subText="Remaining Budget" onClickHandler={activeBudget.budgetOwner === parsedUser.email ? budgetModalToggle : null}/>
+            <Money currency={remainingBudget ? remainingBudget : 0} subText="Remaining Budget" onClickHandler={parsedUser && activeBudget.budgetOwner === parsedUser.email ? budgetModalToggle : null}/>
             <Money currency={totalExpenses ? totalExpenses : 0} subText="Total Expenses"/>
             <Money currency={exceedingBudget} subText="Exceeding Budget"/>
           </View>

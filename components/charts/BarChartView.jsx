@@ -36,7 +36,7 @@ const BarChartView = ({data, type}) => {
         if (idx === 0) {
           return {
             value: item.amount,
-            label: date.date,
+            label: type === 'monthly' ? date.date.slice(0,3) : date.date,
             spacing: 2,
             labelWidth: 30,
             labelTextStyle: {color: 'gray'},
