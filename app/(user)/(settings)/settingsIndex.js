@@ -1,9 +1,9 @@
 import React from 'react'
 import { Stack, useRouter } from "expo-router";
-import { View, Text, Image, StyleSheet, Pressable } from 'react-native'
+import { View, Text, StyleSheet, Pressable } from 'react-native'
 import CustomIcon from '../../../components/common/CustomIcon';
 import LogoS from '../../../assets/logos/logo-sw.png';
-import SampleImage from '../../../assets/chart/503020.png';
+import { Image } from 'expo-image';
 import { useAuth } from '../../../context/auth';
 
 const SettingsIndex = () => {
@@ -56,7 +56,7 @@ const SettingsIndex = () => {
       <View style={[styles.headerDesign]}></View>
 
       <View style={{alignItems: 'center'}}>
-        <Image source={{uri: imageUrl}} style={[styles.iconStyle]}/>
+        <Image source={imageUrl} style={[styles.iconStyle]}/>
         <Text style={[styles.textBold, styles.largeFont]}>{username}</Text>
         <Text style={[styles.textItalics]}>{email}</Text>
       </View>

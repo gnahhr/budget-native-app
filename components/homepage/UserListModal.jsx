@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert, TextInput, Image, ScrollView, Pressable} from 'react-native';
+import { View, Text, StyleSheet, Alert, TextInput, ScrollView, Pressable} from 'react-native';
 import Modal from 'react-native-modal';
 import { COLORS } from '../../constants/theme';
 import { getBudgetUsers, addBudgetUser, removeBudgetUser } from '../../api/budget';
 import { AntDesign } from '@expo/vector-icons';
-
+import { Image } from 'expo-image';
 import { useAuth } from '../../context/auth';
 import { useBudget } from '../../context/budget';
 import Button from '../common/Button';
@@ -113,7 +113,7 @@ const UserListModal = ({isModalVisible, setModalVisible}) => {
                 {userList && userList.map((item, idx) =>
                 <View key={idx} style={{alignItems: 'center', flexDirection: 'row'}}>
                   <View style={{alignItems: 'center', flexDirection: 'row', gap: 8, flex: 1}}>
-                    <Image source={{uri: item.Images}} style={{width: 40, height: 40, borderRadius: 50, justifyContent: 'center'}}/>
+                    <Image source={item.Images} style={{width: 40, height: 40, borderRadius: 50, justifyContent: 'center'}}/>
                     <Text>{item.userName}</Text>
                   </View>
                   {(item.userName !== activeUser && item.Email !== activeBudget.budgetOwner) && 

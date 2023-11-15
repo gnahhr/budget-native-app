@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Tabs, useRouter } from 'expo-router';
-import { View, SafeAreaView, Text, StyleSheet, Pressable, ScrollView, Image, RefreshControl } from 'react-native'
+import { View, SafeAreaView, Text, StyleSheet, Pressable, ScrollView, RefreshControl } from 'react-native'
+import { Image } from 'expo-image';
 import { useStorageState } from '../../../hooks/useStorageState';
 
 // Components
@@ -321,7 +322,7 @@ const HomepageIndex = () => {
         </View>
         <View style={{flex: 1, alignItems: 'flex-end', justifyContent:'center'}}>
           <Pressable onPress={() => userModalToggle()}>
-            {parsedUser && <Image source={{uri: parsedUser.imageUrl}} style={{width: 60, height: 60, borderRadius: 50}}/>}
+            {parsedUser && <Image source={parsedUser.imageUrl} style={{width: 60, height: 60, borderRadius: 50}}/>}
           </Pressable>
         </View>
       </View>
