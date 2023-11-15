@@ -93,7 +93,7 @@ const HomeAllocation = ({category, expenses, type, getAllocation}) => {
     })
 
     setIcon(getIcon(category.iconId));
-  }, [])
+  }, [expense])
 
   return (
     <View style={styles.main}>

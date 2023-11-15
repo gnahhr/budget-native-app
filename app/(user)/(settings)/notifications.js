@@ -11,7 +11,7 @@ import Button from '../../../components/common/Button';
 const Notifications = () => {
   const [ settings, setSettings ] = useState();
   const [[isNotifSetLoading, notifSettings], setNotifSettings] = useStorageState('notifSettings');
-  const settingKeys = ['reminderEveryday', 'reminderOverspend'];
+  const settingKeys = ['reminderEveryday', 'reminderOverspend', 'reminderDebtsLend'];
   const router = useRouter();
 
   const settingValues = {
@@ -22,6 +22,10 @@ const Notifications = () => {
     'reminderOverspend': {
       text: 'Reminder Overspend',
       subText: 'Remind to your overspend budget'
+    },
+    'reminderDebtsLend': {
+      text: 'Reminder Debts/Lend',
+      subText: 'Remind due dates to your debts or lends'
     }
   }
 

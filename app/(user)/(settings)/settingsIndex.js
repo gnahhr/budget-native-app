@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     color: '#ffffff'
   },
   largeFont: {
-    fontSize: 25
+    fontSize: 23
   },
   buttonWrapper: {
     width: '90%',

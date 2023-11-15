@@ -8,11 +8,25 @@ import { useStorageState } from '../../hooks/useStorageState';
 const ListItem = ({name, balance, history, dueDate, type = "Lend"}) => {
   const [ toggled, setToggled ] = useState(false);
   const [ [isLoading, notifList], setNotifList ] = useStorageState("notifList");
+  const [ [isSettingsLoading, notifSettings], setNotifSettings ] = useStorageState("notifSettings");
 
   const textColor = balance === 0 ? styles.textGreen : styles.textRed;
 
   const toggleHandler = () => {
     setToggled(!toggled);
+  }
+
+  async function handleNotification() {
+    if (!isSettingsLoading) {
+      if (JSON.parse(notifSettings).reminderDebtsLend){
+        const data = await schedulePushNotification("dueDate", {
+          type: type,
+          name: name,
+          date: formatDate(dueDate.split('T')[0]),
+        }, true, notifList);
+        setNotifList(JSON.stringify(data));
+      }
+    }
   }
 
   async function checkRemainingDays() {
@@ -25,13 +39,7 @@ const ListItem = ({name, balance, history, dueDate, type = "Lend"}) => {
     const remainingDays = (dueDateMilli - dateTodayMilli) / day;
 
     if (remainingDays < 3) {
-      const data = await schedulePushNotification("dueDate", {
-        type: type,
-        name: name,
-        date: formatDate(dueDate.split('T')[0]),
-      }, true, notifList);
-
-      setNotifList(JSON.stringify(data));
+      handleNotification();
     }
     
   }

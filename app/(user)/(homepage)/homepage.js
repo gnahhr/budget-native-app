@@ -155,6 +155,7 @@ const HomepageIndex = () => {
 
   // Get ng allocation
   async function getAllocation(email, budgetName) {
+    setExpensesLoading(true);
     const budget = activeBudget.budgetName ? activeBudget.budgetName : budgetName;
     const allocation = await getAllocatedBudget(email, budget);
     
@@ -181,7 +182,7 @@ const HomepageIndex = () => {
     // States
     setTotalBudget(totalBudget);
     setTotalExpenses(data.totalExpenses);
-    setParsedExpenses(formattedExpense);
+    setParsedExpenses([...formattedExpense]);
     setParsedData(allocation.response);
     setProgress(Math.floor(Number(remainingBudget) / Number(totalBudget) * 100));
     setExpensesLoading(false);
@@ -226,6 +227,7 @@ const HomepageIndex = () => {
       const settings =  {
         'reminderEveryday': true,
         'reminderOverspend': true,
+        'reminderDebtsLend': true,
       }
       setNotifSettings(JSON.stringify(settings));
     }
@@ -312,13 +314,13 @@ const HomepageIndex = () => {
         <View style={styles.flexRow}>
           <View style={{backgroundColor: '#d7ecea', alignSelf: 'center', position: 'relative'}}>
             <AnimatedProgressWheel 
-              size={160} 
+              size={140} 
               width={15} 
               color={'#1e9dc5'}
               progress={progress ? progress : 0}
               backgroundColor={'#c3ece8'}
             />
-            <Text style={{position: 'absolute', alignSelf: 'center', marginTop: 70}}>Php. {remainingBudget ? remainingBudget : 0}</Text>
+            <Text style={{position: 'absolute', alignSelf: 'center', marginTop: 60}}>Php. {remainingBudget ? remainingBudget : 0}</Text>
           </View>
           <View style={styles.moneyWrapper}>
             <Money currency={remainingBudget ? remainingBudget : 0} subText="Remaining Budget" onClickHandler={budgetModalToggle}/>
