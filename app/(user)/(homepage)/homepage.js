@@ -50,6 +50,7 @@ const HomepageIndex = () => {
   // Loading States
   const [ isLoading, setIsLoading ] = useState(true);
   const [ expensesLoading, setExpensesLoading ] = useState(true);
+  const [ refreshing, setRefreshing ] = useState(false);
   
   // Parsed Data States
   const [ parsedData, setParsedData ] = useState({});
@@ -95,12 +96,11 @@ const HomepageIndex = () => {
   }
 
   const onRefresh = useCallback(() => {
-    setIsLoading(true);
+    setRefreshing(true);
     const userParse = JSON.parse(user);
-    setIsLoading(false);
     setParsedUser(userParse);
     getAllocation(userParse.email, userParse.defaultBudget);
-    setIsLoading(false);
+    setRefreshing(false);
   }, []);
 
   // Modal Toggles
@@ -222,7 +222,6 @@ const HomepageIndex = () => {
     if (user && activeBudget) {
       const userParse = JSON.parse(user);
       setParsedUser(userParse);
-      // getExpensesHandler(userParse.email);
       getAllocation(userParse.email, userParse.defaultBudget);
       setIsLoading(false);
     }
@@ -371,7 +370,7 @@ const HomepageIndex = () => {
       <ScrollView
         style={[styles.container, styles.scrollHeight]}
         refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
         {!expensesLoading && parsedData[tabData[activeTab].name].length > 0 ?
@@ -393,7 +392,7 @@ const HomepageIndex = () => {
       
       <BudgetList isModalVisible={isBListModalVisible} setModalVisible={setIsBListModalVisible} />
       <UserListModal isModalVisible={isUserModalVisible} setModalVisible={setIsUserModalVisible} />
-      <UpdateBudget isModalVisible={isBModalOpen} totalBudget={totalBudget} activeBudget={activeBudget} setModalVisible={setIsBModalOpen} updateBudget={updateBudgetHandler} />
+      <UpdateBudget isModalVisible={isBModalOpen} totalBudget={totalBudget} setModalVisible={setIsBModalOpen} updateBudget={updateBudgetHandler} />
       <AddExpenses categoryList={parsedData[tabData[activeTab].name]} isModalVisible={isEModalOpen} expenses={parsedExpenses} setModalVisible={setIsEModalOpen} onAddExpense={addExpenseHandler}/>
       </>}
       {isIModalVisible && <Instructions isModalVisible={isIModalVisible} setModalVisible={setIModalVisible} type={"homepage"}/>}

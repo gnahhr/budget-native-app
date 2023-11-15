@@ -10,7 +10,11 @@ export function useBudget() {
 }
 
 export function Provider(props) {
-  const [ activeBudget, setActiveBudget ] = useState("budget1");
+  const [ activeBudget, setActiveBudget ] = useState({
+    budgetName: 'myBudget',
+    budgetType: 'weekly',
+    budgetOwner: 'user1@gmail.com'
+  });
   const [ budgetList, setBudgetList ] = useState([]);
   const [ activeType, setActiveType ] = useState("weekly");
 
@@ -28,7 +32,7 @@ export function Provider(props) {
   async function getBudgetListHandler() {
     const data = await getBudgetList(JSON.parse(user).email);
     const list = data.response;
-    
+
     setBudgetList(list);
     setActiveBudget(list[0]);
   }
@@ -36,7 +40,7 @@ export function Provider(props) {
   async function refreshBudgetList() {
     const data = await getBudgetList(JSON.parse(user).email);
     const list = data.response;
-
+    
     setBudgetList(list);
   }
 

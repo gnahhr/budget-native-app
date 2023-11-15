@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, Pressable } from 'react-native';
 import Modal from 'react-native-modal';
+import { useBudget } from '../../context/budget';
 
-const UpdateBudget = ({isModalVisible, totalBudget, activeBudget, setModalVisible, updateBudget}) => {
+const UpdateBudget = ({isModalVisible, totalBudget, setModalVisible, updateBudget}) => {
   const [ budget, onChangeBudget ] = useState(0);
   const [ budgetName, setBudgetName ] = useState("");
   const [ email, setEmail ] = useState("");
+
+  const { activeBudget } = useBudget();
 
   const toggleModal = () => {
     setModalVisible(false);
@@ -24,9 +27,11 @@ const UpdateBudget = ({isModalVisible, totalBudget, activeBudget, setModalVisibl
   }, [totalBudget])
   
   useEffect(() => {
-    const splitName = activeBudget.budgetName.split('~');
-    setBudgetName(splitName[0]);
-    setEmail(splitName[0]);
+    if (activeBudget) {
+      const splitName = activeBudget.budgetName?.split('~');
+      setBudgetName(splitName[0]);
+      setEmail(splitName[1]);
+    }
   }, [activeBudget])
 
   return (
