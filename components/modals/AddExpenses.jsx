@@ -6,7 +6,7 @@ import Modal from 'react-native-modal';
 import { AntDesign } from '@expo/vector-icons';
 import { getDateToday } from '../../utils/dateFunctions';
 
-const AddExpenses = ({categoryList, isModalVisible, expenses, setModalVisible, onAddExpense}) => {
+const AddExpenses = ({categoryList, selected = null ,isModalVisible, expenses, setModalVisible, onAddExpense}) => {
   const [ categoryState, setCategoryState ] = useState(categoryList);
   const [ amount, setAmount ] = useState("");
   const [ note, setNote ] = useState("");
@@ -15,7 +15,7 @@ const AddExpenses = ({categoryList, isModalVisible, expenses, setModalVisible, o
 
   // Drop Down States
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState(selected);
   const [items, setItems] = useState([]);
   
   const [ buttonActive, setButtonActive ] = useState(Number(amount) > 0 && !value); 
@@ -24,6 +24,10 @@ const AddExpenses = ({categoryList, isModalVisible, expenses, setModalVisible, o
     setModalVisible(false);
     resetModal();
   };
+
+  useEffect(() => {
+    setValue(selected);
+  }, [selected])
 
   async function addExpenseHandler() {
     if (!value) return;
@@ -127,7 +131,7 @@ const AddExpenses = ({categoryList, isModalVisible, expenses, setModalVisible, o
               </View>
               <View>
                 <Text style={[styles.textBold]}>Note</Text>
-                <TextInput placeholder='Enter Note Expenses' value={note} onChangeText={setNote}/>
+                <TextInput placeholder='e.g. Went out with friends' value={note} onChangeText={setNote}/>
               </View>
               <View>
                 <Text style={[styles.textBold]}>Amount</Text>

@@ -21,6 +21,7 @@ const PieChartView = ({data}) => {
     
     const pieData = dataPie.map((data, idx) => {
       return {
+        text: `${Math.floor(data.amount / total * 100)}%`,
         value: Math.floor(data.amount / total * 100),
         color: colors[idx],
       }
@@ -45,10 +46,11 @@ return(
         <View style={[styles.flexRow]}>
           <PieChart
             showText
-            textColor="black"
+            textColor="white"
             radius={80}
-            textSize={20}
-            textBackgroundRadius={26}
+            textSize={14}
+            focusOnPress
+            showValuesAsLabels
             data={pieData}
           />
           <View style={[styles.categoryWrapper]}>

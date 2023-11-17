@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, Pressable } from 'react-native'
 import Category from './Category';
 import Modal from 'react-native-modal'
+import { Ionicons } from '@expo/vector-icons';
 import { Icon } from '@rneui/themed';
+import { COLORS } from '../../constants/theme';
+
 import AddCategory from './AddCategory';
 import Button from '../common/Button';
 
@@ -53,7 +56,23 @@ const Categories = ({categoryList, isModalVisible, setModalVisible, onChangeTogg
               <View style={[styles.categoriesWrapper, {flexDirection: 'row', flexWrap: 'wrap'}]}>
                 {categoryState.map((category) => <Category key={category.name} category={category} categoryState={categoryState} updateCategory={setCategoryState} />)}
               </View>
-              <Button label="Add Category" action={() => toggleAdd()} />
+              <Pressable style={{
+                  flexDirection: 'row',
+                  gap: 4,
+                  paddingHorizontal: 8,
+                  paddingVertical: 8,
+                  alignItems: 'center',
+                  borderWidth: 2,
+                  borderColor: COLORS['white-700'],
+                  borderRadius: 4,
+                  marginTop: 8,
+                }}
+
+                onPress={() => toggleAdd()}
+              >
+                <Ionicons name="add-circle" size={24} color={COLORS['white-700']} />
+                <Text style={[{color: COLORS['white-700'], fontWeight: 700}]}>Create Category</Text>
+              </Pressable>
             </View>
           </View>
         </View>

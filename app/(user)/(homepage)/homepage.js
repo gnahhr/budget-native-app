@@ -64,6 +64,7 @@ const HomepageIndex = () => {
   const [ progress, setProgress ] = useState(0);
   const [ remainingBudget, setRemainingBudget ] = useState(0);
   const [ exceedingBudget, setExceedingBudget ] = useState(0);
+  const [ selectedCategory, setSelectedCategory ] = useState(null);
 
   // Notification States
   const [notification, setNotification] = useState(false);
@@ -165,6 +166,11 @@ const HomepageIndex = () => {
         amount: total,
       }
     })
+  }
+
+  const handlePressCategory = (value) => {
+    setSelectedCategory(value);
+    expenseModalToggle();
   }
 
   // Get ng allocation
@@ -346,7 +352,7 @@ const HomepageIndex = () => {
             <Text style={{position: 'absolute', alignSelf: 'center', marginTop: 60}}>Php. {remainingBudget ? remainingBudget : 0}</Text>
           </View>
           <View style={styles.moneyWrapper}>
-            <Money currency={remainingBudget ? remainingBudget : 0} subText="Remaining Budget" onClickHandler={parsedUser && activeBudget.budgetOwner === parsedUser.email ? budgetModalToggle : null}/>
+            <Money currency={totalBudget ? totalBudget : 0} subText="Total Budget" onClickHandler={parsedUser && activeBudget.budgetOwner === parsedUser.email ? budgetModalToggle : null}/>
             <Money currency={totalExpenses ? totalExpenses : 0} subText="Total Expenses"/>
             <Money currency={exceedingBudget} subText="Exceeding Budget"/>
           </View>
@@ -376,7 +382,10 @@ const HomepageIndex = () => {
         }
       >
         {!expensesLoading && parsedData[tabData[activeTab].name].length > 0 ?
-          parsedData[tabData[activeTab].name].map(data => <HomeAllocation key={data.name} category={data} expenses={parsedExpenses} type={tabData[activeTab].name} getAllocation={() => getAllocation(parsedUser.email, parsedUser.defaultBudget)}/>)
+          parsedData[tabData[activeTab].name].map(data =>
+          <Pressable onPress={() => handlePressCategory(data.name)}>
+            <HomeAllocation key={data.name} category={data} expenses={parsedExpenses} type={tabData[activeTab].name} getAllocation={() => getAllocation(parsedUser.email, parsedUser.defaultBudget)}/>
+          </Pressable>)
           :
           <Text>Nothing Allocated</Text>
           }
@@ -395,7 +404,7 @@ const HomepageIndex = () => {
       <BudgetList isModalVisible={isBListModalVisible} setModalVisible={setIsBListModalVisible} />
       <UserListModal isModalVisible={isUserModalVisible} setModalVisible={setIsUserModalVisible} />
       <UpdateBudget isModalVisible={isBModalOpen} totalBudget={totalBudget} setModalVisible={setIsBModalOpen} updateBudget={updateBudgetHandler} />
-      <AddExpenses categoryList={parsedData[tabData[activeTab].name]} isModalVisible={isEModalOpen} expenses={parsedExpenses} setModalVisible={setIsEModalOpen} onAddExpense={addExpenseHandler}/>
+      <AddExpenses categoryList={parsedData[tabData[activeTab].name]} selected={selectedCategory} isModalVisible={isEModalOpen} expenses={parsedExpenses} setModalVisible={setIsEModalOpen} onAddExpense={addExpenseHandler}/>
       </>}
       {isIModalVisible && <Instructions isModalVisible={isIModalVisible} setModalVisible={setIModalVisible} type={"homepage"}/>}
 

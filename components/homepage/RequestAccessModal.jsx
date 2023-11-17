@@ -9,7 +9,7 @@ import { useAuth } from '../../context/auth';
 import { useBudget } from '../../context/budget';
 import Button from '../common/Button';
 
-const UserListModal = ({isModalVisible, setModalVisible}) => {
+const RequestAccessModal = ({isModalVisible, setModalVisible}) => {
   const [ userList, setUserList ] = useState([]);
   const [ isEdit, setIsEdit ] = useState(false);
   const [ isLoading, setIsLoading ] = useState(false);
@@ -189,4 +189,4 @@ const styles = StyleSheet.create({
   
 })
 
-export default UserListModal
+export default RequestAccessModal

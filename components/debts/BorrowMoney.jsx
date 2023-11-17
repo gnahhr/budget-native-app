@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, Pressable } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Alert } from 'react-native';
 import DateTimePicker from 'react-native-ui-datepicker';
 import dayjs from 'dayjs';
 import Button from '../common/Button';
@@ -50,6 +50,11 @@ const BorrowMoney = ({isModalVisible, setModalVisible, type}) => {
       setName("");
       setAmount(0);
       setInterest(0);
+    } else {
+      Alert.alert(
+        "Error!",
+        data.message,
+      )
     }
     
   };
