@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView} from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Alert} from 'react-native';
 import Modal from 'react-native-modal';
 import { analyzeData } from '../../api/insights';
 import { AntDesign } from '@expo/vector-icons';
@@ -10,7 +10,6 @@ import { useBudget } from '../../context/budget';
 
 const AnalyzeModal = ({isModalVisible, setModalVisible}) => {
   const [ overspentItems, setOverspentItems ] = useState(null);
-  const [ ifEmergencyFundsExist, setIsEmergencyFundsExist ] = useState(false);
   const { user } = useAuth();
   const { activeBudget } = useBudget();
 
@@ -21,10 +20,19 @@ const AnalyzeModal = ({isModalVisible, setModalVisible}) => {
 
   async function handleGetUsers () {
     const data = await analyzeData(JSON.parse(user).email, activeBudget.budgetName);
-    
     if (data.statusCode === 200) {
-      setIsEmergencyFundsExist(data.response.isEmergencyFundsExist);
-      setOverspentItems(data.response.overspentItems);
+      const keys = Object.keys(data.response);
+
+      let overBudget = [];
+      keys.forEach((key) => {
+        if (data.response[key].isOverBudget) {
+          overBudget.push({name: key, ...data.response[key]})
+        }
+      });
+
+      setOverspentItems(overBudget);
+    } else {
+      isModalVisible && Alert.alert("Error!", data.message);
     }
   }
 
@@ -49,24 +57,24 @@ const AnalyzeModal = ({isModalVisible, setModalVisible}) => {
             <View style={{marginTop: 8, gap: 8}}>
               {overspentItems && overspentItems.length > 0 ?
                 <>
-                <ScrollView contentContainerStyle={{gap: 8}}>
-                  <Text style={[styles.textBold, {fontSize: 24}]}>Overspent</Text>
-                  {overspentItems.map(item => 
-                    <View key={item.name} style={{flexDirection: 'row', alignItems: 'center', paddingVertical: 4, paddingHorizontal: 20, borderRadius: 20, backgroundColor: 'rgba(0,0,0,0.3)'}}>
-                      <View style={{flex: 1}}>
-                        <Text style={[styles.textWhite, styles.textBold]}>{item.name}</Text>
-                        <Text style={[styles.textWhite]}>{item.category}</Text>
-                      </View>
-                      <Text style={[styles.textWhite, styles.textRed]}>Php. {item.overspent}</Text>
-                    </View>
-                    // <Text key={item.name}>You have overspent <Text style={{fontWeight: '700'}}>Php. {item.overspent}</Text> on {item.name}!</Text> 
-                  )}
-                </ScrollView>
+                  <ScrollView contentContainerStyle={{gap: 8}}>
+                    <Text style={[styles.textBold, {fontSize: 24}]}>Overspent</Text>
 
-                {ifEmergencyFundsExist ?
-                  <Text style={{textAlign: 'center', color: 'red', marginTop: 10}}>Allocate your expenses to the Emergency Fund.</Text>
-                  :
-                  <Text style={{textAlign: 'center', color: 'red', marginTop: 10}}>It is advised that you get an Emergency Fund for your expenses.</Text>}
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                      <Text style={[styles.textCenter, styles.textBold, {flex: 1}]}>Name</Text>
+                      <Text style={[styles.textCenter, styles.textBold, {flex: 1}]}>Allocation</Text>
+                      <Text style={[styles.textCenter, styles.textBold, {flex: 1}]}>Predicted Expenses</Text>
+                    </View>
+
+                    {overspentItems.map(item => 
+                      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <Text style={[styles.textCenter, {flex: 1}]}>{item.name}</Text>
+                        <Text style={[styles.textCenter, {flex: 1}]}>{item.allocation}</Text>
+                        <Text style={[styles.textCenter, {flex: 1}]}>{item.predictions}</Text>
+                      </View>  
+                    )}
+                  </ScrollView>
+                  <Text style={[styles.textMd, styles.textCenter, styles.textBold]}>Your spending habit with <Text style={[styles.textBold, styles.textRed]}>{overspentItems.map(item => item.name).join(', ')}</Text> is unusual and would exceed the following month if not changed.</Text>
                 </>
               :
               <Text style={[styles.textHeader, styles.textCenter, styles.textBold]}>You're doing great!</Text>}
@@ -98,6 +106,9 @@ const styles = StyleSheet.create({
   },
   textHeader: {
     fontSize: 25,
+  },
+  textMd: {
+    fontSize: 20,
   },
   textWhite: {
     color: COLORS['white-500'],

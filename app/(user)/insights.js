@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Tabs } from 'expo-router';
 import { View, Text, SafeAreaView, Pressable } from 'react-native';
-import { Entypo, MaterialIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 
 // Components
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -9,6 +9,7 @@ import PieChart from '../../components/charts/PieChartView';
 import BarChart from '../../components/charts/BarChartView';
 import CustomIcon from '../../components/common/CustomIcon';
 import AnalyzeModal from '../../components/modals/AnalyzeModal';
+import CompareBudgetsModal from '../../components/modals/CompareBudgetsModal';
 
 // Hooks
 import { useAuth } from '../../context/auth';
@@ -25,6 +26,7 @@ import { COLORS } from '../../constants/theme';
 const Insights = () => {
   const [ parsedUser, setParsedUser ] = useState();
   const [ isAnalyzeOpen, setIsAnalyzeOpen ] = useState(false);
+  const [ isCompareOpen, setIsCompareOpen ] = useState(false);
   const [ data, setData ] = useState();
   const { user } = useAuth();
   const { activeBudget } = useBudget();
@@ -72,6 +74,10 @@ const Insights = () => {
 
   async function analyzeHandler() {
     setIsAnalyzeOpen(true);
+  }
+
+  async function compareHandler() {
+    setIsCompareOpen(true);
   }
 
   useEffect(() => {
@@ -133,13 +139,21 @@ const Insights = () => {
       </View>
 
       {!!data &&
+      <View>
         <Pressable onPress={() => analyzeHandler()}>
           <View style={{position: 'absolute', backgroundColor: COLORS['blue-800'], bottom: 10, right: 10, borderRadius: 100, width: 65, height: 65, alignItems: 'center', justifyContent: 'center'}}>
             <MaterialIcons name="insights" size={40} color={COLORS['white-500']} />
           </View>
         </Pressable>
+        <Pressable onPress={() => compareHandler()}>
+          <View style={{position: 'absolute', backgroundColor: COLORS['blue-800'], bottom: 80, right: 10, borderRadius: 100, width: 55, height: 55, alignItems: 'center', justifyContent: 'center'}}>
+            <MaterialCommunityIcons name="file-compare" size={35} color={COLORS['white-500']} />
+          </View>
+        </Pressable>
+      </View>
       }
       <AnalyzeModal isModalVisible={isAnalyzeOpen} setModalVisible={setIsAnalyzeOpen}/>
+      <CompareBudgetsModal isModalVisible={isCompareOpen} setModalVisible={setIsCompareOpen}/>
     </SafeAreaView>
   )
 }

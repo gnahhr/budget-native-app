@@ -61,10 +61,72 @@ export async function getBudgetUsers(email, budgetName) {
   return await response;
 };
 
+export async function getRequestAccess(email) {
+  const response = await axios.get(`${apiURL}/budget/get-all-request-access?budgetOwner=${email}`)
+  .then(response => response.data)
+  .catch(err => console.error(err));
+  return await response;
+};
+
 export async function addBudgetUser(email, budgetName, userEmail) {
   const response = await axios.post(`${apiURL}/budget/add-user?email=${email}&budgetName=${budgetName}`, {
     userEmail,
   } )
+  .then(response => response.data)
+  .catch(err => console.error(err));
+  
+  return await response;
+};
+
+export async function requestAccess(userEmail, budgetOwner) {
+  const response = await axios.post(`${apiURL}/budget/request-access?userEmail=${userEmail}&budgetOwner=${budgetOwner}`)
+  .then(response => response.data)
+  .catch(err => console.error(err));
+  
+  return await response;
+};
+
+export async function grantAccess(budgetOwner, userEmail, budgetName) {
+  const response = await axios.put(`${apiURL}/budget/grant-access?budgetOwner=${budgetOwner}`, {
+    userEmail,
+    budgetName
+  })
+  .then(response => response.data)
+  .catch(err => console.error(err));
+  
+  return await response;
+};
+
+export async function giveMoney(userEmail, budgetName, amount) {
+  const response = await axios.post(`${apiURL}/budget/give-money`, {
+    userEmail,
+    budgetName,
+    amount
+  } )
+  .then(response => response.data)
+  .catch(err => console.error(err));
+  
+  return await response;
+};
+
+export async function addExtraBudget(budgetOwner, budgetName, payload) {
+  const response = await axios.post(`${apiURL}/budget/add-extra-budget?budgetOwner=${budgetOwner}&budgetName=${budgetName}`, payload)
+  .then(response => response.data)
+  .catch(err => console.error(err));
+  
+  return await response;
+};
+
+export async function getAllExtraBudget(budgetOwner, budgetName) {
+  const response = await axios.get(`${apiURL}/budget/get-all-extra-budget?budgetOwner=${budgetOwner}&budgetName=${budgetName}`)
+  .then(response => response.data)
+  .catch(err => console.error(err));
+  
+  return await response;
+};
+
+export async function checkExtraBudget(budgetOwner, budgetName) {
+  const response = await axios.post(`${apiURL}/budget/check-extra-budget?budgetOwner=${budgetOwner}&budgetName=${budgetName}`)
   .then(response => response.data)
   .catch(err => console.error(err));
   

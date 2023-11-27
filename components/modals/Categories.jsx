@@ -2,12 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, Pressable } from 'react-native'
 import Category from './Category';
 import Modal from 'react-native-modal'
-import { Ionicons } from '@expo/vector-icons';
-import { Icon } from '@rneui/themed';
+import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 
 import AddCategory from './AddCategory';
-import Button from '../common/Button';
 
 const Categories = ({categoryList, isModalVisible, setModalVisible, onChangeToggle}) => {
   const [ categoryState, setCategoryState ] = useState(categoryList);
@@ -44,11 +42,7 @@ const Categories = ({categoryList, isModalVisible, setModalVisible, onChangeTogg
       style={{zIndex: 90}}>
         <View style={styles.modalWrapper}>
           <View style={styles.modalContent}>
-            <Icon
-              name='chevron-right'
-              type='font-awesome'
-              color='#21abe5'
-              onPress={toggleModal} />
+            <FontAwesome name="chevron-right" size={40} color="#21abe5" onPress={toggleModal} />
 
             <View style={styles.categoriesWrapper}>
               <Text style={[styles.modalText, styles.modalHeader]}>EDIT CATEGORIES</Text>

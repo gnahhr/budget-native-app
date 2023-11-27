@@ -7,7 +7,7 @@ import Button from '../common/Button';
 import { getDateTodayISO, getWeeklyStartEnd } from '../../utils/dateFunctions';
 import { COLORS } from '../../constants/theme';
 
-const DatePicker = ({isModalVisible, setModalVisible, setDates, type="Daily"}) => {
+const DatePicker = ({isModalVisible, setModalVisible, setDates, type="Daily", setDay}) => {
   const [value, setValue] = useState(getDateTodayISO());
 
   const toggleModal = () => {
@@ -27,7 +27,12 @@ const DatePicker = ({isModalVisible, setModalVisible, setDates, type="Daily"}) =
       'Yearly': year,
     }
     // console.log(month);
-    setDates[type](dates[type])
+    if (setDates) {
+      setDates[type](dates[type])
+    } else {
+      setDay(dateISO);
+    }
+
     setModalVisible(false);
   }
   return (

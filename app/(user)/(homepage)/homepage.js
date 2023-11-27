@@ -18,7 +18,7 @@ import BudgetList from '../../../components/homepage/BudgetList';
 import Instructions from '../../../components/common/Instructions';
 
 // API
-import { getAllocatedBudget, updateBudget } from '../../../api/budget';
+import { getAllocatedBudget, updateBudget, checkExtraBudget } from '../../../api/budget';
 import { allocateExpense } from '../../../api/expenses';
 import { registerForPushNotificationsAsync } from '../../../utils/notification';
 
@@ -30,6 +30,7 @@ import { useAuth } from '../../../context/auth';
 import { useBudget } from '../../../context/budget';
 
 import * as Notifications from "expo-notifications";
+import Button from '../../../components/common/Button';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -175,15 +176,16 @@ const HomepageIndex = () => {
 
   // Get ng allocation
   async function getAllocation(email, budgetName) {
+    if (!activeBudget) return; 
     const budget = activeBudget.budgetName ? activeBudget.budgetName : budgetName;
     const allocation = await getAllocatedBudget(email, budget);
-    
+    await checkExtraBudget(email, budget);
     const data = allocation.response;
     // Kasama na rin dito yung pag compute nung makikita sa homepage which is yung remaining budget,
     // tska yung yung parang progress if malapit na maubos budget
     const expenses = tabs.map(item => data[item.toLowerCase()]);
     const expensesArray = [];
-
+    
     expenses.forEach(item => {
       if (item?.length > 0) {
         item.forEach((x) => x.expenses.forEach(y => expensesArray.push(y)));
@@ -248,7 +250,7 @@ const HomepageIndex = () => {
 
   useEffect(() => {
     setProgress(Math.floor(Number(remainingBudget) / Number(totalBudget) * 100)); 
-    console.log(Math.floor(Number(remainingBudget) / Number(totalBudget) * 100))
+    // console.log(Math.floor(Number(remainingBudget) / Number(totalBudget) * 100))
   }, [remainingBudget, totalBudget]);
 
   useEffect(() => {
@@ -328,15 +330,16 @@ const HomepageIndex = () => {
         </View>
         <View style={{flex: 1, alignItems: 'flex-end', justifyContent:'center'}}>
           <Pressable onPress={() => userModalToggle()}>
-            {parsedUser && <Image source={{uri: `https:${parsedUser.imageUrl.split(":")[1]}`}} style={{width: 60, height: 60, borderRadius: 50}}/>}
+            {parsedUser && <Image  source={{uri: `https:${parsedUser.imageUrl.split(":")[1]}`}} style={{width: 60, height: 60, borderRadius: 50}}/>}
           </Pressable>
         </View>
       </View>
 
       <View style={[styles.budgetWrapper, styles.container]}>
-        <Pressable onPress={() => budgetListModalToggle()}>
+        <Button label={activeBudget.budgetName?.split('~')[0]} action={() => budgetListModalToggle()} />
+        {/* <Pressable onPress={() => budgetListModalToggle()}>
           <Text style={[styles.bigFont]}>{activeBudget.budgetName?.split('~')[0]}</Text>
-        </Pressable>
+        </Pressable> */}
 
         <Text style={[styles.italics, styles.normalText, {textTransform: 'uppercase'}]}>{activeBudget.budgetType}</Text>
 
@@ -352,7 +355,7 @@ const HomepageIndex = () => {
             <Text style={{position: 'absolute', alignSelf: 'center', marginTop: 60}}>Php. {remainingBudget ? remainingBudget : 0}</Text>
           </View>
           <View style={styles.moneyWrapper}>
-            <Money currency={totalBudget ? totalBudget : 0} subText="Total Budget" onClickHandler={parsedUser && activeBudget.budgetOwner === parsedUser.email ? budgetModalToggle : null}/>
+            <Money currency={totalBudget ? totalBudget : 0} subText="Total Budget" onClickHandler={budgetModalToggle}/>
             <Money currency={totalExpenses ? totalExpenses : 0} subText="Total Expenses"/>
             <Money currency={exceedingBudget} subText="Exceeding Budget"/>
           </View>

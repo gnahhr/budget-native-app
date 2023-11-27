@@ -18,3 +18,11 @@ export async function analyzeData(email, budgetName) {
   
   return await response;
 };
+
+export async function compareExpenses(email, budgetName, startDate, endDate) {
+  const response = await axios.get(`${apiURL}/analytics/compare-expense?email=${email}&budgetName=${budgetName}&startDate=${startDate}&endDate=${endDate}`)
+  .then(response => response.data)
+  .catch(err => console.error(err));
+  
+  return await response;
+};

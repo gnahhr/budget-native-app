@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Alert, TextInput, ScrollView, Pressable} from 'react-native';
 import Modal from 'react-native-modal';
 import { COLORS } from '../../constants/theme';
-import { getBudgetUsers, addBudgetUser, removeBudgetUser } from '../../api/budget';
+import { getBudgetUsers, addBudgetUser, requestAccess, removeBudgetUser } from '../../api/budget';
 import { AntDesign } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useAuth } from '../../context/auth';
 import { useBudget } from '../../context/budget';
+import RequestAccessModal from './RequestAccessModal';
 import Button from '../common/Button';
 
 const UserListModal = ({isModalVisible, setModalVisible}) => {
@@ -15,6 +16,7 @@ const UserListModal = ({isModalVisible, setModalVisible}) => {
   const [ isLoading, setIsLoading ] = useState(false);
   const [ userEmail, setUserEmail ] = useState("");
   const [ activeUser, setActiveUser ] = useState("");
+  const [ isModalOpen, setIsModalOpen ] = useState(false);
 
   const toggleModal = () => {
     setModalVisible(false);
@@ -31,13 +33,43 @@ const UserListModal = ({isModalVisible, setModalVisible}) => {
     setActiveUser(JSON.parse(user).username);
   }
 
+  const openModal = () => {
+    setIsModalOpen(true);
+  }
+
   async function addUserHandler() {
     setIsLoading(true);
 
     const data = await addBudgetUser(JSON.parse(user).email, activeBudget.budgetName, userEmail);
+
     setIsLoading(false);
     if (data.statusCode === 200) {
       handleGetUsers();
+      setUserEmail("");
+    } else {
+      Alert.alert('Warning', data.message, [
+        {
+          text: 'Okay',
+          style: 'cancel'
+        }
+      ])
+    }
+  }
+
+  async function requestAccessHandler() {
+    setIsLoading(true);
+
+    const data = await requestAccess(JSON.parse(user).email, userEmail);
+
+    setIsLoading(false);
+    if (data.statusCode === 200) {
+      handleGetUsers();
+      Alert.alert('Success!', data.message, [
+        {
+          text: 'Okay',
+          style: 'cancel'
+        }
+      ])
       setUserEmail("");
     } else {
       Alert.alert('Warning', data.message, [
@@ -89,14 +121,27 @@ const UserListModal = ({isModalVisible, setModalVisible}) => {
     }
   }, [user, activeBudget]);
 
+  useEffect(() => {
+    setUserEmail("");
+  }, [isEdit])
+
   return (
+    <>
+    {isModalOpen ?
+    <RequestAccessModal isModalVisible={isModalOpen} setModalVisible={setIsModalOpen} />
+      :
     <Modal
       isVisible={isModalVisible}
       animationIn="fadeIn"
       animationOut="fadeOut">
         <View style={styles.modalWrapper}>
             <View style={[styles.modalHeader]}>
-              <Text style={[styles.textBold, styles.textHeader]}>User List</Text>
+              <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap:8}}>
+                <Text style={[styles.textBold, styles.textHeader]}>User List</Text>
+                <Pressable onPress={() => openModal()}>
+                  <Text style={{backgroundColor: COLORS['blue-500'], borderRadius: 8, padding: 8, color: COLORS['white-500']}}>Check Requests</Text>
+                </Pressable>
+              </View>
               <AntDesign name="close" size={24} color="#3A85AF" onPress={toggleModal}/>
             </View>
 
@@ -130,7 +175,7 @@ const UserListModal = ({isModalVisible, setModalVisible}) => {
                     borderTopWidth: 4,
                     }}>
                 <TextInput placeholder='Enter user email address...' value={userEmail} onChangeText={setUserEmail}/>
-                <Button label={"Add User"} action={() => addUserHandler()} isLoading={isLoading} />
+                <Button label={"Add User"} action={() => addUserHandler()} isLoading={isLoading} active={userEmail !== ""}/>
               </View>
             </View>
             :
@@ -149,11 +194,22 @@ const UserListModal = ({isModalVisible, setModalVisible}) => {
                   <Text>{user.userName}</Text>
                 </View>)}
               </View>
-              <Button label={"Edit Userlist"} action={() => setIsEdit(!isEdit)} />
+              <View style={{
+                    borderTopColor: 'black',
+                    borderTopWidth: 4,
+                    }}>
+                <TextInput placeholder='Enter user email address...' value={userEmail} onChangeText={setUserEmail}/>
+              </View>
+              <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                <Button label={"Edit Userlist"} action={() => setIsEdit(!isEdit)}/>
+                <Button label={"Request Access"} action={() => requestAccessHandler()} active={userEmail !== ""}/>
+              </View>
             </View>
             }
         </View>
     </Modal>
+    }
+    </>
   )
 }
 

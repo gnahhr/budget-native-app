@@ -2,35 +2,44 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, Pressable } from 'react-native';
 import Modal from 'react-native-modal';
 import { useBudget } from '../../context/budget';
+import { useAuth } from '../../context/auth';
 
 const UpdateBudget = ({isModalVisible, totalBudget, setModalVisible, updateBudget}) => {
+  const { activeBudget } = useBudget();
+  const { user } = useAuth();
+  
   const [ budget, onChangeBudget ] = useState(0);
   const [ budgetName, setBudgetName ] = useState("");
-  const [ email, setEmail ] = useState("");
+  const [ budgetEmail, setBudgetEmail ] = useState("");
+  const [ isOwner, setIsOwner ] = useState(null); 
 
-  const { activeBudget } = useBudget();
 
   const toggleModal = () => {
     setModalVisible(false);
   };
 
   const updateBudgetHandler = () => {
+    const newBudget = isOwner ? Number(budget) : Number(totalBudget) + Number(budget);
     if (Number(budget) > 0 && budgetName !== ""){
-      updateBudget(budget, `${budgetName}~${email}`);
+      updateBudget(Number(newBudget), `${budgetName}~${budgetEmail}`);
     }
   }
 
   useEffect(() => {
+    setIsOwner(JSON.parse(user).email === budgetEmail);
+  }, [user, isModalVisible])
+
+  useEffect(() => {
     if (totalBudget){
-      onChangeBudget(totalBudget);
+      onChangeBudget(isOwner ? totalBudget : 0);
     }
-  }, [totalBudget])
+  }, [totalBudget, isOwner])
   
   useEffect(() => {
     if (activeBudget) {
       const splitName = activeBudget.budgetName?.split('~');
       setBudgetName(splitName[0]);
-      setEmail(splitName[1]);
+      setBudgetEmail(splitName[1]);
     }
   }, [activeBudget])
 
@@ -42,26 +51,42 @@ const UpdateBudget = ({isModalVisible, totalBudget, setModalVisible, updateBudge
         <View style={styles.modalWrapper}>
           <View>
             <View style={[styles.modalHeader]}>
-              <Text style={[styles.textBold, styles.textHeader]}>Update Budget</Text>
+              <Text style={[styles.textBold, styles.textHeader]}>{isOwner && isOwner ? "Update Budget" : "Give Money"}</Text>
             </View>
             
             <View style={{gap: 16}}>
+              {isOwner && isOwner ? 
+              <>
+                <View>
+                  <Text style={[styles.textBold]}>Budget Name</Text>
+                  <TextInput
+                    value={budgetName}
+                    onChangeText={setBudgetName}
+                  />
+                </View>
+                <View>
+                  <Text style={[styles.textBold]}>Total Budget</Text>
+                  <TextInput
+                    placeholder='Php. 00'
+                    keyboardType="numeric"
+                    value={String(budget)}
+                    onChangeText={onChangeBudget}
+                  />
+                </View>
+              </>
+              :
               <View>
-                <Text style={[styles.textBold]}>Budget Name</Text>
-                <TextInput
-                  value={budgetName}
-                  onChangeText={setBudgetName}
-                />
+                <View>
+                  <Text style={[styles.textBold]}>Amount</Text>
+                  <TextInput
+                    placeholder='Php. 00'
+                    keyboardType="numeric"
+                    onChangeText={onChangeBudget}
+                  />
               </View>
-              <View>
-                <Text style={[styles.textBold]}>Total Budget</Text>
-                <TextInput
-                  placeholder='Php. 00'
-                  keyboardType="numeric"
-                  value={String(budget)}
-                  onChangeText={onChangeBudget}
-                />
               </View>
+              }
+
             </View>
           </View>
 

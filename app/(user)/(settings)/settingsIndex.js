@@ -16,6 +16,10 @@ const SettingsIndex = () => {
     router.push(`/(user)/(settings)/history`)
   }
 
+  const extraBudgetHandler = () => {
+    router.push(`/(user)/(settings)/extraBudget`)
+  }
+
   const notificationsHandler = () => {
     router.push(`/(user)/(settings)/notifications`)
   }
@@ -79,6 +83,9 @@ const SettingsIndex = () => {
         </View>
         <Pressable onPress={() => transactionsHandler()}>
           <Text style={[styles.button, styles.textWhite, styles.textItalics, styles.textBold, styles.largeFont]}>TRANSACTIONS</Text>
+        </Pressable>
+        <Pressable onPress={() => extraBudgetHandler()}>
+          <Text style={[styles.button, styles.textWhite, styles.textItalics, styles.textBold, styles.largeFont]}>EXTRA BUDGET</Text>
         </Pressable>
         <Pressable onPress={() => helpHandler()}>
           <Text style={[styles.button, styles.textWhite, styles.textItalics, styles.textBold, styles.largeFont]}>HELP</Text>

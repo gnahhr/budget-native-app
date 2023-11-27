@@ -12,7 +12,7 @@ const Button = ({label, action, isLoading = false, active=true}) => {
           Loading...
         </Text>
       :
-        <Pressable onPress={action}>
+        <Pressable onPress={() => active ? action() : console.log("")}>
           <Text style={[styles.buttonStyle, active ? "" : styles.inactiveStyle]}>{label}</Text>
         </Pressable>
       }
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   buttonStyle: {
     color: COLORS['white-700'],
     backgroundColor: COLORS['blue-500'],
-
+    zIndex: 1,
     fontWeight: 'bold',
     padding: 8,
     fontSize: 24,
