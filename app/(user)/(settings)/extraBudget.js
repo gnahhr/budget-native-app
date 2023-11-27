@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { Stack, useRouter } from "expo-router";
 import { View, Text, StyleSheet, ScrollView } from 'react-native'
+
 import CustomIcon from '../../../components/common/CustomIcon';
 import LogoS from '../../../assets/logos/logo-sw.png';
-import { useAuth } from '../../../context/auth';
-import { useBudget } from '../../../context/budget';
-import { FontAwesome5 } from '@expo/vector-icons';
-import { formatDate } from '../../../utils/dateFunctions';
-import { getAllExtraBudget } from '../../../api/budget';
 import Button from '../../../components/common/Button';
 import ExtraBudgetModal from '../../../components/modals/ExtraBudgetModal';
+
+import { FontAwesome5 } from '@expo/vector-icons';
+import { formatDate, getDateTodayISO } from '../../../utils/dateFunctions';
+import { getAllExtraBudget } from '../../../api/budget';
 import { COLORS } from '../../../constants/theme';
+import { useStorageState } from '../../../hooks/useStorageState';
+import { useAuth } from '../../../context/auth';
+import { useBudget } from '../../../context/budget';
+import { schedulePushNotification } from '../../../utils/notification';
 
 const ExtraBudget = () => {
   const { user } = useAuth();
@@ -19,10 +23,17 @@ const ExtraBudget = () => {
   const [ isModalOpen, setIsModalOpen ] = useState(false);
   const [ extraList, setExtraList ] = useState([]);
 
+  const [ [isLoading, notifList], setNotifList ] = useStorageState("notifList");
+
   const router = useRouter();
 
   const backHandler = () => {
     router.back();
+  }
+
+  async function handleNotification(value) {
+    const data = await schedulePushNotification("extraBudget", value, true, notifList);
+    setNotifList(JSON.stringify(data));
   }
 
   const modalToggleHandler = () => {
@@ -32,13 +43,21 @@ const ExtraBudget = () => {
   async function getAllExtra() {
     const email = JSON.parse(user).email;
     const data = await getAllExtraBudget(email, activeBudget.budgetName);
-
+    
     setExtraList(data.response);
   }
 
   useEffect(() => {
     getAllExtra();
-  }, [])
+  }, [isModalOpen])
+
+  useEffect(() => {
+    extraList.forEach((item) => {
+      if (item.dateToBeAdded.split('T')[0] === getDateTodayISO()) {
+        handleNotification(item.note)
+      }
+    })
+  }, [extraList])
 
   return (
     <View style={[{position: 'relative', alignItems: 'center', height: '100%'}]}>
