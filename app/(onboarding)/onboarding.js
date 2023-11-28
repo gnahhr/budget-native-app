@@ -25,6 +25,7 @@ const Onboarding = () => {
   const [ isLoading, setIsLoading ] = useState(false);
   const [ isIModalVisible, setIModalVisible ] = useState(true);
   const [ [isLoadingOnboarding, dontShowAgainOnboarding], setDontShowAgainOnboarding ] = useStorageState('dontShowAgainOnboarding');
+  const [ [isStateLoading, allocationState], setAllocationState ] = useStorageState('allocationState');
 
   // Add States of Needs-Savings-Wants-Total Budget-ExpenseAllocation
   
@@ -63,6 +64,7 @@ const Onboarding = () => {
         ...parsedUser,
         ifNewUser: false
       }));
+      setAllocationState(null);
       router.replace("/homepage");
     } else {
       Alert.alert('Warning', allocation.message, [

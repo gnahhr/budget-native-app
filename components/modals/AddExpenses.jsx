@@ -1,38 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, Pressable, Alert } from 'react-native';
 import Button from '../common/Button';
-import DropDownPicker from 'react-native-dropdown-picker';
 import Modal from 'react-native-modal';
 import { AntDesign } from '@expo/vector-icons';
 import { getDateToday } from '../../utils/dateFunctions';
 
 const AddExpenses = ({categoryList, selected = null ,isModalVisible, expenses, setModalVisible, onAddExpense}) => {
-  const [ categoryState, setCategoryState ] = useState(categoryList);
   const [ amount, setAmount ] = useState("");
   const [ note, setNote ] = useState("");
   const [ date, setDate ] = useState();
   const [ isLoading, setIsLoading ] = useState(false);
-  const [ buttonActive, setButtonActive ] = useState(Number(amount) > 0 && !value); 
+  const [ buttonActive, setButtonActive ] = useState(Number(amount)); 
 
   const toggleModal = () => {
     setModalVisible(false);
     resetModal();
   };
 
-  useEffect(() => {
-    setValue(selected);
-  }, [selected])
-
   async function addExpenseHandler() {
-    if (!value) return;
+    if (Number(amount) < 1) return;
 
     if (Number(amount) > 0) {
-      const expenseFilter = expenses.filter(item => item.category === value);
-      const allocation = categoryList.filter(item => item.name === value)[0].allocation;
+      const expenseFilter = expenses.filter(item => item.category === selected.name);
+      const allocation = categoryList.filter(item => item.name === selected.name)[0].allocation;
       const currentExpense = expenseFilter.length > 0 ? expenseFilter[0].amount : 0;
       const exceeded = Number(allocation) < Number(currentExpense) + Number(amount);
       const alertHeader = exceeded ? 'Exceeding amount!' : 'Confirm expense:';
-      const alertText = exceeded ? 'You are over budget. Are sure you want to continue?' : `Add ${amount} on ${value}?`;
+      const alertText = exceeded ? 'You are over budget. Are sure you want to continue?' : `Add ${amount} on ${selected.name}?`;
 
       Alert.alert(
         alertHeader,
@@ -46,7 +40,7 @@ const AddExpenses = ({categoryList, selected = null ,isModalVisible, expenses, s
             text: 'Yes',
             onPress: async () => {
               setIsLoading(true);
-              await onAddExpense(value, amount, note);
+              await onAddExpense(selected.name, amount, note);
               setIsLoading(false);
               resetModal();
             },
@@ -61,7 +55,6 @@ const AddExpenses = ({categoryList, selected = null ,isModalVisible, expenses, s
   };
 
   const resetModal = () => {
-    setValue(null);
     setAmount("");
     setNote("");
   }
@@ -76,27 +69,12 @@ const AddExpenses = ({categoryList, selected = null ,isModalVisible, expenses, s
   }, [])
 
   useEffect(() => {
-    setButtonActive(Number(amount) > 0 && !!value)
-  }, [value, amount])
+    setButtonActive(Number(amount) > 0)
+  }, [amount])
 
   useEffect(() => {
     setDate(handleGetDate());
   }, [isModalVisible])
-
-  useEffect(() => {
-    setCategoryState(categoryList);
-  }, [categoryList])
-
-  useEffect(() => {
-    if (categoryState) {
-      setItems(categoryState.map(category => {
-        return {
-          label: category.name,
-          value: category.name
-        }
-      }));
-    }
-  }, [categoryState])
 
   return (
     <Modal

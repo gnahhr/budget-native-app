@@ -10,6 +10,7 @@ import { View, Text, Pressable, ScrollView, Alert } from 'react-native';
 import Categories from '../modals/Categories';
 import Suggestions from '../modals/Suggestions';
 import Allocation from './Allocation';
+import { useStorageState } from '../../../hooks/useStorageState';
 
 const Step3 = ({totalBudget, prevStep, currentAllocations, curRatio, nextStep, setAllocations, setBudgetRatio}) => {
 
@@ -25,6 +26,10 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, curRatio, nextStep, s
   const [ needAllocations, setNeedAllocations ] = useState(needsCategories);
   const [ wantAllocations, setWantAllocations ] = useState(wantCategories);
   const [ savingAllocations, setSavingAllocations ] = useState(savingsCategories);
+
+  // Save States
+  const [ [isStateLoading, allocationState], setAllocationState ] = useStorageState('allocationState');
+
 
   // BudgetRatio
   const [ needRatio, setNeedRatio ] = useState(0);
@@ -110,12 +115,16 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, curRatio, nextStep, s
     const needs = needAllocations.filter(category => category.toggled);
     const wants = wantAllocations.filter(category => category.toggled);
     const savings = savingAllocations.filter(category => category.toggled);
-    
-    setAllocations({
+
+    const payload = {
       needs: needs,
       wants: wants,
       savings: savings,
-    })
+    }
+    
+    setAllocations(payload)
+
+    setAllocationState(JSON.stringify(payload));
   }
 
   const setRatioHandler = (needsRatio, wantsRatio, savingRatio) => {
@@ -246,6 +255,12 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, curRatio, nextStep, s
       tabData[type].setAllocation([...newContainer]);
     })
   };
+
+  useEffect(() => {
+    if(!currentAllocations && allocationState) {
+      currentAllocationHandler(JSON.parse(allocationState));
+    }
+  }, [])
 
   useEffect(() => {
     setTotalWant(getAllocationSum(wantAllocations));
