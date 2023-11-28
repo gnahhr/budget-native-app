@@ -16,6 +16,7 @@ import UpdateBudget from '../../../components/modals/UpdateBudget';
 import UserListModal from '../../../components/homepage/UserListModal';
 import BudgetList from '../../../components/homepage/BudgetList';
 import Instructions from '../../../components/common/Instructions';
+import EditExpenses from '../../../components/homepage/EditExpenses';
 
 // API
 import { getAllocatedBudget, updateBudget, checkExtraBudget } from '../../../api/budget';
@@ -81,6 +82,7 @@ const HomepageIndex = () => {
   const [ isUserModalVisible, setIsUserModalVisible ] = useState(false);
   const [ isBListModalVisible, setIsBListModalVisible ] = useState(false);
   const [ isIModalVisible, setIModalVisible ] = useState(true);
+  const [ isEditModalVisible, setIsEditModalVisible ] = useState(false);
   
 
   // Tab Constants
@@ -102,7 +104,7 @@ const HomepageIndex = () => {
     setRefreshing(true);
     const userParse = JSON.parse(user);
     setParsedUser(userParse);
-    getAllocation(userParse.email, userParse.defaultBudget);
+    getAllocation(userParse.email, activeBudget.budgetName);
     setRefreshing(false);
   }, []);
 
@@ -110,6 +112,10 @@ const HomepageIndex = () => {
   const expenseModalToggle = () => {
     getAllocation(parsedUser.email);
     setIsEModalOpen(true);
+  }
+
+  const editExpenseModalToggle = () => {
+    setIsEditModalVisible(true);
   }
 
   const budgetModalToggle = () => {
@@ -176,11 +182,13 @@ const HomepageIndex = () => {
 
   // Get ng allocation
   async function getAllocation(email, budgetName) {
-    if (!activeBudget) return; 
+    if (!activeBudget) return;
+    setExpensesLoading(true);
     const budget = activeBudget.budgetName ? activeBudget.budgetName : budgetName;
     const allocation = await getAllocatedBudget(email, budget);
     await checkExtraBudget(email, budget);
     const data = allocation.response;
+
     // Kasama na rin dito yung pag compute nung makikita sa homepage which is yung remaining budget,
     // tska yung yung parang progress if malapit na maubos budget
     const expenses = tabs.map(item => data[item.toLowerCase()]);
@@ -232,15 +240,15 @@ const HomepageIndex = () => {
     if (user && activeBudget) {
       const userParse = JSON.parse(user);
       setParsedUser(userParse);
-      getAllocation(userParse.email, userParse.defaultBudget);
+      getAllocation(userParse.email, activeBudget.budgetName);
       setIsLoading(false);
     }
   }, [activeBudget])
 
   useEffect(() => {
     const userParse = JSON.parse(user);
-    getAllocation(userParse.email, userParse.defaultBudget);
-  }, [isEModalOpen]);
+    getAllocation(userParse.email, activeBudget.budgetName);
+  }, [isEModalOpen, isEditModalVisible]);
 
   useEffect(() => {
     if (!dontShowLoading && dontShowAgainInstruction !== null){
@@ -398,12 +406,12 @@ const HomepageIndex = () => {
         <Pressable onPress={() => handleEditCategory()}>
           <Text style={[styles.boldText, styles.italics, styles.button, styles.whiteText]}>Edit Categories</Text>
         </Pressable>
-        {/* <Pressable onPress={() => expenseModalToggle()}>
-          <Text style={[styles.boldText, styles.italics, styles.button, styles.whiteText]}>Add Expenses</Text>
-        </Pressable> */}
+        <Pressable onPress={() => editExpenseModalToggle()}>
+          <Text style={[styles.boldText, styles.italics, styles.button, styles.whiteText]}>Edit Expenses</Text>
+        </Pressable>
       </View>
 
-      
+      <EditExpenses isModalVisible={isEditModalVisible} setModalVisible={setIsEditModalVisible} expensesList={parsedData[tabData[activeTab].name]}/>
       <BudgetList isModalVisible={isBListModalVisible} setModalVisible={setIsBListModalVisible} />
       <UserListModal isModalVisible={isUserModalVisible} setModalVisible={setIsUserModalVisible} />
       <UpdateBudget isModalVisible={isBModalOpen} totalBudget={totalBudget} setModalVisible={setIsBModalOpen} updateBudget={updateBudgetHandler} />

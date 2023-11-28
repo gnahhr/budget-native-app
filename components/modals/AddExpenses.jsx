@@ -91,7 +91,7 @@ const AddExpenses = ({categoryList, selected = null ,isModalVisible, expenses, s
             <View style={{gap: 16}}>
               <View>
                 <Text style={[styles.textBold]}>Expense Category</Text>
-                <Text>{selected && `${selected.name} - ${selected.allocation}`}</Text>
+                <Text>{selected && `${selected.name} - `}<Text style={[styles.textBold]}>Php. {selected && selected.allocation}</Text></Text>
               </View>
               <View>
                 <Text style={[styles.textBold]}>Note</Text>
@@ -106,7 +106,6 @@ const AddExpenses = ({categoryList, selected = null ,isModalVisible, expenses, s
 
           <View style={{backgroundColor: '#eff5f9', text: 'center'}}>
             <Text style={[styles.textBold, styles.textCenter]}>Transaction date and time:</Text>
-            {/* Ideth */}
             <Text style={[styles.textCenter]}>{date}</Text>
           </View>
 

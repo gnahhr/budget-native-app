@@ -10,7 +10,7 @@ import { View, Text, Pressable, ScrollView, Alert } from 'react-native';
 import Categories from '../modals/Categories';
 import Suggestions from '../modals/Suggestions';
 import Allocation from './Allocation';
-import { useStorageState } from '../../../hooks/useStorageState';
+import { useStorageState } from '../../hooks/useStorageState';
 
 const Step3 = ({totalBudget, prevStep, currentAllocations, curRatio, nextStep, setAllocations, setBudgetRatio}) => {
 

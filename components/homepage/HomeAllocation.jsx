@@ -82,7 +82,6 @@ const HomeAllocation = ({category, expenses, type, getAllocation}) => {
       setIndiStyle([...indiStyle, styles.indicatorGreen])
     }
     percentageHandler();
-
   }, [expense, isLoading, isSettingsLoading])
 
   useEffect(() => {

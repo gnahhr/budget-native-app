@@ -4,11 +4,17 @@ import { Platform } from "react-native";
 const apiURL = Platform.OS === "android" ? process.env.EXPO_PUBLIC_API_URL_ANDROID : process.env.EXPO_PUBLIC_API_URL
 
 export async function allocateExpense(email, budgetName, payload) {
-  
   const response = await axios.post(`${apiURL}/budget/expense?email=${email}&budgetName=${budgetName}`, payload)
   .then(response => response.data)
   .catch(err => console.error(err));
   // console.log(response.data);
+  return await response;
+};
+
+export async function editExpense(objId, amount) {
+  const response = await axios.put(`${apiURL}/budget/edit-expenses/${objId}`, {amount})
+  .then(response => response.data)
+  .catch(err => console.error(err));
   return await response;
 };
 
