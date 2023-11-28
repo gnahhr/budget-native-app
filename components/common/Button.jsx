@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
     fontWeight: 'bold',
     padding: 8,
-    fontSize: 24,
+    fontSize: 22,
     borderRadius: 5,
     marginTop: 16,
     paddingHorizontal: "20px",

@@ -12,12 +12,6 @@ const AddExpenses = ({categoryList, selected = null ,isModalVisible, expenses, s
   const [ note, setNote ] = useState("");
   const [ date, setDate ] = useState();
   const [ isLoading, setIsLoading ] = useState(false);
-
-  // Drop Down States
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(selected);
-  const [items, setItems] = useState([]);
-  
   const [ buttonActive, setButtonActive ] = useState(Number(amount) > 0 && !value); 
 
   const toggleModal = () => {
@@ -119,15 +113,7 @@ const AddExpenses = ({categoryList, selected = null ,isModalVisible, expenses, s
             <View style={{gap: 16}}>
               <View>
                 <Text style={[styles.textBold]}>Expense Category</Text>
-                <DropDownPicker
-                  open={open}
-                  value={value}
-                  items={items}
-                  setOpen={setOpen}
-                  setValue={setValue}
-                  setItems={setItems}
-                  style={{}}
-                />
+                <Text>{selected && `${selected.name} - ${selected.allocation}`}</Text>
               </View>
               <View>
                 <Text style={[styles.textBold]}>Note</Text>

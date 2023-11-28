@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import Modal from 'react-native-modal'
 import { FontAwesome } from '@expo/vector-icons';
+import Button from '../common/Button';
 
 import { suggestionList } from '../../constants/suggestionList';
 
@@ -73,13 +74,14 @@ const Suggestions = ({curBudgetRatio, isModalVisible, setModalVisible, onChangeT
                     <Text>{item.label}</Text>
                 </View>)}
               </View>
+              <Button label={"Next"} action={() => toggleModal()} />
             </View>
             
             <View>
               <Text style={[styles.modalText, styles.modalHeader, {maxWidth: 120}]}>BUDGET RATIO</Text>
             </View>
             
-            <FontAwesome name="chevron-left" size={40} color="#21abe5" onPress={toggleModal} />
+            {/* <FontAwesome name="chevron-left" size={40} color="#21abe5" onPress={toggleModal} /> */}
 
           </View>
         </View>

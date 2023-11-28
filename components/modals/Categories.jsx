@@ -4,6 +4,7 @@ import Category from './Category';
 import Modal from 'react-native-modal'
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
+import Button from '../common/Button';
 
 import AddCategory from './AddCategory';
 
@@ -42,7 +43,7 @@ const Categories = ({categoryList, isModalVisible, setModalVisible, onChangeTogg
       style={{zIndex: 90}}>
         <View style={styles.modalWrapper}>
           <View style={styles.modalContent}>
-            <FontAwesome name="chevron-right" size={40} color="#21abe5" onPress={toggleModal} />
+            {/* <FontAwesome name="chevron-right" size={40} color="#21abe5" onPress={toggleModal} /> */}
 
             <View style={styles.categoriesWrapper}>
               <Text style={[styles.modalText, styles.modalHeader]}>EDIT CATEGORIES</Text>
@@ -67,6 +68,7 @@ const Categories = ({categoryList, isModalVisible, setModalVisible, onChangeTogg
                 <Ionicons name="add-circle" size={24} color={COLORS['white-700']} />
                 <Text style={[{color: COLORS['white-700'], fontWeight: 700}]}>Create Category</Text>
               </Pressable>
+              <Button label={"Next"} action={() => toggleModal()} />
             </View>
           </View>
         </View>

@@ -386,7 +386,7 @@ const HomepageIndex = () => {
       >
         {!expensesLoading && parsedData[tabData[activeTab].name].length > 0 ?
           parsedData[tabData[activeTab].name].map(data =>
-          <Pressable onPress={() => handlePressCategory(data.name)}>
+          <Pressable onPress={() => handlePressCategory({name: data.name, allocation: data.allocation})}>
             <HomeAllocation key={data.name} category={data} expenses={parsedExpenses} type={tabData[activeTab].name} getAllocation={() => getAllocation(parsedUser.email, parsedUser.defaultBudget)}/>
           </Pressable>)
           :
@@ -398,9 +398,9 @@ const HomepageIndex = () => {
         <Pressable onPress={() => handleEditCategory()}>
           <Text style={[styles.boldText, styles.italics, styles.button, styles.whiteText]}>Edit Categories</Text>
         </Pressable>
-        <Pressable onPress={() => expenseModalToggle()}>
+        {/* <Pressable onPress={() => expenseModalToggle()}>
           <Text style={[styles.boldText, styles.italics, styles.button, styles.whiteText]}>Add Expenses</Text>
-        </Pressable>
+        </Pressable> */}
       </View>
 
       

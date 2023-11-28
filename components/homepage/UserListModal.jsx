@@ -200,7 +200,7 @@ const UserListModal = ({isModalVisible, setModalVisible}) => {
                     }}>
                 <TextInput placeholder='Enter user email address...' value={userEmail} onChangeText={setUserEmail}/>
               </View>
-              <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <View style={{flexDirection: 'row', justifyContent: 'space-between', maxWidth: '90%'}}>
                 <Button label={"Edit Userlist"} action={() => setIsEdit(!isEdit)}/>
                 <Button label={"Request Access"} action={() => requestAccessHandler()} active={userEmail !== ""}/>
               </View>
