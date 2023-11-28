@@ -3,6 +3,7 @@
     "name": "B-Smart",
     "slug": "budget-management",
     "version": "1.0.0",
+    "owner": "instaloknahh",
     "orientation": "portrait",
     "icon": "./assets/logos/bsmart-ico.png",
     "userInterfaceStyle": "light",
