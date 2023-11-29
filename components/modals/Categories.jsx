@@ -51,24 +51,13 @@ const Categories = ({categoryList, isModalVisible, setModalVisible, onChangeTogg
               <View style={[styles.categoriesWrapper, {flexDirection: 'row', flexWrap: 'wrap'}]}>
                 {categoryState.map((category) => <Category key={category.name} category={category} categoryState={categoryState} updateCategory={setCategoryState} />)}
               </View>
-              <Pressable style={{
-                  flexDirection: 'row',
-                  gap: 4,
-                  paddingHorizontal: 8,
-                  paddingVertical: 8,
-                  alignItems: 'center',
-                  borderWidth: 2,
-                  borderColor: COLORS['white-700'],
-                  borderRadius: 4,
-                  marginTop: 8,
-                }}
-
-                onPress={() => toggleAdd()}
-              >
+              <Pressable style={[styles.buttonWrapper, {justifyContent: 'center'}]} onPress={() => toggleAdd()} >
                 <Ionicons name="add-circle" size={24} color={COLORS['white-700']} />
                 <Text style={[{color: COLORS['white-700'], fontWeight: 700}]}>Create Category</Text>
               </Pressable>
-              <Button label={"Next"} action={() => toggleModal()} />
+              <Pressable onPress={() => toggleModal()}>
+                <Text style={[styles.buttonWrapper, {color: COLORS['white-700'], fontWeight: 700, textAlign: 'center'}]}>Next</Text>
+              </Pressable>
             </View>
           </View>
         </View>
@@ -81,6 +70,18 @@ const styles = StyleSheet.create({
   wrapper: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  buttonWrapper: {
+    flexDirection: 'row',
+    gap: 4,
+    minWidth: '45%',
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: COLORS['white-700'],
+    borderRadius: 4,
+    marginTop: 8,
   },
   modalWrapper: {
     backgroundColor: '#1579b2',

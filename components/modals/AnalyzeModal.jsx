@@ -10,29 +10,44 @@ import { useBudget } from '../../context/budget';
 
 const AnalyzeModal = ({isModalVisible, setModalVisible}) => {
   const [ overspentItems, setOverspentItems ] = useState(null);
+  const [ msgArrayKeys, setMsgArrayKeys ] = useState(null);
   const { user } = useAuth();
   const { activeBudget } = useBudget();
+  const [ errMsg, setErrMsg ] = useState(null);
 
   const toggleModal = () => {
     setModalVisible(false);
   };
 
+  const messages = {
+    isNoSavings: "It appears that you have no budget for savings, try putting aside money for emergencies and long-term benefits.",
+    isNeedsOverBudget: "You are exceeding your allotted budget for needs; try allocating more budget for your needs in order to meet and cater your needs without ruining your financial plan.",
+    isWantsOverBudget: "If you're spending more money than you have, try spending it wisely and putting it in savings.",
+    isOverBudgetThisMonth: "You have exceeded your budget for this month!"
+  }
 
   async function handleGetUsers () {
     const data = await analyzeData(JSON.parse(user).email, activeBudget.budgetName);
+    let msgKeys = [];
+
     if (data.statusCode === 200) {
       const keys = Object.keys(data.response);
-
       let overBudget = [];
       keys.forEach((key) => {
         if (data.response[key].isOverBudget) {
           overBudget.push({name: key, ...data.response[key]})
         }
-      });
 
+        if (data.response[key] === true) {
+          msgKeys.push(key);
+        }
+      });
+    
+      setMsgArrayKeys(msgKeys);
+      setErrMsg(null);
       setOverspentItems(overBudget);
     } else {
-      isModalVisible && Alert.alert("Error!", data.message);
+      setErrMsg(data.message);
     }
   }
 
@@ -41,7 +56,7 @@ const AnalyzeModal = ({isModalVisible, setModalVisible}) => {
     if (user) {
       handleGetUsers();
     }
-  }, [user, activeBudget]);
+  }, [user, activeBudget, isModalVisible]);
 
   return (
     <Modal
@@ -77,9 +92,17 @@ const AnalyzeModal = ({isModalVisible, setModalVisible}) => {
                   <Text style={[styles.textMd, styles.textCenter, styles.textBold]}>Your spending habit with <Text style={[styles.textBold, styles.textRed]}>{overspentItems.map(item => item.name).join(', ')}</Text> is unusual and would exceed the following month if not changed.</Text>
                 </>
               :
-              <Text style={[styles.textHeader, styles.textCenter, styles.textBold]}>You're doing great!</Text>}
+              <>
+              {errMsg && <Text style={[styles.textMd, styles.textCenter, styles.textBold]}>{errMsg}</Text>}
+              {!errMsg && overspentItems.length === 0 && msgArrayKeys.length === 0 && <Text style={[styles.textHeader, styles.textCenter, styles.textBold]}>You're doing great!</Text>}
+              </>
+              }
             </View>
-            
+            <View style={{marginTop: 8, gap: 8}}>
+              {msgArrayKeys && msgArrayKeys.length > 0 && 
+                msgArrayKeys.map(key => <Text style={[styles.textMd, styles.textCenter, styles.textBold]}>{messages[key]}</Text>)
+              }
+            </View>
         </View>
     </Modal>
   )

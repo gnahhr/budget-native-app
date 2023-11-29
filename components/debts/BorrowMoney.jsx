@@ -69,7 +69,7 @@ const BorrowMoney = ({isModalVisible, setModalVisible, type}) => {
   }, [])
 
   useEffect(() => {
-    setIsButtonActive(!!name && Number(amount) > 0 && Number(interest) > 0);
+    setIsButtonActive(!!name && Number(amount) > 0 && Number(interest) >= 0);
   }, [name, amount, interest])
 
   useEffect(() => {

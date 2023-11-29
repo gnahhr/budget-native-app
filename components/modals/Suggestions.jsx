@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import Modal from 'react-native-modal'
-import { FontAwesome } from '@expo/vector-icons';
-import Button from '../common/Button';
+import { COLORS } from '../../constants/theme';
 
 import { suggestionList } from '../../constants/suggestionList';
 
@@ -43,7 +42,6 @@ const Suggestions = ({curBudgetRatio, isModalVisible, setModalVisible, onChangeT
 
   useEffect(() => { 
     setChoice(curBudgetRatio);
-    console.log(curBudgetRatio);
   }, [curBudgetRatio])
 
   return (
@@ -74,7 +72,9 @@ const Suggestions = ({curBudgetRatio, isModalVisible, setModalVisible, onChangeT
                     <Text>{item.label}</Text>
                 </View>)}
               </View>
-              <Button label={"Next"} action={() => toggleModal()} />
+              <Pressable onPress={() => toggleModal()}>
+                <Text style={[styles.buttonWrapper, {color: COLORS['white-700'], fontWeight: 700, textAlign: 'center'}]}>Next</Text>
+              </Pressable>
             </View>
             
             <View>
@@ -94,9 +94,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  buttonWrapper: {
+    flexDirection: 'row',
+    gap: 4,
+    width: '40%',
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: COLORS['white-700'],
+    borderRadius: 4,
+    marginTop: 8,
+  },
   colWrapper: {
     flexDirection: 'column',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   checkbox: {
     width: 20,
@@ -121,7 +134,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     maxWidth: 330,
-    marginRight: 15,
+    marginRight: 40,
     flexDirection: 'row',
     right: 0,
     position: 'absolute',

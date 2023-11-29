@@ -29,7 +29,55 @@ const EditProfile = () => {
     router.back();
   }
 
-  async function saveProfile() {
+  async function saveProfile() {    
+    if (image || userName || password) {
+        const formData = new FormData();
+        
+        if(image) {
+          formData.append('imageUrl', {
+            uri: image,
+            type: "image/jpeg",
+            name: "something.jpeg",
+          });
+        }
+        
+        if(userName) {
+          formData.append('userName', userName);
+        }
+    
+        if (password && !newPassword) {
+          setMsg("New password should not be blank.");
+          return;
+        } else if (!password && newPassword) {
+          setMsg("Old password should not be blank.");
+          return;
+        } else if (conNewPassword !== newPassword) {
+          setMsg("Password mismatch!");
+          return;
+        } else if (password && newPassword) {
+          formData.append('password', password);
+          formData.append('newPassword', newPassword);
+        }
+
+        setIsLoading(true);
+        const data = await updateUser(email, formData);
+        setIsLoading(false);
+    
+        setMsg("")
+    
+        if (data?.statusCode === 200) {
+          setMsg("Successfully changed account details");
+          const parsedUser = JSON.parse(user);
+          signIn(JSON.stringify({
+            ...parsedUser,
+            username: userName,
+            imageUrl: data.response.imageUrl,
+          }))
+        } else {
+          setMsg(data.message)
+        }
+    }
+
     if (!image) {
       return;
     }
@@ -37,53 +85,6 @@ const EditProfile = () => {
     if (!userName) {
       setMsg("Username should not be blank");
       return;
-    }
-
-    if (conNewPassword !== newPassword) {
-      setMsg("Password mismatch!");
-      return;
-    }
-
-    if (password && !newPassword) {
-      setMsg("New password should not be blank.");
-      return;
-    } else if (!password && newPassword) {
-      setMsg("Old password should not be blank.");
-      return;
-    }
-    
-    setIsLoading(true);
-
-    const formData = new FormData();
-    formData.append('userName', userName);
-
-    if (password && newPassword) {
-      formData.append('password', password);
-      formData.append('newPassword', newPassword);
-    }
-
-    if(image) {
-      formData.append('imageUrl', {
-        uri: image,
-        type: "image/jpeg",
-        name: "something.jpeg",
-      });
-    }
-
-    const data = await updateUser(email, formData);
-    setIsLoading(false);
-
-    setMsg("")
-    if (data?.statusCode === 200) {
-      setMsg("Successfully changed account details");
-      const parsedUser = JSON.parse(user);
-      signIn(JSON.stringify({
-        ...parsedUser,
-        userName,
-        imageUrl: image ? image : parsedUser.imageUrl,
-      }))
-    } else {
-      setMsg(data.message)
     }
   }
 

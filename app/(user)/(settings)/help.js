@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { Stack, useRouter } from "expo-router";
-import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, Pressable, ScrollView, Image } from 'react-native';
 import CustomIcon from '../../../components/common/CustomIcon';
+import { COLORS } from '../../../constants/theme';
 import LogoS from '../../../assets/logos/logo-sw.png';
 import { FontAwesome5 } from '@expo/vector-icons';
 
@@ -9,8 +10,47 @@ const Notifications = () => {
   const [ toggleTerms, setToggleTerms ] = useState(false);
   const [ togglePrivacy, setTogglePrivacy ] = useState(false);
   const [ toggleContacts, setToggleContacts ] = useState(false);
+  const [ toggleAboutUs, setToggleAboutUs ] = useState(false);
   
   const router = useRouter();
+
+  const members = [
+    {
+      name: "Bondoc, Kim C.",
+      image: require('../../../assets/images/members/bondoc.jpg'),
+    },
+    {
+      name: "Bucu, Myla G.",
+      image: null
+    },
+    {
+      name: "Cañete, Shiela Marie",
+      image: null
+    },
+    {
+      name: "Ledesma, Catherine Mae S.",
+      image: require('../../../assets/images/members/ledesma.jpg'),
+    },
+    {
+      name: "Mangilit, Justin Ivan M.",
+      image: null
+    },
+    {
+      name: "Quirolgico, Christian Jake L.",
+      image: null
+    },
+    {
+      name: "Sangalang, Jayar S.",
+      image: null
+      
+    },
+    {
+      name: "Torres, John Kenneth V.",
+      image: require('../../../assets/images/members/torres.jpg'),
+    },
+
+
+  ]
 
   const backHandler = () => {
     router.back();
@@ -114,7 +154,24 @@ Send you important notifications, updates, and promotional materials related to 
         <Pressable onPress={() => setToggleContacts(!toggleContacts)}>
           <View style={[styles.itemStyle]}>
             <Text style={[styles.textBold, styles.textLg]}>Contact Us</Text>
-            {toggleContacts && <Text style={styles.innerItem}>bsmartapp23@gmail.com</Text>}
+            {toggleContacts &&
+            <View>
+              <Text style={[styles.innerItem, styles.textBold, styles.textLg, {alignSelf: 'center', marginVertical: 8}]}>bsmartapp23@gmail.com</Text>
+            </View>}  
+          </View>
+        </Pressable>
+
+        <Pressable onPress={() => setToggleAboutUs(!toggleAboutUs)}>
+          <View style={[styles.itemStyle]}>
+            <Text style={[styles.textBold, styles.textLg]}>About Us</Text>
+            {toggleAboutUs &&
+            <View style={[{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-evenly', gap: 12}]}>
+              {members.map((member, idx) =>
+              <View key={idx} style={{width: '45%', alignItems: 'center'}}>
+                <Image source={member.image ? member.image : require('../../../assets/images/members/default.png')} style={[{height: 100, width: 100, borderRadius: 8, borderWidth: 2, borderColor: COLORS['white-500']}]}/>
+                <Text style={[styles.textBold]}>{member.name}</Text>
+              </View>)}
+            </View>}  
           </View>
         </Pressable>
 
