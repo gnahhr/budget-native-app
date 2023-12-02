@@ -5,12 +5,13 @@ import Modal from 'react-native-modal';
 import { AntDesign } from '@expo/vector-icons';
 import { getDateToday } from '../../utils/dateFunctions';
 
-const AddExpenses = ({categoryList, selected = null ,isModalVisible, expenses, setModalVisible, onAddExpense}) => {
+const AddExpenses = ({categoryList, selected = null, isModalVisible, expenses, setModalVisible, onAddExpense}) => {
   const [ amount, setAmount ] = useState("");
   const [ note, setNote ] = useState("");
   const [ date, setDate ] = useState();
   const [ isLoading, setIsLoading ] = useState(false);
   const [ buttonActive, setButtonActive ] = useState(Number(amount)); 
+  const [ remaining, setRemaining ] = useState(0); 
 
   const toggleModal = () => {
     setModalVisible(false);
@@ -73,6 +74,18 @@ const AddExpenses = ({categoryList, selected = null ,isModalVisible, expenses, s
   }, [amount])
 
   useEffect(() => {
+    if (selected){
+      let remaining = selected.allocation
+      expenses.forEach((expense) => {
+        if (expense.category === selected.name) {
+          remaining = selected.allocation - expense.amount;
+        }
+      })
+      setRemaining(remaining);
+    }
+  }, [selected])
+
+  useEffect(() => {
     setDate(handleGetDate());
   }, [isModalVisible])
 
@@ -91,7 +104,11 @@ const AddExpenses = ({categoryList, selected = null ,isModalVisible, expenses, s
             <View style={{gap: 16}}>
               <View>
                 <Text style={[styles.textBold]}>Expense Category</Text>
-                <Text>{selected && `${selected.name} - `}<Text style={[styles.textBold]}>Php. {selected && selected.allocation}</Text></Text>
+                <Text>{selected && selected.name}</Text>
+              </View>
+              <View>
+                <Text style={[styles.textBold]}>Remaining Budget</Text>
+                <Text>{remaining}</Text>
               </View>
               <View>
                 <Text style={[styles.textBold]}>Note</Text>

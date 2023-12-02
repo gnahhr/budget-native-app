@@ -22,7 +22,7 @@ const Allocation = ({category, curAllocation, allocationHandler, iconId, checkEx
       onChangeAllocation(allo * -1);
       return;
     }
-
+    
     // Check niya if exceeded na yung ina-allocate niya sa max budget niya
     if (checkExceeding(curAllocation, allo)) {
       if (!allocationHandler(category, allo)) {

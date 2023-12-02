@@ -11,8 +11,8 @@ export async function allocateExpense(email, budgetName, payload) {
   return await response;
 };
 
-export async function editExpense(objId, amount) {
-  const response = await axios.put(`${apiURL}/budget/edit-expenses/${objId}`, {amount})
+export async function editExpense(objId, amount, budgetName) {
+  const response = await axios.put(`${apiURL}/budget/edit-expenses/${objId}/${budgetName}`, {amount})
   .then(response => response.data)
   .catch(err => console.error(err));
   return await response;

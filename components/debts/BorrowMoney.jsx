@@ -108,13 +108,13 @@ const BorrowMoney = ({isModalVisible, setModalVisible, type}) => {
               </View>
               <View>
                 <Text style={[styles.textBold]}>Interest</Text>
-                <TextInput keyboardType="numeric" onChangeText={setInterest}/>
+                <TextInput placeholder='0' keyboardType="numeric" onChangeText={setInterest}/>
               </View>
             </View>
           </View>
 
           <View style={{backgroundColor: '#eff5f9', text: 'center'}}>
-            <Text style={[styles.textBold, styles.textCenter]}>Transcation date and time:</Text>
+            <Text style={[styles.textBold, styles.textCenter]}>Transaction date and time:</Text>
             <Text style={[styles.textCenter]}>{date}</Text>
           </View>
 

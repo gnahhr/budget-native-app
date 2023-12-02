@@ -9,11 +9,11 @@ import { useAuth } from '../../context/auth';
 import { useBudget } from '../../context/budget';
 
 const AnalyzeModal = ({isModalVisible, setModalVisible}) => {
-  const [ overspentItems, setOverspentItems ] = useState(null);
-  const [ msgArrayKeys, setMsgArrayKeys ] = useState(null);
+  const [ overspentItems, setOverspentItems ] = useState([]);
+  const [ msgArrayKeys, setMsgArrayKeys ] = useState([]);
   const { user } = useAuth();
   const { activeBudget } = useBudget();
-  const [ errMsg, setErrMsg ] = useState(null);
+  const [ errMsg, setErrMsg ] = useState([]);
 
   const toggleModal = () => {
     setModalVisible(false);

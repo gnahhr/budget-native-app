@@ -29,8 +29,8 @@ const RequestAccessModal = ({isModalVisible, setModalVisible}) => {
   const { activeBudget, budgetList } = useBudget();
 
   async function handleGetUsers () {
-    
     const data = await getRequestAccess(JSON.parse(user).email);
+    console.log(data);
     setUserList(data.response);
   }
 
@@ -74,7 +74,7 @@ const RequestAccessModal = ({isModalVisible, setModalVisible}) => {
       handleGetUsers();
       handleDropDownValues();
     }
-  }, [user, activeBudget]);
+  }, [user, activeBudget, isModalVisible]);
 
   return (
     <Modal
@@ -86,7 +86,7 @@ const RequestAccessModal = ({isModalVisible, setModalVisible}) => {
               <Text style={[styles.textBold, styles.textHeader]}>Request Access</Text>
               <AntDesign name="close" size={24} color="#3A85AF" onPress={toggleModal}/>
             </View>
-            {!userList ?
+            {userList && userList.length > 0 ?
             <View>
               <View style={{
                     flexWrap: 'wrap',
@@ -104,7 +104,7 @@ const RequestAccessModal = ({isModalVisible, setModalVisible}) => {
                     setValue={setValue}
                     setItems={setItems}
                 />
-                {userList && userList.map((user, idx) =>
+                {userList.map((user, idx) =>
                 <View key={idx} style={{alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row'}}>
                   {/* <Image source={`https:${user.Images.split(":")[1]}`} style={{width: 65, height: 65, borderRadius: 50, justifyContent: 'center'}}/> */}
                   <Text style={{maxWidth: '50%'}}>{user.userEmail}</Text>

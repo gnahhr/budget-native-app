@@ -228,7 +228,7 @@ const HomepageIndex = () => {
       })
     }
 
-    getAllocation(parsedUser.email);
+    getAllocation(parsedUser.email, activeBudget.budgetName);
     setIsBModalOpen(false);
   };
 
@@ -246,8 +246,10 @@ const HomepageIndex = () => {
   }, [activeBudget])
 
   useEffect(() => {
-    const userParse = JSON.parse(user);
-    getAllocation(userParse.email, activeBudget.budgetName);
+    if (!isEModalOpen && !isEditModalVisible) {
+      const userParse = JSON.parse(user);
+      getAllocation(userParse.email, activeBudget.budgetName);
+    }
   }, [isEModalOpen, isEditModalVisible]);
 
   useEffect(() => {
@@ -257,8 +259,7 @@ const HomepageIndex = () => {
   }, [dontShowLoading, dontShowAgainInstruction])
 
   useEffect(() => {
-    setProgress(Math.floor(Number(remainingBudget) / Number(totalBudget) * 100)); 
-    // console.log(Math.floor(Number(remainingBudget) / Number(totalBudget) * 100))
+    setProgress(Math.floor(Number(remainingBudget) / Number(totalBudget) * 100));
   }, [remainingBudget, totalBudget]);
 
   useEffect(() => {
@@ -395,7 +396,7 @@ const HomepageIndex = () => {
         {!expensesLoading && parsedData[tabData[activeTab].name].length > 0 ?
           parsedData[tabData[activeTab].name].map(data =>
           <Pressable onPress={() => handlePressCategory({name: data.name, allocation: data.allocation})}>
-            <HomeAllocation key={data.name} category={data} expenses={parsedExpenses} type={tabData[activeTab].name} getAllocation={() => getAllocation(parsedUser.email, parsedUser.defaultBudget)}/>
+            <HomeAllocation key={data.name} category={data} expenses={parsedExpenses} type={tabData[activeTab].name} getAllocation={() => getAllocation(parsedUser.email, activeBudget.budgetName)}/>
           </Pressable>)
           :
           <Text>Nothing Allocated</Text>

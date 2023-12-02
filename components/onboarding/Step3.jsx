@@ -26,6 +26,7 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, curRatio, nextStep, s
   const [ needAllocations, setNeedAllocations ] = useState(needsCategories);
   const [ wantAllocations, setWantAllocations ] = useState(wantCategories);
   const [ savingAllocations, setSavingAllocations ] = useState(savingsCategories);
+  const [ localAllocation, setLocalAllocation ] = useState(null);
 
   // Save States
   const [ [isStateLoading, allocationState], setAllocationState ] = useStorageState('allocationState');
@@ -72,13 +73,15 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, curRatio, nextStep, s
   const Tabs = ["NEED", "SAVINGS", "WANT"];
   // Check if exeeding na yung limit ng allocation, comparison ng new and current allocation sa total allocation
   const checkExceeding = (curAllocation = 0, newAllocation = 0) => {
-    const totalAllocations = totalSavings + totalWant + totalNeed - Number(curAllocation);
-
-    if ((totalAllocations + Number(newAllocation)) <= totalBudget) {
-      return true;
-    } else {
-      exceedingWarning();
-      return false;
+    if (totalBudget){
+      const totalAllocations = totalSavings + totalWant + totalNeed - Number(curAllocation);
+  
+      if ((totalAllocations + Number(newAllocation)) <= totalBudget) {
+        return true;
+      } else {
+        exceedingWarning();
+        return false;
+      }
     }
   }
 
@@ -122,9 +125,11 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, curRatio, nextStep, s
       savings: savings,
     }
     
-    setAllocations(payload)
-
-    setAllocationState(JSON.stringify(payload));
+    setLocalAllocation(payload);
+    
+    if (!currentAllocations) {
+      setAllocationState(JSON.stringify(payload));
+    }
   }
 
   const setRatioHandler = (needsRatio, wantsRatio, savingRatio) => {
@@ -174,7 +179,7 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, curRatio, nextStep, s
       return false;
     }
 
-    setAllocationsHandler();
+    setAllocations(localAllocation);
     nextStep();
   }
 
@@ -260,7 +265,7 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, curRatio, nextStep, s
     if(!currentAllocations && allocationState) {
       currentAllocationHandler(JSON.parse(allocationState));
     }
-  }, [])
+  }, [isStateLoading])
 
   useEffect(() => {
     setTotalWant(getAllocationSum(wantAllocations));
@@ -273,6 +278,10 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, curRatio, nextStep, s
   useEffect(() => {
     setTotalSavings(getAllocationSum(savingAllocations));
   }, [savingAllocations])
+
+  useEffect(() => {
+    setAllocationsHandler();
+  }, [savingAllocations, needAllocations, wantAllocations])
 
   useEffect(() => {
     if (currentAllocations) {

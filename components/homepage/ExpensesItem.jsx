@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { COLORS } from '../../constants/theme';
 import { View, Text, Pressable, StyleSheet, TextInput, Alert } from 'react-native';
-import { getDateTodayISO, formatDate } from '../../utils/dateFunctions';
+import { formatDate } from '../../utils/dateFunctions';
 import { getIcon } from '../../constants/icons';
 import { Icon } from '@rneui/themed';
-import { FontAwesome, Entypo } from '@expo/vector-icons';
+import { FontAwesome, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { editExpense } from '../../api/expenses';
+import { useBudget } from '../../context/budget';
 
 const ExpensesItem = ({name, iconId, expenses, closeModal}) => {
   const [ toggled, setToggled ] = useState(false);
@@ -13,6 +14,7 @@ const ExpensesItem = ({name, iconId, expenses, closeModal}) => {
   const [ amount, setAmount ] = useState(0);
   const [ isLoading, setIsLoading ] = useState(false);
   const icon = getIcon(iconId);
+  const { activeBudget } = useBudget();
 
   const toggleHandler = () => {
     setToggled(!toggled);
@@ -27,7 +29,7 @@ const ExpensesItem = ({name, iconId, expenses, closeModal}) => {
     if (isLoading) return;
 
     setIsLoading(true);
-    const data = await editExpense(currentEdit, amount);
+    const data = await editExpense(currentEdit, amount, activeBudget.budgetName);
     setIsLoading(false);
 
     if (data.statusCode === 200) {
@@ -74,9 +76,15 @@ const ExpensesItem = ({name, iconId, expenses, closeModal}) => {
                   <Text style={[styles.stretch, styles.textBold, styles.textEnd]}>{item.amount}</Text>
                 }
                 {currentEdit === item._id ?
-                  <Pressable onPress={() => saveExpenses()}>
-                    <Entypo name="save" size={24} color={COLORS['white-500']} style={[styles.iconStyle, {marginLeft: 8, backgroundColor: COLORS['green-500']}]}/>
-                  </Pressable>
+                  <>
+                  {isLoading ?
+                    <MaterialCommunityIcons name="loading" size={24} color={COLORS['white-500']} style={[styles.iconStyle, {marginLeft: 8, backgroundColor: COLORS['grey-500']}]} />
+                    :
+                    <Pressable onPress={() => saveExpenses()}>
+                      <Entypo name="save" size={24} color={COLORS['white-500']} style={[styles.iconStyle, {marginLeft: 8, backgroundColor: COLORS['green-500']}]}/>
+                    </Pressable>
+                  }
+                  </>
                   :
                   <Pressable onPress={() => handleEditToggle(item._id, item.amount)}>
                     <FontAwesome name="edit" size={24} color={COLORS['white-500']} style={[styles.iconStyle, {marginLeft: 8}]} />
