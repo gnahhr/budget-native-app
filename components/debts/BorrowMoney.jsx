@@ -77,6 +77,9 @@ const BorrowMoney = ({isModalVisible, setModalVisible, type}) => {
 
   useEffect(() => {
     setDate(handleGetDate());
+    setName("");
+    setAmount(0);
+    setInterest(0);
   }, [isModalVisible])
 
   return (

@@ -73,6 +73,8 @@ const PayDebt = ({nameList, isModalVisible, setModalVisible, type}) => {
 
   useEffect(() => {
     setDate(handleGetDate());
+    setValue(null);
+    setAmount(0);
   }, [isModalVisible])
 
   useEffect(() => {
