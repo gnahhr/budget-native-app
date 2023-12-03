@@ -60,11 +60,15 @@ const ListItem = ({name, balance, history, dueDate, type = "Lend"}) => {
 
       {toggled &&
         <View>
+          <View style={[styles.flexRow, styles.container]}>
+            <Text style={[styles.stretch, styles.textBold, theme === 'dark' && styles.textWhite]}>Due Date:</Text>
+            <Text style={[styles.stretch, styles.textBold, styles.textEnd, theme === 'dark' && styles.textWhite]}>{formatDate(dueDate)}</Text>
+          </View>
           {history.map((item, idx) => {
             return (
               <View key={idx} style={[styles.flexRow, styles.container]}>
-                <Text style={[styles.stretch, styles.textBold]}>{formatDate(item.paymentDate)}</Text>
-                <Text style={[styles.stretch, styles.textBold, styles.textEnd]}>{item.amount}</Text>
+                <Text style={[styles.stretch, styles.textBold, theme === 'dark' && styles.textWhite]}>{formatDate(item.paymentDate)}</Text>
+                <Text style={[styles.stretch, styles.textBold, styles.textEnd, theme === 'dark' && styles.textWhite]}>{item.amount}</Text>
               </View>
             )
           })}

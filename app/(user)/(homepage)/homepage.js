@@ -108,6 +108,7 @@ const HomepageIndex = () => {
     const userParse = JSON.parse(user);
     setParsedUser(userParse);
     getAllocation(userParse.email, activeBudget.budgetName);
+    updateBudgetL();
     setRefreshing(false);
   }, []);
 
@@ -264,6 +265,10 @@ const HomepageIndex = () => {
   useEffect(() => {
     setProgress(Math.floor(Number(remainingBudget) / Number(totalBudget) * 100));
   }, [remainingBudget, totalBudget]);
+
+  useEffect(() => {
+    if (!isUserModalVisible) updateBudgetL();
+  }, [isUserModalVisible]);
 
   useEffect(() => {
     if (!notifSettings) {

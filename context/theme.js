@@ -18,6 +18,12 @@ export function Provider(props) {
     }
   }, [])
 
+  useEffect(() => {
+    if (!isLoading && cachedTheme) {
+      setTheme(cachedTheme);
+    }
+  }, [isLoading])
+
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setCachedTheme(newTheme);

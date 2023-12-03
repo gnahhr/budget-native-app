@@ -24,13 +24,16 @@ export function Provider(props) {
 
   const { user } = useAuth();
 
-  useEffect(() => {
-    getBudgetListHandler();
-  }, [])
+  // useEffect(() => {
+  //   getBudgetListHandler();
+  // }, [])
 
   useEffect(() => {
-
-  }, [])
+    if (!isLoading) {
+      if (cachedActiveBudget) setActiveBudget(JSON.parse(cachedActiveBudget));
+      getBudgetListHandler();
+    }
+  }, [isLoading])
 
   // useEffect(() => {
   //   console.log("Changed active budget to", activeBudget);
@@ -42,19 +45,22 @@ export function Provider(props) {
     const list = data.response;
 
     setBudgetList(list);
+    console.log('yey1')
 
-    if (!cachedActiveBudget) {
-      setCachedActiveBudget(JSON.stringify(list[0]));
-      setActiveBudget(list[0]);
-    } else {
+    if (cachedActiveBudget){
+      console.log(cachedActiveBudget)
       setActiveBudget(JSON.parse(cachedActiveBudget));
+    } else {
+      console.log('yey')
+      if (!cachedActiveBudget && !isLoading) setCachedActiveBudget(JSON.stringify(list[0]));
+      setActiveBudget(list[0]);
     }
   }
 
   async function refreshBudgetList() {
     const data = await getBudgetList(JSON.parse(user).email);
     const list = data.response;
-    
+
     setBudgetList(list);
   }
 
@@ -64,7 +70,7 @@ export function Provider(props) {
         budgetList,
         activeBudget,
         activeType,
-        updateActive: (value) => {setActiveBudget(value);},
+        updateActive: (value) => {setActiveBudget(value); setCachedActiveBudget(JSON.stringify(value));},
         updateActiveType: (value) => {setActiveType(value);},
         updateBudgetL: () => {refreshBudgetList();},
       }}>

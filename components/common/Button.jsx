@@ -10,7 +10,7 @@ const Button = ({label, action, isLoading = false, active=true}) => {
     <>
       {
         isLoading ?
-        <Text style={styles.buttonStyle}>
+        <Text style={[styles.buttonStyle, theme === 'light' ? styles.lightMode : styles.darkMode]}>
           Loading...
         </Text>
       :

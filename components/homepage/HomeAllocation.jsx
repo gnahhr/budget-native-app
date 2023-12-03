@@ -79,13 +79,15 @@ const HomeAllocation = ({category, expenses, type, getAllocation}) => {
 
   useEffect(()=> {
     const defaultStyle = styles.indicatorStyle;
-    if (expense > category.allocation && !isLoading) {
-      handleNotification();
-      setIndiStyle([...defaultStyle, styles.indicatorRed])
-    } else if (expense / category.allocation > .8 && !isLoading) {
-      setIndiStyle([...defaultStyle, styles.indicatorYellow])
-    } else {
-      setIndiStyle([...defaultStyle, styles.indicatorGreen])
+    if (!isLoading) {
+      if (expense > category.allocation) {
+        handleNotification();
+        setIndiStyle([defaultStyle, styles.indicatorRed])
+      } else if (expense / category.allocation > .8) {
+        setIndiStyle([defaultStyle, styles.indicatorYellow])
+      } else {
+        setIndiStyle([defaultStyle, styles.indicatorGreen])
+      }
     }
     percentageHandler();
   }, [expense, isLoading, isSettingsLoading])

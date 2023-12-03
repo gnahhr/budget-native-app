@@ -29,8 +29,10 @@ const UpdateBudget = ({isModalVisible, totalBudget, setModalVisible, updateBudge
   }
 
   useEffect(() => {
-    setIsOwner(JSON.parse(user).email === budgetEmail);
-  }, [user, isModalVisible])
+    if(user && budgetEmail && isModalVisible){
+      setIsOwner(JSON.parse(user).email === budgetEmail);
+    }
+  }, [user, isModalVisible, budgetEmail])
 
   useEffect(() => {
     if (totalBudget){

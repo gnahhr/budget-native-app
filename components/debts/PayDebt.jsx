@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, Pressable } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Alert } from 'react-native';
 import Button from '../common/Button';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Modal from 'react-native-modal';
@@ -43,7 +43,7 @@ const PayDebt = ({nameList, isModalVisible, setModalVisible, type}) => {
 
     setIsLoading(true);
     const debtType = type === 'Debt' ? 'borrowed' : 'lend';
-
+    
     const payload = {
       name: value,
       payments: {
@@ -55,7 +55,7 @@ const PayDebt = ({nameList, isModalVisible, setModalVisible, type}) => {
     const email = JSON.parse(user).email;
     const data = await receiveAndPay(email, activeBudget.budgetName, payload);
     setIsLoading(false);
-
+    Alert.alert('Yey', data.message);
     if (data?.statusCode === 200) {
       setModalVisible(false);
     }
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
     bottom: -20,
-    overflow: 'scroll'
+    overflow: 'visible'
   },
   darkMode: {
     backgroundColor: COLORS['dblue-550']

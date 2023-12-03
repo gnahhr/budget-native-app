@@ -58,6 +58,7 @@ export function Provider(props) {
   const [ [ isLoading, userData], setUserData] = useStorageState('user');
   const [ [ isActiveLoading, cachedActiveBudget], setCachedActiveBudget ] = useStorageState('activeBudget');
   const [ [isStateLoading, allocationState], setAllocationState ] = useStorageState('allocationState');
+  
   const [ email, setEmail ] = useState("");
 
   // Pagset ng data not just sa provider pero dun din sa local storage
