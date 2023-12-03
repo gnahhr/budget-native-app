@@ -3,9 +3,9 @@ import Logo from '../../assets/logos/logo.png';
 import LogoW from '../../assets/logos/logo-w.png';
 import { jwtDecode } from 'jwt-decode';
 import { verify2FA } from '../../api/login';
-import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 import { Stack, useRouter } from 'expo-router';
-import { Text, SafeAreaView, Image, View, TextInput } from 'react-native';
+import { Text, SafeAreaView, Image, View, TextInput, Pressable } from 'react-native';
 import Button from '../../components/common/Button';
 
 import styles from './authStyles';
@@ -16,8 +16,8 @@ const ForgotPassword = () => {
   const router = useRouter();
   const [ code, setCode ] = useState("");
   const [ alert, setAlert ] = useState(""); 
+  const { theme } = useTheme();
   const [ isLoading, setIsLoading ] = useState(false);
-  // Change button to redirect login page
 
   const { email, signIn } = useAuth();
 
@@ -79,7 +79,10 @@ const ForgotPassword = () => {
             <TextInput
               style={[styles.textInputStyle]}
               value={code}
-              onChangeText={setCode}></TextInput>
+              onChangeText={setCode}
+              backgroundColor={theme === 'dark' && COLORS['grey-500']}
+              color={theme === 'dark' && COLORS['white-700']}
+              placeholderTextColor={theme === 'dark' && COLORS['grey-300']}></TextInput>
           </View>
         </View>
       </View>
