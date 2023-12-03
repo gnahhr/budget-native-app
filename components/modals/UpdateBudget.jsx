@@ -3,9 +3,12 @@ import { View, Text, StyleSheet, TextInput, Pressable } from 'react-native';
 import Modal from 'react-native-modal';
 import { useBudget } from '../../context/budget';
 import { useAuth } from '../../context/auth';
+import { useTheme } from '../../context/theme';
+import { COLORS } from '../../constants/theme';
 
 const UpdateBudget = ({isModalVisible, totalBudget, setModalVisible, updateBudget}) => {
   const { activeBudget } = useBudget();
+  const { theme } = useTheme();
   const { user } = useAuth();
   
   const [ budget, onChangeBudget ] = useState(0);
@@ -48,40 +51,49 @@ const UpdateBudget = ({isModalVisible, totalBudget, setModalVisible, updateBudge
       isVisible={isModalVisible}
       animationIn="slideInUp"
       animationOut="slideOutDown">
-        <View style={styles.modalWrapper}>
+        <View style={[styles.modalWrapper, theme === 'dark' && styles.darkMode]}>
           <View>
             <View style={[styles.modalHeader]}>
-              <Text style={[styles.textBold, styles.textHeader]}>{isOwner && isOwner ? "Update Budget" : "Give Money"}</Text>
+              <Text style={[styles.textBold, styles.textHeader, theme === 'dark' && styles.textWhite]}>{isOwner && isOwner ? "Update Budget" : "Give Money"}</Text>
             </View>
             
             <View style={{gap: 16}}>
               {isOwner && isOwner ? 
               <>
                 <View>
-                  <Text style={[styles.textBold]}>Budget Name</Text>
+                  <Text style={[styles.textBold, theme === 'dark' && styles.textWhite]}>Budget Name</Text>
                   <TextInput
                     value={budgetName}
                     onChangeText={setBudgetName}
+                    backgroundColor={theme === 'dark' && COLORS['grey-500']}
+                    color={theme === 'dark' && COLORS['white-700']}
+                    placeholderTextColor={theme === 'dark' && COLORS['grey-300']}
                   />
                 </View>
                 <View>
-                  <Text style={[styles.textBold]}>Total Budget</Text>
+                  <Text style={[styles.textBold, theme === 'dark' && styles.textWhite]}>Total Budget</Text>
                   <TextInput
                     placeholder='Php. 00'
                     keyboardType="numeric"
                     value={String(budget)}
                     onChangeText={onChangeBudget}
+                    backgroundColor={theme === 'dark' && COLORS['grey-500']}
+                    color={theme === 'dark' && COLORS['white-700']}
+                    placeholderTextColor={theme === 'dark' && COLORS['grey-300']}
                   />
                 </View>
               </>
               :
               <View>
                 <View>
-                  <Text style={[styles.textBold]}>Amount</Text>
+                  <Text style={[styles.textBold, theme === 'dark' && styles.textWhite]}>Amount</Text>
                   <TextInput
                     placeholder='Php. 00'
                     keyboardType="numeric"
                     onChangeText={onChangeBudget}
+                    backgroundColor={theme === 'dark' && COLORS['grey-500']}
+                    color={theme === 'dark' && COLORS['white-700']}
+                    placeholderTextColor={theme === 'dark' && COLORS['grey-300']}
                   />
               </View>
               </View>
@@ -92,7 +104,7 @@ const UpdateBudget = ({isModalVisible, totalBudget, setModalVisible, updateBudge
 
           <View style={[styles.flexRow, styles.buttonWrapper]}>
             <Pressable style={[styles.buttonStyle, styles.buttonHollow]} onPress={() => toggleModal()}>
-              <Text style={[styles.textCenter, styles.textBold]}>Cancel</Text>
+              <Text style={[styles.textCenter, styles.textBold, theme === 'dark' && styles.textWhite]}>Cancel</Text>
             </Pressable>
 
             <Pressable style={[styles.buttonStyle]} onPress={() => updateBudgetHandler()}>
@@ -106,7 +118,7 @@ const UpdateBudget = ({isModalVisible, totalBudget, setModalVisible, updateBudge
 
 const styles = StyleSheet.create({
   modalWrapper: {
-    backgroundColor: '#ffffff',
+    backgroundColor: COLORS['white-700'],
     width: '100%',
     position: 'absolute',
     alignSelf: 'center',
@@ -115,6 +127,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 8,
     bottom: -20,
     overflow: 'scroll'
+  },
+  darkMode: {
+    backgroundColor: COLORS['dblue-550'],
   },
   modalHeader: {
     flexDirection: 'row',
@@ -129,7 +144,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
   },
   textWhite: {
-    color: '#ffffff',
+    color: COLORS['white-700'],
   },
   textCenter: {
     textAlign: 'center',

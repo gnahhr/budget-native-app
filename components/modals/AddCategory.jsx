@@ -4,13 +4,14 @@ import Modal from 'react-native-modal';
 import { AntDesign } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { getIconsList, getIcon } from '../../constants/icons';
+import { useTheme } from '../../context/theme';
 
 const AddCategory = ({isModalVisible, setModalVisible, createCategory}) => {
   const [ categoryName, setCategoryName ] = useState("");
   const [ iconList, setIconList ] = useState(getIconsList());
   const [ activeIcon, setActiveIcon ] = useState(getIcon("money"));
   const [ iconId, setIconId ] = useState("money");
-
+  const { theme } = useTheme();
   const toggleModal = () => {
     setModalVisible(false);
   };
@@ -41,17 +42,24 @@ const AddCategory = ({isModalVisible, setModalVisible, createCategory}) => {
       animationIn="fadeIn"
       animationOut="fadeOut"
       style={{zIndex: 9999}}>
-        <View style={styles.modalWrapper}>
+        <View style={[styles.modalWrapper, theme === 'dark' && styles.darkWrapper]}>
             <View style={[styles.modalHeader]}>
-              <Text style={[styles.textBold, styles.textHeader]}>Create new category</Text>
+              <Text style={[styles.textBold, styles.textHeader, theme === 'dark' && styles.textWhite]}>Create new category</Text>
               <AntDesign name="close" size={24} color="#3A85AF" onPress={toggleModal}/>
             </View>
             <View style={{flexDirection: 'row', marginVertical: 8, paddingVertical: 5, gap: 8, borderBottomColor: COLORS['blue-900'], borderBottomWidth: 2}}>
               <View style={[styles.pill]}>
                 {activeIcon}
               </View>
-              <TextInput style={{flex: 1}}placeholder='Enter Category Name' value={categoryName} onChangeText={setCategoryName}/>
-              <Pressable style={{alignItems: 'center', justifyContent: 'center'}}onPress={() => createCategoryHandler()}>
+              <TextInput
+                style={{flex: 1}}
+                placeholder='Enter Category Name'
+                value={categoryName}
+                onChangeText={setCategoryName}
+                backgroundColor={theme === 'dark' && COLORS['grey-500']}
+                color={theme === 'dark' && COLORS['white-700']}
+                placeholderTextColor={theme === 'dark' && COLORS['grey-300']}/>
+              <Pressable style={{alignItems: 'center', justifyContent: 'center'}} onPress={() => createCategoryHandler()}>
                 <Text style={[styles.saveBtn, {backgroundColor: COLORS['blue-800']}]}>Save</Text>
               </Pressable>
             </View>
@@ -93,6 +101,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS['blue-100'],
     padding: 8,
     borderRadius: 8
+  },
+  darkWrapper: {
+    backgroundColor: COLORS['dblue-450']
   },
   saveBtn: {
     color: COLORS['white-500'],

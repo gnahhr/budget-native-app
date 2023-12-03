@@ -7,10 +7,12 @@ import { COLORS } from '../../constants/theme';
 import Button from '../common/Button';
 
 import AddCategory from './AddCategory';
+import { useTheme } from '../../context/theme';
 
 const Categories = ({categoryList, isModalVisible, setModalVisible, onChangeToggle}) => {
   const [ categoryState, setCategoryState ] = useState(categoryList);
   const [ isAddVisible, setAddVisible ] = useState(false);
+  const { theme } = useTheme();
 
   const toggleModal = () => {
     setModalVisible(false);
@@ -41,7 +43,7 @@ const Categories = ({categoryList, isModalVisible, setModalVisible, onChangeTogg
       animationIn="slideInRight"
       animationOut="slideOutRight"
       style={{zIndex: 90}}>
-        <View style={styles.modalWrapper}>
+        <View style={[styles.modalWrapper, theme === 'dark' && styles.darkWrapper]}>
           <View style={styles.modalContent}>
             {/* <FontAwesome name="chevron-right" size={40} color="#21abe5" onPress={toggleModal} /> */}
 
@@ -117,7 +119,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
-  }
+  },
+  darkWrapper: {
+    backgroundColor: COLORS['dblue-450']
+  },
 })
 
 export default Categories

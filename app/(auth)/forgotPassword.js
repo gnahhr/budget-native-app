@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
 import Logo from '../../assets/logos/logo.png';
+import LogoW from '../../assets/logos/logo-w.png';
 import { forgotPassword } from '../../api/login';
 import { Stack, useRouter } from 'expo-router';
-import { Text, SafeAreaView, Image, View, TextInput } from 'react-native';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { Text, SafeAreaView, Image, View, TextInput, Pressable } from 'react-native';
 import Button from '../../components/common/Button';
 import styles from './authStyles';
+import { COLORS } from '../../constants/theme';
+import { useTheme } from '../../context/theme';
 
 const ForgotPassword = () => {
   const router = useRouter();
@@ -13,7 +17,12 @@ const ForgotPassword = () => {
   // Change button to redirect login page
   const [ isSent, setIsSent ] = useState("");
   const [ isLoading, setIsLoading ] = useState("");
+  const { theme } = useTheme();
 
+  const handleBack = () => {
+    router.back();
+  }
+  
   async function handleResetPassword() {
     if (email === "") return;
      
@@ -35,18 +44,24 @@ const ForgotPassword = () => {
   }
 
   return (
-    <SafeAreaView style={styles.main}>
+    <SafeAreaView style={[styles.main, theme === 'dark' && styles.darkMode]}>
       <Stack.Screen
         options={{
+          headerStyle: theme === 'dark' && styles.darkWrap,
           headerShadowVisible: false,
           headerTitle: "",
+          headerLeft: () => (
+            <Pressable onPress={() => handleBack()}>
+              <FontAwesome5 name="backspace" size={24} color={theme === 'light' ? COLORS['black-500'] : COLORS['white-700']} />
+            </Pressable>
+          ),
         }}
       />
 
-      <View style={styles.mainWrapper}>
+      <View style={[styles.mainWrapper, theme === 'dark' && styles.darkWrap]}>
         <View>
-          <Image source={Logo} style={styles.logo} />
-          <Text style={[styles.header, styles.textCenter]}>Forgot Password</Text>
+          <Image source={theme === 'light' ? Logo : LogoW} style={styles.logo} />
+          <Text style={[styles.header, styles.textCenter, theme === 'dark' && styles.textWhite]}>Forgot Password</Text>
         </View>
       </View>
 

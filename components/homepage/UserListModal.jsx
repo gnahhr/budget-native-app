@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Alert, TextInput, ScrollView, Pressable} from 'react-native';
-import Modal from 'react-native-modal';
-import { COLORS } from '../../constants/theme';
+
 import { getBudgetUsers, addBudgetUser, requestAccess, removeBudgetUser } from '../../api/budget';
+
+import { COLORS } from '../../constants/theme';
 import { AntDesign } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+
+import Modal from 'react-native-modal';
+import Button from '../common/Button';
+import RequestAccessModal from './RequestAccessModal';
+
 import { useAuth } from '../../context/auth';
 import { useBudget } from '../../context/budget';
-import RequestAccessModal from './RequestAccessModal';
-import Button from '../common/Button';
+import { useTheme } from '../../context/theme';
 
 const UserListModal = ({isModalVisible, setModalVisible}) => {
   const [ userList, setUserList ] = useState([]);
@@ -25,6 +30,7 @@ const UserListModal = ({isModalVisible, setModalVisible}) => {
 
   const { user } = useAuth();
   const { activeBudget } = useBudget();
+  const { theme } = useTheme();
 
   async function handleGetUsers () {
     
@@ -134,10 +140,10 @@ const UserListModal = ({isModalVisible, setModalVisible}) => {
       isVisible={isModalVisible}
       animationIn="fadeIn"
       animationOut="fadeOut">
-        <View style={styles.modalWrapper}>
+        <View style={[styles.modalWrapper, theme === 'dark' && styles.darkMode]}>
             <View style={[styles.modalHeader]}>
               <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap:8}}>
-                <Text style={[styles.textBold, styles.textHeader]}>User List</Text>
+                <Text style={[styles.textBold, styles.textHeader, theme === 'dark' && styles.textWhite]}>User List</Text>
                 <Pressable onPress={() => openModal()}>
                   <Text style={{backgroundColor: COLORS['blue-500'], borderRadius: 8, padding: 8, color: COLORS['white-500']}}>Check Requests</Text>
                 </Pressable>
@@ -159,7 +165,7 @@ const UserListModal = ({isModalVisible, setModalVisible}) => {
                 <View key={idx} style={{alignItems: 'center', flexDirection: 'row'}}>
                   <View style={{alignItems: 'center', flexDirection: 'row', gap: 8, flex: 1}}>
                     <Image source={`https:${item.Images.split(":")[1]}`} style={{width: 40, height: 40, borderRadius: 50, justifyContent: 'center'}}/>
-                    <Text>{item.userName}</Text>
+                    <Text style={[theme === 'dark' && styles.textWhite]}>{item.userName}</Text>
                   </View>
                   {(item.userName !== activeUser && item.Email !== activeBudget.budgetOwner) && 
                   <Pressable onPress={() => removeUserHandler(item.userName, item.Email)}>
@@ -191,14 +197,20 @@ const UserListModal = ({isModalVisible, setModalVisible}) => {
                 {userList && userList.map((user, idx) =>
                 <View key={idx} style={{alignItems: 'center'}}>
                   <Image source={`https:${user.Images.split(":")[1]}`} style={{width: 65, height: 65, borderRadius: 50, justifyContent: 'center'}}/>
-                  <Text>{user.userName}</Text>
+                  <Text style={[theme === 'dark' && styles.textWhite]}>{user.userName}</Text>
                 </View>)}
               </View>
               <View style={{
                     borderTopColor: 'black',
                     borderTopWidth: 4,
                     }}>
-                <TextInput placeholder='Enter user email address...' value={userEmail} onChangeText={setUserEmail}/>
+                <TextInput
+                  placeholder='Enter user email address...'
+                  value={userEmail}
+                  onChangeText={setUserEmail}
+                  backgroundColor={theme === 'dark' && COLORS['grey-500']}
+                  color={theme === 'dark' && COLORS['white-700']}
+                  placeholderTextColor={theme === 'dark' && COLORS['grey-300']}/>
               </View>
               <View style={{flexDirection: 'row', justifyContent: 'space-around', flex: 1,}}>
                 <Button label={"Edit Userlist"} action={() => setIsEdit(!isEdit)}/>
@@ -223,6 +235,9 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
     overflow: 'scroll'
+  },
+  darkMode: {
+    backgroundColor: COLORS['dblue-550'],
   },
   modalHeader: {
     flexDirection: 'row',

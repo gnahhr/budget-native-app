@@ -86,11 +86,16 @@ export async function requestAccess(userEmail, budgetOwner) {
   return await response;
 };
 
-export async function grantAccess(budgetOwner, userEmail, budgetName) {
-  const response = await axios.put(`${apiURL}/budget/grant-access?budgetOwner=${budgetOwner}`, {
+export async function grantAccess(budgetOwner, userEmail, budgetName, deny) {
+  let payload = {
     userEmail,
     budgetName
-  })
+  }
+
+  if (deny) {
+    payload['deny'] = true;
+  }
+  const response = await axios.put(`${apiURL}/budget/grant-access?budgetOwner=${budgetOwner}`, payload)
   .then(response => response.data)
   .catch(err => console.error(err));
   

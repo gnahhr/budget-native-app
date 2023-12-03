@@ -1,18 +1,24 @@
 import React, { useState, useEffect } from 'react'
 import { Stack, useRouter } from "expo-router";
-import { View, Text, StyleSheet, Alert } from 'react-native'
+import { View, Text, StyleSheet, Alert, Pressable } from 'react-native'
+
 import CustomIcon from '../../../components/common/CustomIcon';
 import LogoS from '../../../assets/logos/logo-sw.png';
-import SettingsItem from '../../../components/common/SettingsItem';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { useStorageState } from '../../../hooks/useStorageState';
+
+import SettingsItem from '../../../components/common/SettingsItem';
 import Button from '../../../components/common/Button';
+
+import { useStorageState } from '../../../hooks/useStorageState';
+import { useTheme } from '../../../context/theme';
+import { COLORS } from '../../../constants/theme';
 
 const Notifications = () => {
   const [ settings, setSettings ] = useState();
   const [[isNotifSetLoading, notifSettings], setNotifSettings] = useStorageState('notifSettings');
   const settingKeys = ['reminderEveryday', 'reminderOverspend', 'reminderDebtsLend'];
   const router = useRouter();
+  const { theme, toggleTheme } = useTheme();
 
   const settingValues = {
     'reminderEveryday': {
@@ -55,21 +61,23 @@ const Notifications = () => {
     router.back();
   }
   return (
-    <View style={[{position: 'relative', alignItems: 'center', height: '100%'}]}>
+    <View style={[{position: 'relative', alignItems: 'center', height: '100%'}, theme === 'dark' && styles.darkMode]}>
       <Stack.Screen 
         options={{
-          headerStyle: { backgroundColor: "#1579b2"},
+          headerStyle: { backgroundColor: theme === 'light' ? COLORS['blue-500'] : COLORS['dblue-450']},
           headerShadowVisible: false,
           headerLeft: () => (
             <FontAwesome5 name="backspace" size={24} color="#FFF" onPress={() => backHandler()}/>
           ),
           headerRight: () => (
-            <CustomIcon imageUrl={LogoS}/>
+            <Pressable onPress={() => toggleTheme()}>
+              <CustomIcon imageUrl={LogoS}/>
+            </Pressable>
           ),
           headerTitle: "",
         }}
       />
-      <View style={[styles.headerDesign, {justifyContent: 'flex-end', alignItems: 'flex-end'}]}>
+      <View style={[styles.headerDesign, theme === 'dark' && styles.darkHeader, {justifyContent: 'flex-end', alignItems: 'flex-end'}]}>
         <Text style={[styles.largeFont, styles.textBold, styles.textWhite, {alignSelf: 'center', marginBottom: 30}]}>NOTIFICATIONS</Text>
       </View>
       
@@ -90,13 +98,19 @@ const Notifications = () => {
 
 const styles = StyleSheet.create({
   headerDesign: {
-    backgroundColor: '#1579b2',
+    backgroundColor: COLORS['blue-500'],
     width: '100%',
     alignSelf: 'center',
     height: 80,
     // top: '-80%',
     borderBottomLeftRadius: 1000,
     borderBottomRightRadius: 1000,
+  },
+  darkHeader: {
+    backgroundColor: COLORS['dblue-450']
+  },
+  darkMode: {
+    backgroundColor: COLORS['dblue-550']
   },
   iconStyle: {
     height: 100,
@@ -105,7 +119,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
     borderWidth: 1,
     borderRadius: 100,
-    borderColor: '#ffffff'
+    borderColor: COLORS['white-700']
   },
   textBold: {
     fontWeight: '700',

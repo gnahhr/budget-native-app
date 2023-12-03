@@ -6,8 +6,13 @@ import Modal from 'react-native-modal';
 import { AntDesign } from '@expo/vector-icons';
 import { getDateToday } from '../../utils/dateFunctions';
 import { receiveAndPay } from '../../api/debt';
+import { COLORS } from '../../constants/theme';
+
+
 import { useAuth } from '../../context/auth';
 import { useBudget } from '../../context/budget';
+import { useTheme } from '../../context/theme';
+
 const PayDebt = ({nameList, isModalVisible, setModalVisible, type}) => {
   const [ nameState, setNameState ] = useState(nameList);
   const [ amount, setAmount ] = useState(amount);
@@ -22,6 +27,7 @@ const PayDebt = ({nameList, isModalVisible, setModalVisible, type}) => {
   
   const { user } = useAuth();
   const { activeBudget } = useBudget();
+  const { theme } = useTheme();
 
   const toggleModal = () => {
     setModalVisible(false);
@@ -93,16 +99,16 @@ const PayDebt = ({nameList, isModalVisible, setModalVisible, type}) => {
       isVisible={isModalVisible}
       animationIn="slideInUp"
       animationOut="slideOutDown">
-        <View style={styles.modalWrapper}>
+        <View style={[styles.modalWrapper, theme === 'dark' && styles.darkMode]}>
           <View>
             <View style={[styles.modalHeader]}>
-              <Text style={[styles.textBold, styles.textHeader]}>{label[type]}</Text>
+              <Text style={[styles.textBold, styles.textHeader, theme === 'dark' && styles.textWhite]}>{label[type]}</Text>
               <AntDesign name="close" size={24} color="#3A85AF" onPress={toggleModal}/>
             </View>
 
             <View style={{gap: 16}}>
               <View>
-                <Text style={[styles.textBold]}>Name</Text>
+                <Text style={[styles.textBold, theme === 'dark' && styles.textWhite]}>Name</Text>
                 <DropDownPicker
                   open={open}
                   value={value}
@@ -114,8 +120,14 @@ const PayDebt = ({nameList, isModalVisible, setModalVisible, type}) => {
                 />
               </View>
               <View>
-                <Text style={[styles.textBold]}>Amount</Text>
-                <TextInput placeholder='Php. 00' keyboardType="numeric" onChangeText={setAmount}/>
+                <Text style={[styles.textBold, theme === 'dark' && styles.textWhite, theme === 'dark' && styles.textWhite]}>Amount</Text>
+                <TextInput
+                  placeholder='Php. 00'
+                  keyboardType="numeric"
+                  onChangeText={setAmount}
+                  backgroundColor={theme === 'dark' && COLORS['grey-500']}
+                  color={theme === 'dark' && COLORS['white-700']}
+                  placeholderTextColor={theme === 'dark' && COLORS['grey-300']}/>
               </View>
             </View>
           </View>
@@ -134,7 +146,7 @@ const PayDebt = ({nameList, isModalVisible, setModalVisible, type}) => {
 
 const styles = StyleSheet.create({
   modalWrapper: {
-    backgroundColor: '#ffffff',
+    backgroundColor: COLORS['white-700'],
     width: '100%',
     position: 'absolute',
     alignSelf: 'center',
@@ -143,6 +155,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 8,
     bottom: -20,
     overflow: 'scroll'
+  },
+  darkMode: {
+    backgroundColor: COLORS['dblue-550']
   },
   modalHeader: {
     flexDirection: 'row',

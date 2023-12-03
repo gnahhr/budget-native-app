@@ -4,10 +4,11 @@ import Modal from 'react-native-modal';
 import { COLORS } from '../../constants/theme';
 import { AntDesign } from '@expo/vector-icons';
 import ExpensesItem from './ExpensesItem';
-import Button from '../common/Button';
+import { useTheme } from '../../context/theme';
 
 const EditExpenses = ({isModalVisible, setModalVisible, expensesList, refreshData}) => {
-  
+  const { theme } = useTheme();
+
   const toggleModal = () => {
     setModalVisible(false);
   };
@@ -17,10 +18,10 @@ const EditExpenses = ({isModalVisible, setModalVisible, expensesList, refreshDat
       isVisible={isModalVisible}
       animationIn="fadeIn"
       animationOut="fadeOut">
-        <View style={styles.modalWrapper}>
+        <View style={[styles.modalWrapper, theme === 'dark' && styles.darkMode]}>
             <View style={[styles.modalHeader]}>
               <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap:8}}>
-                <Text style={[styles.textBold, styles.textHeader]}>Edit Expenses</Text>
+                <Text style={[styles.textBold, styles.textHeader, theme === 'dark' && styles.textWhite]}>Edit Expenses</Text>
               </View>
               <AntDesign name="close" size={24} color="#3A85AF" onPress={toggleModal}/>
             </View>
@@ -45,7 +46,7 @@ const EditExpenses = ({isModalVisible, setModalVisible, expensesList, refreshDat
 
 const styles = StyleSheet.create({
   modalWrapper: {
-    backgroundColor: '#ffffff',
+    backgroundColor: COLORS['white-700'],
     width: '100%',
     position: 'absolute',
     alignSelf: 'center',
@@ -54,6 +55,9 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
     overflow: 'scroll'
+  },
+  darkMode: {
+    backgroundColor: COLORS['dblue-550']
   },
   modalHeader: {
     flexDirection: 'row',

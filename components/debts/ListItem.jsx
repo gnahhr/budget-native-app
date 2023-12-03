@@ -4,13 +4,14 @@ import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { getDateTodayISO, formatDate } from '../../utils/dateFunctions';
 import { schedulePushNotification } from '../../utils/notification';
 import { useStorageState } from '../../hooks/useStorageState';
+import { useTheme } from '../../context/theme';
 
 const ListItem = ({name, balance, history, dueDate, type = "Lend"}) => {
   const [ toggled, setToggled ] = useState(false);
   const [ [isLoading, notifList], setNotifList ] = useStorageState("notifList");
   const [ [isSettingsLoading, notifSettings], setNotifSettings ] = useStorageState("notifSettings");
-
-  const textColor = balance === 0 ? styles.textGreen : styles.textRed;
+  const { theme } = useTheme();
+  const textColor = balance === 0 ? styles.textGreen : theme === 'light' ? styles.textRed : styles.textLRed;
 
   const toggleHandler = () => {
     setToggled(!toggled);
@@ -49,9 +50,9 @@ const ListItem = ({name, balance, history, dueDate, type = "Lend"}) => {
   }, [])
 
   return (
-    <Pressable style={[styles.container]} onPress={() => toggleHandler()}>
+    <Pressable style={[styles.container, theme === 'dark' && styles.darkMode]} onPress={() => toggleHandler()}>
       <View style={[styles.flexRow]}>
-        <Text style={[styles.stretch, styles.textBold]}>{name}</Text>
+        <Text style={[styles.stretch, styles.textBold, theme === 'dark' && styles.textWhite]}>{name}</Text>
         <Text style={[styles.stretch, styles.textEnd, styles.textBold, textColor]}>
           {balance > 0 ? `Php. ${balance}` : "Fully Paid"}
         </Text>
@@ -82,6 +83,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginVertical: 4,
   },
+  darkMode: {
+    borderColor: COLORS['white-700'],
+  },
   flexRow: {
     flexDirection: 'row',
   },
@@ -97,8 +101,14 @@ const styles = StyleSheet.create({
   textGreen: {
     color: COLORS['green-500'],
   },
+  textLRed: {
+    color: COLORS['red-300'],
+  },
   textRed: {
     color: COLORS['red-500'],
+  },
+  textWhite: {
+    color: COLORS['white-700'],
   }
 })
 

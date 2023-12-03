@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Stack, useRouter } from "expo-router";
-import { View, Text, StyleSheet, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native'
 
 import CustomIcon from '../../../components/common/CustomIcon';
 import LogoS from '../../../assets/logos/logo-sw.png';
@@ -14,11 +14,13 @@ import { COLORS } from '../../../constants/theme';
 import { useStorageState } from '../../../hooks/useStorageState';
 import { useAuth } from '../../../context/auth';
 import { useBudget } from '../../../context/budget';
+import { useTheme } from '../../../context/theme';
 import { schedulePushNotification } from '../../../utils/notification';
 
 const ExtraBudget = () => {
   const { user } = useAuth();
   const { activeBudget } = useBudget();
+  const { theme, toggleTheme } = useTheme();
 
   const [ isModalOpen, setIsModalOpen ] = useState(false);
   const [ extraList, setExtraList ] = useState([]);
@@ -43,7 +45,7 @@ const ExtraBudget = () => {
   async function getAllExtra() {
     const email = JSON.parse(user).email;
     const data = await getAllExtraBudget(email, activeBudget.budgetName);
-    
+
     setExtraList(data.response);
   }
 
@@ -60,28 +62,30 @@ const ExtraBudget = () => {
   }, [extraList])
 
   return (
-    <View style={[{position: 'relative', alignItems: 'center', height: '100%'}]}>
+    <View style={[{position: 'relative', alignItems: 'center', height: '100%'}, theme === 'dark' && styles.darkMode]}>
       <Stack.Screen 
         options={{
-          headerStyle: { backgroundColor: "#1579b2"},
+          headerStyle: { backgroundColor: theme === 'light' ? COLORS['blue-500'] : COLORS['dblue-450']},
           headerShadowVisible: false,
           headerLeft: () => (
             <FontAwesome5 name="backspace" size={24} color="#FFF" onPress={() => backHandler()}/>
           ),
           headerRight: () => (
-            <CustomIcon imageUrl={LogoS}/>
+            <Pressable onPress={() => toggleTheme()}>
+              <CustomIcon imageUrl={LogoS}/>
+            </Pressable>
           ),
           headerTitle: "",
         }}
       />
-      <View style={[styles.headerDesign, {justifyContent: 'flex-end', alignItems: 'flex-end'}]}>
+      <View style={[styles.headerDesign, theme === 'dark' && styles.headerDark, {justifyContent: 'flex-end', alignItems: 'flex-end'}]}>
         <Text style={[styles.largeFont, styles.textBold, styles.textWhite, {alignSelf: 'center', marginBottom: 30}]}>EXTRA BUDGETS</Text>
       </View>
       
       <ScrollView style={{width: '100%'}} contentContainerStyle={{alignItems: 'center'}}>
         {extraList && 
         extraList.map(item =>
-          <View style={[styles.items]}>
+          <View style={[styles.items, theme === 'dark' && styles.headerDark]}>
             <Text style={[styles.textWhite, styles.textBold]}>{item.note}</Text>
             <Text style={[styles.textWhite, styles.textBold]}>Php. {item.amount}</Text>
             <Text style={[styles.textWhite, styles.textBold, {flex: 1, textAlign: 'right'}]}>{formatDate(item.dateToBeAdded)}</Text>
@@ -97,13 +101,18 @@ const ExtraBudget = () => {
 
 const styles = StyleSheet.create({
   headerDesign: {
-    backgroundColor: '#1579b2',
+    backgroundColor: COLORS['blue-500'],
     width: '100%',
     alignSelf: 'center',
     height: 80,
-    // top: '-80%',
     borderBottomLeftRadius: 1000,
     borderBottomRightRadius: 1000,
+  },
+  darkMode: {
+    backgroundColor: COLORS['dblue-550'],
+  },
+  headerDark: {
+    backgroundColor: COLORS['dblue-450'],
   },
   items: {
     flexDirection: 'row',
@@ -125,7 +134,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
     borderWidth: 1,
     borderRadius: 100,
-    borderColor: '#ffffff'
+    borderColor: COLORS['white-700']
   },
   textBold: {
     fontWeight: '700',
@@ -134,7 +143,7 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   textWhite: {
-    color: '#ffffff'
+    color: COLORS['white-700']
   },
   largeFont: {
     fontSize: 25
@@ -146,7 +155,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   textInputStyle: {
-    backgroundColor: '#ffffff',
+    backgroundColor: COLORS['white-700'],
     borderRadius: 4,
     paddingVertical: 4,
     paddingHorizontal: 8,

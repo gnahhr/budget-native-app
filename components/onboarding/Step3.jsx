@@ -11,9 +11,10 @@ import Categories from '../modals/Categories';
 import Suggestions from '../modals/Suggestions';
 import Allocation from './Allocation';
 import { useStorageState } from '../../hooks/useStorageState';
+import { useTheme } from '../../context/theme';
 
 const Step3 = ({totalBudget, prevStep, currentAllocations, curRatio, nextStep, setAllocations, setBudgetRatio}) => {
-
+  const { theme } = useTheme();
   // Header Data
   const [ activeTab, setActiveTab ] = useState("NEED");
   const [ remaining, setRemaining ] = useState(totalBudget);
@@ -317,14 +318,14 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, curRatio, nextStep, s
   return (
     <View>
       <View style={styles.main}>
-        <Text style={[styles.textBold, styles.textCenter]}>BUDGET PLANNER</Text> 
-        <Text style={[styles.textBold, styles.textCenter]}>Remaining Allocation</Text>      
-        <Text style={[styles.textBold, styles.textCenter]}>Php. {remaining}</Text>      
+        <Text style={[styles.textBold, styles.textCenter, theme === 'dark' && styles.whiteText]}>BUDGET PLANNER</Text> 
+        <Text style={[styles.textBold, styles.textCenter, theme === 'dark' && styles.whiteText]}>Remaining Allocation</Text>      
+        <Text style={[styles.textBold, styles.textCenter, theme === 'dark' && styles.whiteText]}>Php. {remaining}</Text>      
         <View style={[styles.center, styles.flexRow]}>
           {Tabs.map((tab) => {
             let passStyle = [styles.textCenter, styles.smallButton]
             if (activeTab === tab) {
-              passStyle.push(styles.smallButtonHollow)
+              passStyle.push([styles.smallButtonHollow, theme === 'dark' && styles.whiteText])
             } else {
               passStyle.push(styles.smallButtonHollowInactive)
             }
@@ -351,7 +352,7 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, curRatio, nextStep, s
         curBudgetRatio={curRatio}
         setBudgetRatio={setBudgetRatio}
       />
-      <View style={[styles.blueDrawer, styles.blueDrawerExpanded, styles.blueDrawerExpandedAllocation]}>
+      <View style={[styles.blueDrawer, styles.blueDrawerExpanded, styles.blueDrawerExpandedAllocation, theme === 'dark' && styles.darkWrapper]}>
         <Text style={[styles.textCenter, styles.textWhite]}>EXPENSE ALLOCATION</Text>
         {tabData[activeTab].ratio > 0 && <Text style={[styles.textCenter, styles.textWhite, styles.textMediumBold, styles.textHighlight]}>{totalBudget * (tabData[activeTab].ratio/100)}</Text>}
         <ScrollView style={[styles.center, styles.containAllocation]}>

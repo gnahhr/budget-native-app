@@ -1,3 +1,4 @@
+import { COLORS } from '../../constants/theme';
 import { StyleSheet } from 'react-native'
 
 const styles = StyleSheet.create({
@@ -38,18 +39,21 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   textWhite: {
-    color: '#ffffff',
+    color: COLORS['white-700'],
   },  
   buttonWrapper: {
     gap: 15
   },
   bigButton: {
     fontSize: 48,
-    color: '#ffffff',
+    color: COLORS['white-700'],
     fontWeight: 'bold',
     fontStyle: 'italic',
     backgroundColor: '#5cafc9',
     borderRadius: 5
+  },
+  darkModeBtn: {
+    backgroundColor: COLORS['blue-100']
   },
   smallButton: {
     paddingHorizontal: 15,
@@ -76,7 +80,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   whiteText: {
-    color: '#ffffff'
+    color: COLORS['white-700'],
   },
   blueDrawer: {
     backgroundColor: "#1579b2",
@@ -99,8 +103,11 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     textAlign: 'center',
     padding: 10,
-    color: '#ffffff',
+    color: COLORS['white-700'],
     backgroundColor: '#5cafc9',
+  },
+  darkWrapper: {
+    backgroundColor: COLORS['dblue-450']
   },
   flexRow: {
     flexDirection: 'row',
@@ -122,6 +129,9 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 8,
     margin: 4
+  },
+  darkMode: {
+    backgroundColor: COLORS['dblue-500']
   },
   loadingContainer: {
     position: 'absolute',

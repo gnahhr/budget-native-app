@@ -1,13 +1,15 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { COLORS } from '../../constants/theme';
+import { useTheme } from '../../context/theme';
 
 const AboutItem = ({ label, value}) => {
+  const { theme } = useTheme();
 
   return (
-    <View style={[styles.settingsWrapper, styles.shadowProp]}>
-      <Text style={[styles.fontBold, styles.stretch, styles.fontLg]}>{label}</Text>
-      <Text style={[styles.grayText, styles.fontLg]}>{value}</Text>
+    <View style={[styles.settingsWrapper, styles.shadowProp, theme === 'dark' && styles.whiteBorder]}>
+      <Text style={[styles.fontBold, styles.stretch, styles.fontLg, theme === 'dark' && styles.whiteText]}>{label}</Text>
+      <Text style={[styles.grayText, styles.fontLg, theme === 'dark' && styles.whiteText]}>{value}</Text>
     </View>
   )
 }
@@ -32,6 +34,12 @@ const styles = StyleSheet.create({
   },
   grayText: {
     color: COLORS['grey-500'],
+  },
+  whiteText: {
+    color: COLORS['white-700'],
+  },
+  whiteBorder: {
+    borderColor: COLORS['white-700'],
   },
   fontBold: {
     fontWeight: '700',

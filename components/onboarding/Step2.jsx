@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { View, Text, TextInput, Pressable, SafeAreaView, Alert } from 'react-native'
 import styles from './styles';
+import { useTheme } from '../../context/theme';
 
 const Step2 = ({setBudget, setBudgetName, nextStep, prevStep}) => {
   const [ numInput, onChangeNumInput ] = useState("0");
+  const { theme } = useTheme();
   const [ name, setName ] = useState("myBudget");
 
   const nextHandler = () => {
@@ -36,8 +38,8 @@ const Step2 = ({setBudget, setBudgetName, nextStep, prevStep}) => {
   return (
     <SafeAreaView>
       <View style={styles.main}>
-        <Text style={[styles.textBold, styles.textCenter]}>BUDGET PLANNER</Text>       
-        <Text style={[styles.textBold, styles.textCenter, styles.budgetMargin]}>Php. {numInput}</Text>   
+        <Text style={[styles.textBold, styles.textCenter, theme === 'dark' && styles.textWhite]}>BUDGET PLANNER</Text>       
+        <Text style={[styles.textBold, styles.textCenter, styles.budgetMargin, theme === 'dark' && styles.textWhite]}>Php. {numInput}</Text>   
       </View>
       
       <View style={[styles.blueDrawer, styles.blueDrawerExpanded]}>

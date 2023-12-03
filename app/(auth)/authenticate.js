@@ -1,12 +1,17 @@
 import React, { useState } from 'react'
 import Logo from '../../assets/logos/logo.png';
+import LogoW from '../../assets/logos/logo-w.png';
+import { jwtDecode } from 'jwt-decode';
 import { verify2FA } from '../../api/login';
+import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { Stack, useRouter } from 'expo-router';
 import { Text, SafeAreaView, Image, View, TextInput } from 'react-native';
 import Button from '../../components/common/Button';
-import { useAuth } from '../../context/auth';
+
 import styles from './authStyles';
-import { jwtDecode } from 'jwt-decode';
+import { COLORS } from '../../constants/theme';
+import { useTheme } from '../../context/theme';
+import { useAuth } from '../../context/auth';
 const ForgotPassword = () => {
   const router = useRouter();
   const [ code, setCode ] = useState("");
@@ -45,27 +50,36 @@ const ForgotPassword = () => {
   }
 
   return (
-    <SafeAreaView style={styles.main}>
+    <SafeAreaView style={[styles.main, theme === 'dark' && styles.darkMode]}>
       <Stack.Screen
         options={{
+          headerStyle: theme === 'dark' && styles.darkWrap,
+          headerLeft: () => (
+            <Pressable onPress={() => handleBack()}>
+              <FontAwesome5 name="backspace" size={24} color={theme === 'light' ? COLORS['black-500'] : COLORS['white-700']} />
+            </Pressable>
+          ),
           headerShadowVisible: false,
           headerTitle: "",
         }}
       />
 
-      <View style={styles.mainWrapper}>
+      <View style={[styles.mainWrapper, theme === 'dark' && styles.darkWrap]}>
         <View>
-          <Image source={Logo} style={styles.logo} />
-          <Text style={[styles.header, styles.textCenter]}>2FA Authenticator</Text>
+        <Image source={theme === 'light' ? Logo : LogoW} style={styles.logo} />
+          <Text style={[styles.header, styles.textCenter, theme === 'dark' && styles.textWhite]}>2FA Authenticator</Text>
         </View>
       </View>
 
       <View style={[styles.container]}>
       {alert && <Text style={[styles.textRed, styles.textCenter, styles.textBold]}>{alert}</Text>}
         <View>
-          <Text style={[styles.textWhite]}>Enter code:</Text>
+          <Text style={[styles.textWhite, theme === 'dark' && styles.textWhite]}>Enter code:</Text>
           <View>
-            <TextInput style={[styles.textInputStyle]} value={code} onChangeText={setCode}></TextInput>
+            <TextInput
+              style={[styles.textInputStyle]}
+              value={code}
+              onChangeText={setCode}></TextInput>
           </View>
         </View>
       </View>

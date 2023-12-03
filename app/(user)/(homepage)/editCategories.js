@@ -8,16 +8,20 @@ import Step3 from '../../../components/onboarding/Step3';
 import Summary from '../../../components/onboarding/Summary';
 import CustomIcon from '../../../components/common/CustomIcon';
 import LogoS from '../../../assets/logos/logo-s.png';
+import LogoSW from '../../../assets/logos/logo-sw.png';
 import CloseIco from '../../../assets/icons/X.png';
+import { COLORS } from '../../../constants/theme';
 
 import { useBudget } from '../../../context/budget';
 import { useAuth } from '../../../context/auth';
+import { useTheme } from '../../../context/theme';
 
 const EditCategories = () => {
   const [[isDataLoading, data], setData] = useStorageState('data');
   const router = useRouter();
   const { user } = useAuth();
   const { activeBudget } = useBudget();
+  const { theme, toggleTheme } = useTheme();
 
   const [ step, setStep ] = useState(0);
   const [ budgetPlan, setBudgetPlan ] = useState('Weekly');
@@ -83,14 +87,16 @@ const EditCategories = () => {
   }
 
   return (
-    <SafeAreaView style={styles.main}>
+    <SafeAreaView style={[styles.main, theme === 'dark' && styles.darkMode]}>
 
       <Stack.Screen 
         options={{
-          headerStyle: { backgroundColor: "white"},
+          headerStyle: { backgroundColor: theme === 'light' ? COLORS['white-700'] : COLORS['dblue-500']},
           headerShadowVisible: false,
           headerLeft: () => (
-            <CustomIcon imageUrl={LogoS}/>
+            <Pressable onPress={() => toggleTheme()}>
+              <CustomIcon imageUrl={theme === 'light' ? LogoS : LogoSW}/>
+            </Pressable>
           ),
           headerRight: () => (
             <Pressable onPress={() => handleClose()}>
@@ -111,10 +117,13 @@ const EditCategories = () => {
 
 const styles = StyleSheet.create({
   main: {
-    backgroundColor: '#ffffff',
+    backgroundColor: COLORS['white-700'],
     alignItems: 'center',
     position: 'relative',
   },
+  darkMode: {
+    backgroundColor: COLORS['dblue-500'],
+  }
 })
 
 export default EditCategories

@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, Pressable, Alert } from 'react-native';
 import Button from '../common/Button';
 import Modal from 'react-native-modal';
+import { COLORS } from '../../constants/theme';
 import { AntDesign } from '@expo/vector-icons';
 import { getDateToday } from '../../utils/dateFunctions';
+import { useTheme } from '../../context/theme';
 
 const AddExpenses = ({categoryList, selected = null, isModalVisible, expenses, setModalVisible, onAddExpense}) => {
   const [ amount, setAmount ] = useState("");
@@ -12,6 +14,7 @@ const AddExpenses = ({categoryList, selected = null, isModalVisible, expenses, s
   const [ isLoading, setIsLoading ] = useState(false);
   const [ buttonActive, setButtonActive ] = useState(Number(amount)); 
   const [ remaining, setRemaining ] = useState(0); 
+  const { theme } = useTheme();
 
   const toggleModal = () => {
     setModalVisible(false);
@@ -94,34 +97,46 @@ const AddExpenses = ({categoryList, selected = null, isModalVisible, expenses, s
       isVisible={isModalVisible}
       animationIn="slideInUp"
       animationOut="slideOutDown">
-        <View style={styles.modalWrapper}>
+        <View style={[styles.modalWrapper, theme === 'dark' && styles.darkMode]}>
           <View>
             <View style={[styles.modalHeader]}>
-              <Text style={[styles.textBold, styles.textHeader]}>Add Expenses</Text>
+              <Text style={[styles.textBold, styles.textHeader, theme === 'dark' && styles.textWhite]}>Add Expenses</Text>
               <AntDesign name="close" size={24} color="#3A85AF" onPress={toggleModal}/>
             </View>
 
             <View style={{gap: 16}}>
               <View>
-                <Text style={[styles.textBold]}>Expense Category</Text>
-                <Text>{selected && selected.name}</Text>
+                <Text style={[styles.textBold, theme === 'dark' && styles.textWhite]}>Expense Category</Text>
+                <Text style={theme === 'dark' && styles.textWhite}>{selected && selected.name}</Text>
               </View>
               <View>
-                <Text style={[styles.textBold]}>Remaining Budget</Text>
-                <Text>{remaining}</Text>
+                <Text style={[styles.textBold, theme === 'dark' && styles.textWhite]}>Remaining Budget</Text>
+                <Text style={theme === 'dark' && styles.textWhite}>{remaining}</Text>
               </View>
               <View>
-                <Text style={[styles.textBold]}>Note</Text>
-                <TextInput placeholder='e.g. Went out with friends' value={note} onChangeText={setNote}/>
+                <Text style={[styles.textBold, theme === 'dark' && styles.textWhite]}>Note</Text>
+                <TextInput
+                  placeholder='e.g. Went out with friends'
+                  value={note}
+                  onChangeText={setNote}
+                  backgroundColor={theme === 'dark' && COLORS['grey-500']}
+                  color={theme === 'dark' && COLORS['white-700']}
+                  placeholderTextColor={theme === 'dark' && COLORS['grey-300']}/>
               </View>
               <View>
-                <Text style={[styles.textBold]}>Amount</Text>
-                <TextInput placeholder='Php. 00' keyboardType="numeric" onChangeText={setAmount}/>
+                <Text style={[styles.textBold, theme === 'dark' && styles.textWhite]}>Amount</Text>
+                <TextInput
+                  placeholder='Php. 00'
+                  keyboardType="numeric"
+                  onChangeText={setAmount}
+                  backgroundColor={theme === 'dark' && COLORS['grey-500']}
+                  color={theme === 'dark' && COLORS['white-700']}
+                  placeholderTextColor={theme === 'dark' && COLORS['grey-300']}/>
               </View>
             </View>
           </View>
 
-          <View style={{backgroundColor: '#eff5f9', text: 'center'}}>
+          <View style={{backgroundColor: '#eff5f9', text: 'center', marginVertical: 8, padding: 4}}>
             <Text style={[styles.textBold, styles.textCenter]}>Transaction date and time:</Text>
             <Text style={[styles.textCenter]}>{date}</Text>
           </View>
@@ -134,7 +149,7 @@ const AddExpenses = ({categoryList, selected = null, isModalVisible, expenses, s
 
 const styles = StyleSheet.create({
   modalWrapper: {
-    backgroundColor: '#ffffff',
+    backgroundColor: COLORS['white-700'],
     width: '100%',
     position: 'absolute',
     alignSelf: 'center',
@@ -143,6 +158,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 8,
     bottom: -20,
     overflow: 'scroll'
+  },
+  darkMode: {
+    backgroundColor: COLORS['dblue-550']
   },
   modalHeader: {
     flexDirection: 'row',

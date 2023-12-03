@@ -11,6 +11,7 @@ import Button from '../common/Button';
 
 import { useAuth } from '../../context/auth';
 import { useBudget } from '../../context/budget';
+import { useTheme } from '../../context/theme';
 
 const CompareBudgetsModal = ({isModalVisible, setModalVisible}) => {
   const [ startDate, setStartDate ] = useState(new Date());
@@ -22,6 +23,7 @@ const CompareBudgetsModal = ({isModalVisible, setModalVisible}) => {
   const [ isLoading, setIsLoading ] = useState(false);
   const { user } = useAuth();
   const { activeBudget } = useBudget();
+  const { theme } = useTheme();
 
   // Table States
   const [ tableColHeader, setTableColHeader ] = useState([]);
@@ -92,24 +94,24 @@ const CompareBudgetsModal = ({isModalVisible, setModalVisible}) => {
       isVisible={isModalVisible}
       animationIn="fadeIn"
       animationOut="fadeOut">
-        <View style={styles.modalWrapper}>
+        <View style={[styles.modalWrapper, theme === 'dark' && styles.darkMode]}>
             <View style={[styles.modalHeader]}>
-              <Text style={[styles.textBold, styles.textHeader]}>Compare Budgets</Text>
+              <Text style={[styles.textBold, styles.textHeader, theme === 'dark' && styles.textWhite]}>Compare Budgets</Text>
               <AntDesign name="close" size={24} color="#3A85AF" onPress={toggleModal}/>
             </View>
             {isComparing ?
             <ScrollView horizontal={true} style={{marginVertical: 12}}>
               {/* Header */}
-              <View style={{borderWidth: 1, padding: 8}}>
-                <View style={[{flexDirection: 'row', borderBottomWidth: 2}]}>
+              <View style={[{borderWidth: 1, padding: 8}, theme === 'dark' && styles.borderWhite]}>
+                <View style={[{flexDirection: 'row', borderBottomWidth: 2}, theme === 'dark' && styles.borderWhite]}>
                   <Text style={{width: 70, textAlign: 'center'}}></Text>
-                  {tableColHeader.map(item => <Text style={{width: 70, textAlign: 'center', borderRightWidth: 1, borderLeftWidth: 1, padding: 4}}>{item}</Text>)}
+                  {tableColHeader.map(item => <Text style={[{width: 70, textAlign: 'center', borderRightWidth: 1, borderLeftWidth: 1, padding: 4}, theme === 'dark' && [styles.textWhite, styles.borderWhite]]}>{item}</Text>)}
                 </View>
                 {/* Rows */}
                 {tableRowHeader.map((item, idx) =>
                   <View style={[{flexDirection: 'row'}]}> 
-                      <Text style={{width: 70, borderBottomWidth: 1}}>{item}</Text>
-                      {tableData[idx].map(item => <Text style={{width: 70, textAlign: 'center', borderLeftWidth: 1, borderRightWidth: 1, borderBottomWidth: 1}}>{item}</Text>)}
+                      <Text style={[{width: 70, borderBottomWidth: 1}, theme === 'dark' && [styles.textWhite, styles.borderWhite]]}>{item}</Text>
+                      {tableData[idx].map(item => <Text style={[{width: 70, textAlign: 'center', borderLeftWidth: 1, borderRightWidth: 1, borderBottomWidth: 1}, theme === 'dark' && [styles.textWhite, styles.borderWhite]]}>{item}</Text>)}
                   </View>
                 )}
               </View>
@@ -121,14 +123,14 @@ const CompareBudgetsModal = ({isModalVisible, setModalVisible}) => {
                   <Pressable onPress={() => toggleStartDatePicker()}>
                     <Text style={[styles.dateButton, styles.textWhite, styles.textBold]}>Pick start date</Text>
                   </Pressable>
-                  <Text style={[styles.textBold, styles.textCenter]}>{formatDate(startDate)}</Text>
+                  <Text style={[styles.textBold, styles.textCenter, theme === 'dark' && styles.textWhite]}>{formatDate(startDate)}</Text>
                 </View>
 
                 <View>
                   <Pressable onPress={() => toggleEndDatePicker()}>
                     <Text style={[styles.dateButton, styles.textWhite, styles.textBold]}>Pick end date</Text>
                   </Pressable>
-                  <Text style={[styles.textBold, styles.textCenter]}>{formatDate(endDate)}</Text>
+                  <Text style={[styles.textBold, styles.textCenter, theme === 'dark' && styles.textWhite]}>{formatDate(endDate)}</Text>
                 </View>
               </View>
 
@@ -151,6 +153,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     overflow: 'scroll'
   },
+  darkMode: {
+    backgroundColor: COLORS['dblue-550'],
+  },
   dateButton: {
     textAlign: 'center',
     backgroundColor: COLORS['blue-400'],
@@ -168,6 +173,9 @@ const styles = StyleSheet.create({
   },
   textHeader: {
     fontSize: 25,
+  },
+  borderWhite: {
+    borderColor: COLORS['white-500'],
   },
   textWhite: {
     color: COLORS['white-500'],

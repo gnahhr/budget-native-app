@@ -9,6 +9,7 @@ import AnimatedProgressWheel from 'react-native-progress-wheel';
 import CustomIcon from '../../../components/common/CustomIcon';
 import HomeAllocation from '../../../components/homepage/HomeAllocation';
 import Money from '../../../components/homepage/Money';
+import { COLORS } from '../../../constants/theme';
 
 // Modals
 import AddExpenses from '../../../components/modals/AddExpenses';
@@ -25,10 +26,12 @@ import { registerForPushNotificationsAsync } from '../../../utils/notification';
 
 // Images
 import LogoS from '../../../assets/logos/logo-s.png';
+import LogoSW from '../../../assets/logos/logo-sw.png';
 
 // Context
 import { useAuth } from '../../../context/auth';
 import { useBudget } from '../../../context/budget';
+import { useTheme } from '../../../context/theme';
 
 import * as Notifications from "expo-notifications";
 import Button from '../../../components/common/Button';
@@ -44,12 +47,12 @@ Notifications.setNotificationHandler({
 const HomepageIndex = () => {
   const { user } = useAuth();
   const { activeBudget, updateActive, updateBudgetL } = useBudget();
+  const { theme, toggleTheme } = useTheme();
 
   // LocalStorage States
   const [ [isNotifSettings, notifSettings], setNotifSettings ] = useStorageState('notifSettings');
   const [ [dontShowLoading, dontShowAgainInstruction], setDontShowAgainInstruction ] = useStorageState('dontShowAgainInstruction');
 
-  
   // Loading States
   const [ isLoading, setIsLoading ] = useState(true);
   const [ expensesLoading, setExpensesLoading ] = useState(true);
@@ -315,13 +318,15 @@ const HomepageIndex = () => {
   }, []);
 
   return (
-    <SafeAreaView style={{backgroundColor: '#f3f3f7', position:"relative"}}>
+    <SafeAreaView style={{backgroundColor: theme === 'light' ? COLORS['white-700'] : COLORS['dblue-500'], position:"relative", flex: 1}}>
       <Tabs.Screen 
         options={{
-          headerStyle: { backgroundColor: "white" },
+          headerStyle: { backgroundColor: theme === 'light' ? COLORS['white-700'] : COLORS['dblue-500'] },
           headerShadowVisible: false,
           headerLeft: () => (
-            <CustomIcon imageUrl={LogoS} />
+            <Pressable onPress={() => toggleTheme()}>
+              <CustomIcon imageUrl={theme === 'light' ? LogoS : LogoSW}/>
+            </Pressable>
           ),
           headerTitle: "",
         }}
@@ -334,8 +339,8 @@ const HomepageIndex = () => {
       <>
       <View style={[styles.container, {flexDirection: 'row', padding: 8}]}>
         <View>
-          <Text style={[styles.normalText, styles.grayText]}>Hello {parsedUser ? parsedUser.username : "User"},</Text>
-          <Text style={[styles.boldText, styles.bigFont]}>Welcome Back!</Text>
+          <Text style={[styles.normalText, theme === 'light' ? styles.grayText : styles.whiteText]}>Hello {parsedUser ? parsedUser.username : "User"},</Text>
+          <Text style={[styles.boldText, styles.bigFont, theme === 'dark' && styles.whiteText]}>Welcome Back!</Text>
         </View>
         <View style={{flex: 1, alignItems: 'flex-end', justifyContent:'center'}}>
           <Pressable onPress={() => userModalToggle()}>
@@ -344,24 +349,24 @@ const HomepageIndex = () => {
         </View>
       </View>
 
-      <View style={[styles.budgetWrapper, styles.container]}>
+      <View style={[styles.budgetWrapper, styles.container, theme === 'dark' && {backgroundColor: COLORS['dblue-400']}]}>
         <Button label={activeBudget.budgetName?.split('~')[0]} action={() => budgetListModalToggle()} />
         {/* <Pressable onPress={() => budgetListModalToggle()}>
           <Text style={[styles.bigFont]}>{activeBudget.budgetName?.split('~')[0]}</Text>
         </Pressable> */}
 
-        <Text style={[styles.italics, styles.normalText, {textTransform: 'uppercase'}]}>{activeBudget.budgetType}</Text>
+        <Text style={[styles.italics, styles.normalText, {textTransform: 'uppercase', color: theme === 'light' ? COLORS['black-500'] : COLORS['white-700']}]}>{activeBudget.budgetType}</Text>
 
         <View style={styles.flexRow}>
-          <View style={{backgroundColor: '#d7ecea', alignSelf: 'center', position: 'relative'}}>
+          <View style={{backgroundColor: theme === 'light' ? COLORS['bg-lblue-500'] : COLORS['dblue-400'], alignSelf: 'center', position: 'relative'}}>
             <AnimatedProgressWheel 
               size={140} 
               width={15} 
               color={'#1e9dc5'}
               progress={progress ? progress : 0}
-              backgroundColor={'#c3ece8'}
+              backgroundColor={theme === 'light' ? COLORS['bg-lblue-500'] : COLORS['dblue-400']}
             />
-            <Text style={{position: 'absolute', alignSelf: 'center', marginTop: 60}}>Php. {remainingBudget ? remainingBudget : 0}</Text>
+            <Text style={{position: 'absolute', alignSelf: 'center', marginTop: 60, color: theme === 'light' ? COLORS['black-500'] : COLORS['white-700']}}>Php. {remainingBudget ? remainingBudget : 0}</Text>
           </View>
           <View style={styles.moneyWrapper}>
             <Money currency={totalBudget ? totalBudget : 0} subText="Total Budget" onClickHandler={budgetModalToggle}/>
@@ -375,9 +380,9 @@ const HomepageIndex = () => {
           {tabs.map((tab) => {
             let passStyle = [styles.normalText, styles.boldText]
             if (activeTab === tab) {
-              passStyle.push(styles.inactiveTab)
+              passStyle.push(theme === 'dark' && styles.whiteText)
             } else {
-              passStyle.push(styles.grayText)
+              passStyle.push(theme === 'light' ? styles.grayText : styles.lgrayText)
             }
             return (
             <Pressable key={tab} onPress={() => setActiveTab(tab)}>
@@ -399,7 +404,7 @@ const HomepageIndex = () => {
             <HomeAllocation key={data.name} category={data} expenses={parsedExpenses} type={tabData[activeTab].name} getAllocation={() => getAllocation(parsedUser.email, activeBudget.budgetName)}/>
           </Pressable>)
           :
-          <Text>Nothing Allocated</Text>
+          <Text style={theme === 'dark' && styles.whiteText}>Nothing Allocated</Text>
           }
       </ScrollView>
 
@@ -426,10 +431,13 @@ const HomepageIndex = () => {
 
 const styles = StyleSheet.create({
   grayText: {
-    color: '#5f5f5f',
+    color: COLORS['grey-500'],
+  },
+  lgrayText: {
+    color: COLORS['grey-300'],
   },
   whiteText: {
-    color: '#ffffff',
+    color: COLORS['white-700'],
   },
   normalText: {
     fontSize: 19,
@@ -464,7 +472,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   budgetWrapper: {
-    backgroundColor: '#d6ebe8',
+    backgroundColor: COLORS['bg-lblue-400'],
     borderRadius: 16,
     alignItems: 'center',
     padding: 8,
@@ -472,7 +480,7 @@ const styles = StyleSheet.create({
   bottomButtonWrapper: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 8,
+    marginBottom: 8,
     gap: 24,
   },
   button: {

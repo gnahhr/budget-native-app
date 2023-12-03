@@ -4,11 +4,12 @@ import Modal from 'react-native-modal'
 import { COLORS } from '../../constants/theme';
 
 import { suggestionList } from '../../constants/suggestionList';
-
+import { useTheme } from '../../context/theme';
 import Suggestion from './Suggestion';
 
 const Suggestions = ({curBudgetRatio, isModalVisible, setModalVisible, onChangeToggle, setBudgetRatio}) => {
   const [ choice, setChoice ] = useState();
+  const { theme } = useTheme();
   const toggleModal = () => {
     setModalVisible(false);
   };
@@ -49,7 +50,7 @@ const Suggestions = ({curBudgetRatio, isModalVisible, setModalVisible, onChangeT
       isVisible={isModalVisible}
       animationIn="slideInLeft"
       animationOut="slideOutLeft">
-        <View style={styles.modalWrapper}>
+        <View style={[styles.modalWrapper, theme === 'dark' && styles.darkWrapper]}>
           <View style={[styles.modalContent]}>
             <View style={[styles.colWrapper]}>
               {suggestionList.map((suggestion) => {
@@ -105,6 +106,9 @@ const styles = StyleSheet.create({
     borderColor: COLORS['white-700'],
     borderRadius: 4,
     marginTop: 8,
+  },
+  darkWrapper: {
+    backgroundColor: COLORS['dblue-450']
   },
   colWrapper: {
     flexDirection: 'column',

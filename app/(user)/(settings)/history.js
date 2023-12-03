@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, SafeAreaView, ScrollView, Pressable, StyleSheet, Button, PermissionsAndroid} from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { Entypo, AntDesign, FontAwesome5 } from '@expo/vector-icons';
+import { COLORS } from '../../../constants/theme';
 
 import { useAuth } from '../../../context/auth';
 import { useBudget } from '../../../context/budget';
+import { useTheme } from '../../../context/theme';
 
 import DatePicker from '../../../components/modals/DatePicker';
 import CustomIcon from '../../../components/common/CustomIcon';
@@ -35,7 +37,8 @@ const History = () => {
   const tabs = ['Daily', 'Weekly', 'Monthly', 'Yearly'];
 
   const { user } = useAuth();
-  const { activeBudget } = useBudget();
+  const { theme } = useTheme();
+  const { activeBudget, toggleTheme } = useBudget();
   const router = useRouter();
 
   const calendarToggleHandler = () => {
@@ -112,10 +115,6 @@ const History = () => {
     }
   }
 
-  // async function convertToCSV() {
-  
-  // }
-
   async function expensesHandler(email) {
     let year = (activeTab === 'Monthly') ? monthlyDate.split('-')[0] : yearlyDate;
 
@@ -167,28 +166,30 @@ const History = () => {
   }, [activeTab, dailyDate, weeklyDate, monthlyDate, yearlyDate]);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={[theme === 'dark' && styles.darkMode, {flex: 1}]}>
       <Stack.Screen 
         options={{
-          headerStyle: { backgroundColor: "#1579b2"},
+          headerStyle: { backgroundColor: theme === 'light' ? COLORS['blue-500'] : COLORS['dblue-450']},
           headerShadowVisible: false,
           headerLeft: () => (
-            <FontAwesome5 name="backspace" size={24} color="#FFF" onPress={() => backHandler()}/>
+            <FontAwesome5 name="backspace" size={24} color={COLORS['white-700']} onPress={() => backHandler()}/>
           ),
           headerRight: () => (
-            <CustomIcon imageUrl={LogoS}/>
+            <Pressable onPress={() => toggleTheme()}>
+              <CustomIcon imageUrl={LogoS}/>
+            </Pressable>
           ),
           headerTitle: "",
         }}
       />
-      <View style={[styles.headerDesign, {justifyContent: 'flex-end', alignItems: 'flex-end'}]}>
+      <View style={[styles.headerDesign, theme === 'dark' && styles.darkHeader, {justifyContent: 'flex-end', alignItems: 'flex-end'}]}>
         <Text style={[styles.textWhite, {fontSize: 32, fontWeight: '700', width: '100%', alignSelf: 'center', textAlign: 'center', marginBottom: 30}]}>Transactions</Text>
       </View>
 
-      <View style={[styles.headerWrapper]}>
+      <View style={[styles.headerWrapper, theme === 'dark' && styles.darkDiv]}>
         <ScrollView horizontal={true} contentContainerStyle={styles.containerStyle} style={[styles.tabWrapper]}>
           <Pressable onPress={() => calendarToggleHandler()}>
-            <AntDesign name="calendar" size={24} color="#5087b9" />
+            <AntDesign name="calendar" size={24} color={theme === 'light' ? "#5087b9" : COLORS['white-700']} />
           </Pressable>
         
           {tabs.map(tab => 
@@ -198,7 +199,7 @@ const History = () => {
 
               return (
                 <Pressable key={tab} onPress={() => setActiveTab(tab)}>
-                  <Text style={tabStyle}>{tab}</Text>
+                  <Text style={[tabStyle, theme === 'dark' && styles.textWhite]}>{tab}</Text>
                 </Pressable>
               )
             }
@@ -207,29 +208,29 @@ const History = () => {
 
         <View style={{flexDirection: 'row', marginVertical: 24}}>
           <Pressable onPress={() => prevDateHandler()}>
-            <Entypo name="chevron-left" size={24} color="#1e3546" />
+            <Entypo name="chevron-left" size={24} color={theme === 'light' ? "#1e3546" : COLORS['white-700']} />
           </Pressable>
-          <Text style={{flex: 1, alignSelf: 'center', textAlign: 'center', fontSize: 13}}>{dailyDate ? dateDisplay() : "Today"}</Text>
+          <Text style={[{flex: 1, alignSelf: 'center', textAlign: 'center', fontSize: 13}, theme === 'dark' && styles.textWhite]}>{dailyDate ? dateDisplay() : "Today"}</Text>
           <Pressable onPress={() => nextDateHandler()}>
-            <Entypo name="chevron-right" size={24} color="#1e3546" />
+            <Entypo name="chevron-right" size={24} color={theme === 'light' ? "#1e3546" : COLORS['white-700']} />
           </Pressable>
         </View>
 
-        <Text style={{textAlign: 'center', color: '#969a9f', fontSize: 14, fontWeight: '700'}}>Total Expenses</Text>
+        <Text style={{textAlign: 'center', color: theme === 'light' ? '#969a9f' : COLORS['white-700'], fontSize: 14, fontWeight: '700'}}>Total Expenses</Text>
         <Text style={{textAlign: 'center', color: '#e74b4b', fontSize: 22, fontWeight: '700'}}>Php. {totalExpenses}.00</Text>
       </View>
 
-      <ScrollView style={[styles.headerWrapper, styles.noPadding]}>
+      <ScrollView style={[styles.headerWrapper, theme === 'dark' && styles.darkDiv, styles.noPadding]}>
         <View>
           {transactions.length > 0 ?
             transactions.map(transaction => {
               return (
                 <View key={transaction.date}>
-                  <Text style={styles.historyDate}>{transaction.date}</Text>
+                  <Text style={[styles.historyDate, theme === 'dark' && styles.textWhite]}>{transaction.date}</Text>
                   {transaction.transactions.map((item, idx) => 
-                    <View key={idx} style={styles.historyItem}>
-                      <Text style={styles.historyCategory}>{item.category}</Text>
-                      <Text>-Php. {item.amount}</Text>
+                    <View key={idx} style={[styles.historyItem, theme === 'dark' && styles.borderWhite]}>
+                      <Text style={[styles.historyCategory, theme === 'dark' && styles.textWhite]}>{item.category}</Text>
+                      <Text style={[theme === 'dark' && styles.textWhite]}>-Php. {item.amount}</Text>
                     </View>
                   )}
                 </View>
@@ -248,7 +249,7 @@ const History = () => {
 const styles = StyleSheet.create({
   headerWrapper: {
     alignSelf: 'center',
-    backgroundColor: '#ffffff',
+    backgroundColor: COLORS['white-700'],
     paddingVertical: 16,
     paddingHorizontal: 8,
     width: '95%',
@@ -258,14 +259,22 @@ const styles = StyleSheet.create({
     borderColor: '#969a9f',
     maxHeight: '60%',
   },
+  darkMode: {
+    backgroundColor: COLORS['dblue-550']
+  },
+  darkDiv: {
+    backgroundColor: COLORS['dblue-600']
+  },
   headerDesign: {
-    backgroundColor: '#1579b2',
+    backgroundColor: COLORS['blue-500'],
     width: '100%',
     alignSelf: 'center',
     height: 80,
-    // top: '-80%',
     borderBottomLeftRadius: 1000,
     borderBottomRightRadius: 1000,
+  },
+  darkHeader: {
+    backgroundColor: COLORS['dblue-450']
   },
   noPadding: {
     paddingVertical: 4,
@@ -274,7 +283,10 @@ const styles = StyleSheet.create({
     minHeight: 25,
   },
   textWhite: {
-    color: '#ffffff'
+    color: COLORS['white-700'],
+  },
+  borderWhite: {
+    borderColor: COLORS['white-700'],
   },
   containerStyle: {
     alignItems: 'center',

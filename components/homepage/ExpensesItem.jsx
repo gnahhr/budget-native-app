@@ -7,6 +7,7 @@ import { Icon } from '@rneui/themed';
 import { FontAwesome, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { editExpense } from '../../api/expenses';
 import { useBudget } from '../../context/budget';
+import { useTheme } from '../../context/theme';
 
 const ExpensesItem = ({name, iconId, expenses, closeModal}) => {
   const [ toggled, setToggled ] = useState(false);
@@ -15,6 +16,7 @@ const ExpensesItem = ({name, iconId, expenses, closeModal}) => {
   const [ isLoading, setIsLoading ] = useState(false);
   const icon = getIcon(iconId);
   const { activeBudget } = useBudget();
+  const { theme } = useTheme();
 
   const toggleHandler = () => {
     setToggled(!toggled);
@@ -49,7 +51,7 @@ const ExpensesItem = ({name, iconId, expenses, closeModal}) => {
           <Text style={{alignSelf: 'center', flex: 1,}}>Loading...</Text>
       </View>
     }
-    <Pressable style={[styles.container]} onPress={() => toggleHandler()}>
+    <Pressable style={[styles.container, theme === 'dark' && styles.darkMode]} onPress={() => toggleHandler()}>
       <View style={[styles.flexRow, {alignItems: 'center', justifyContent: 'center'}]}>
       {icon ?
         <View style={styles.iconStyle}>{icon}</View>
@@ -61,19 +63,26 @@ const ExpensesItem = ({name, iconId, expenses, closeModal}) => {
               style={styles.iconStyle}
               />
         }
-        <Text style={[styles.stretch, styles.textBold]}>{name}</Text>
+        <Text style={[styles.stretch, styles.textBold, theme === 'dark' && styles.textWhite]}>{name}</Text>
       </View>
 
       {toggled &&
         <View>
           {expenses.map((item, idx) => {
             return (
-              <View key={idx} style={[styles.flexRow, styles.container, {alignItems: 'center', justifyContent: 'center'}]}>
-                <Text style={[styles.stretch, styles.textBold]}>{formatDate(item.createdAt)}</Text>
+              <View key={idx} style={[styles.flexRow, styles.container, , theme === 'dark' && styles.darkMode, {alignItems: 'center', justifyContent: 'center'}]}>
+                <Text style={[styles.stretch, styles.textBold, theme === 'dark' && styles.textWhite]}>{formatDate(item.createdAt)}</Text>
                 {currentEdit === item._id ?
-                  <TextInput placeholder='Php. 00' keyboardType="numeric" value={String(amount)} onChangeText={setAmount}/>
+                  <TextInput
+                  placeholder='Php. 00'
+                  keyboardType="numeric"
+                  value={String(amount)}
+                  onChangeText={setAmount}
+                  backgroundColor={theme === 'dark' && COLORS['grey-500']}
+                  color={theme === 'dark' && COLORS['white-700']}
+                  placeholderTextColor={theme === 'dark' && COLORS['grey-300']}/>
                   :
-                  <Text style={[styles.stretch, styles.textBold, styles.textEnd]}>{item.amount}</Text>
+                  <Text style={[styles.stretch, styles.textBold, styles.textEnd, theme === 'dark' && styles.textWhite]}>{item.amount}</Text>
                 }
                 {currentEdit === item._id ?
                   <>
@@ -110,6 +119,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginVertical: 4,
   },
+  darkMode: {
+    borderColor: COLORS['white-700'],
+  },
   loadingContainer: {
     position: 'absolute',
     top: 0,
@@ -141,6 +153,9 @@ const styles = StyleSheet.create({
   },
   textGreen: {
     color: COLORS['green-500'],
+  },
+  textWhite: {
+    color: COLORS['white-700'],
   },
   textRed: {
     color: COLORS['red-500'],

@@ -8,8 +8,10 @@ import { AntDesign } from '@expo/vector-icons';
 import { getDateToday, getDateTodayISO, getDateWithOffset } from '../../utils/dateFunctions';
 import { formatDatePicker } from '../../utils/dateFunctions';
 import { borrowAndLend } from '../../api/debt';
+import { COLORS } from '../../constants/theme';
 
 import { useAuth } from '../../context/auth';
+import { useTheme } from '../../context/theme';
 
 const BorrowMoney = ({isModalVisible, setModalVisible, type}) => {
   const [ dueDate, setDueDate ] = useState(getDateWithOffset(getDateTodayISO(), 1));
@@ -20,6 +22,7 @@ const BorrowMoney = ({isModalVisible, setModalVisible, type}) => {
   const [ isLoading, setIsLoading ] = useState(false);
   const [ isButtonActive, setIsButtonActive ] = useState(false);
   const { user } = useAuth();
+  const { theme } = useTheme();
 
   const toggleModal = () => {
     setModalVisible(false);
@@ -81,34 +84,62 @@ const BorrowMoney = ({isModalVisible, setModalVisible, type}) => {
       isVisible={isModalVisible}
       animationIn="slideInUp"
       animationOut="slideOutDown">
-        <View style={styles.modalWrapper}>
+        <View style={[styles.modalWrapper, theme === 'dark' && styles.darkMode]}>
           <View>
             <View style={[styles.modalHeader]}>
-              <Text style={[styles.textBold, styles.textHeader]}>{headerTitle}</Text>
+              <Text style={[styles.textBold, styles.textHeader, theme === 'dark' && styles.textWhite]}>{headerTitle}</Text>
               <AntDesign name="close" size={24} color="#3A85AF" onPress={toggleModal}/>
             </View>
 
             <View style={{gap: 16}}>
               <View>
-                <Text style={[styles.textBold]}>Due Date</Text>
+                <Text style={[styles.textBold, theme === 'dark' && styles.textWhite]}>Due Date</Text>
                 <DateTimePicker
                   value={dueDate}
                   mode={'date'}
                   minimumDate={new Date(Date.now())}
                   onValueChange={(date) => setDueDate(date)}
+                  calendarTextStyle={{
+                    color: theme === 'light' ? COLORS['black-500'] : COLORS['white-700']
+                  }}
+                  weekDaysTextStyle={{
+                    color: theme === 'light' ? COLORS['black-500'] : COLORS['white-700']
+                  }}
+                  headerTextStyle={{
+                    color: theme === 'light' ? COLORS['black-500'] : COLORS['white-700']
+                  }}
+                  headerButtonColor={theme === 'light' ? COLORS['black-500'] : COLORS['white-700']}
                 />
               </View>
               <View>
-                <Text style={[styles.textBold]}>Name</Text>
-                <TextInput placeholder='Enter Person Name' value={name} onChangeText={setName}/>
+                <Text style={[styles.textBold, theme === 'dark' && styles.textWhite]}>Name</Text>
+                <TextInput
+                  placeholder='Enter Person Name'
+                  value={name}
+                  onChangeText={setName}
+                  backgroundColor={theme === 'dark' && COLORS['grey-500']}
+                  color={theme === 'dark' && COLORS['white-700']}
+                  placeholderTextColor={theme === 'dark' && COLORS['grey-300']}/>
               </View>
               <View>
-                <Text style={[styles.textBold]}>Amount</Text>
-                <TextInput placeholder='Php. 00' keyboardType="numeric" onChangeText={setAmount}/>
+                <Text style={[styles.textBold, theme === 'dark' && styles.textWhite]}>Amount</Text>
+                <TextInput
+                  placeholder='Php. 00'
+                  keyboardType="numeric"
+                  onChangeText={setAmount}
+                  backgroundColor={theme === 'dark' && COLORS['grey-500']}
+                  color={theme === 'dark' && COLORS['white-700']}
+                  placeholderTextColor={theme === 'dark' && COLORS['grey-300']}/>
               </View>
               <View>
-                <Text style={[styles.textBold]}>Interest</Text>
-                <TextInput placeholder='0' keyboardType="numeric" onChangeText={setInterest}/>
+                <Text style={[styles.textBold, theme === 'dark' && styles.textWhite]}>Interest</Text>
+                <TextInput
+                  placeholder='0'
+                  keyboardType="numeric"
+                  onChangeText={setInterest}
+                  backgroundColor={theme === 'dark' && COLORS['grey-500']}
+                  color={theme === 'dark' && COLORS['white-700']}
+                  placeholderTextColor={theme === 'dark' && COLORS['grey-300']}/>
               </View>
             </View>
           </View>
@@ -126,7 +157,7 @@ const BorrowMoney = ({isModalVisible, setModalVisible, type}) => {
 
 const styles = StyleSheet.create({
   modalWrapper: {
-    backgroundColor: '#ffffff',
+    backgroundColor: COLORS['white-700'],
     width: '100%',
     position: 'absolute',
     alignSelf: 'center',
@@ -135,6 +166,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 8,
     bottom: -20,
     overflow: 'scroll'
+  },
+  darkMode: {
+    backgroundColor: COLORS['dblue-550']
   },
   modalHeader: {
     flexDirection: 'row',

@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react'
 
 // Constants
-import { savingsCategories, needsCategories, wantCategories } from '../../constants/categories';
+import { COLORS } from '../../constants/theme';
 import styles from './styles';
 
 // Components
 import { View, Text, Pressable, ScrollView, Alert } from 'react-native';
 import Allocation from './Allocation';
 
+// Contexts
+import { useTheme } from '../../context/theme';
+
 const Summary = ({totalBudget, initialAllocation, prevStep, setAllocations, isLoading = false}) => {
   // Header Data
   const [ activeTab, setActiveTab ] = useState("NEED");
   const { needs, wants, savings} = initialAllocation;
+  const { theme } = useTheme();
 
   // Constants
   const tabData = {
@@ -65,14 +69,14 @@ const Summary = ({totalBudget, initialAllocation, prevStep, setAllocations, isLo
         </View>
       }
       <View style={styles.main}>
-        <Text style={[styles.textBold, styles.textCenter]}>SUMMARY</Text>   
-        <Text style={[styles.textBold, styles.textCenter]}>BUDGET PLANNER</Text>   
-        <Text style={[styles.textBold, styles.textCenter]}>Php. {totalBudget}</Text>      
+        <Text style={[styles.textBold, styles.textCenter, theme === 'dark' && styles.whiteText]}>SUMMARY</Text>   
+        <Text style={[styles.textBold, styles.textCenter, theme === 'dark' && styles.whiteText]}>BUDGET PLANNER</Text>   
+        <Text style={[styles.textBold, styles.textCenter, theme === 'dark' && styles.whiteText]}>Php. {totalBudget}</Text>      
         <View style={[styles.center, styles.flexRow]}>
           {Tabs.map((tab) => {
             let passStyle = [styles.textCenter, styles.smallButton]
             if (activeTab === tab) {
-              passStyle.push(styles.smallButtonHollow)
+              passStyle.push([styles.smallButtonHollow, theme === 'dark' && styles.whiteText])
             } else {
               passStyle.push(styles.smallButtonHollowInactive)
             }
@@ -85,7 +89,7 @@ const Summary = ({totalBudget, initialAllocation, prevStep, setAllocations, isLo
         </View>   
       </View>
 
-      <View style={[styles.blueDrawer, styles.blueDrawerExpanded, styles.blueDrawerExpandedAllocation]}>
+      <View style={[styles.blueDrawer, styles.blueDrawerExpanded, styles.blueDrawerExpandedAllocation, theme === 'dark' && styles.darkWrapper]}>
         <Text style={[styles.textCenter, styles.textWhite]}>EXPENSE ALLOCATION</Text>
         <ScrollView style={[styles.center, styles.containAllocation]}>
           {tabData[activeTab].state.filter(x => x.toggled).length > 0 &&

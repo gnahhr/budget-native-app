@@ -5,13 +5,21 @@ import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { Provider } from "../../context/budget";
 import * as SplashScreen from "expo-splash-screen";
+import { COLORS } from "../../constants/theme";
+import { useTheme } from "../../context/theme";
 
 SplashScreen.preventAutoHideAsync();
 
 const Layout = () => {
+  const { theme } = useTheme();
+
   return (
     <Provider>
-      <Tabs initialRouteName="homepage">
+      <Tabs initialRouteName="homepage" screenOptions={{
+        tabBarStyle: {
+          backgroundColor: theme === 'light' ? COLORS['white-700'] : COLORS['dblue-450'],
+        },
+      }}>
         <Tabs.Screen
           name="(homepage)"
           options={{
@@ -20,7 +28,7 @@ const Layout = () => {
             headerTitle: "Home Page",
             headerShadowVisible: false,
             headerStyle: { backgroundColor: "#f3f3f7"},
-            tabBarIcon: ({color, size}) => <Entypo name="home" size={24} color="black" />,
+            tabBarIcon: ({color, size}) => <Entypo name="home" size={24} color={theme === 'light' ? COLORS['black-500'] : COLORS['white-700']} />,
           }}/>
         <Tabs.Screen
           name="(books)"
@@ -30,7 +38,7 @@ const Layout = () => {
             headerShadowVisible: false,
             headerShown: false,
             headerStyle: { backgroundColor: "#f3f3f7"},
-            tabBarIcon: ({color, size}) => <MaterialCommunityIcons name="bookshelf" size={24} color="black" />,
+            tabBarIcon: ({color, size}) => <MaterialCommunityIcons name="bookshelf" size={24} color={theme === 'light' ? COLORS['black-500'] : COLORS['white-700']} />,
         }}/>
         <Tabs.Screen
           name="insights"
@@ -39,7 +47,7 @@ const Layout = () => {
             headerTitle: "Insights",
             headerShadowVisible: false,
             headerStyle: { backgroundColor: "#f3f3f7"},
-            tabBarIcon: ({color, size}) => <FontAwesome name="bar-chart" size={24} color="black" />,
+            tabBarIcon: ({color, size}) => <FontAwesome name="bar-chart" size={24} color={theme === 'light' ? COLORS['black-500'] : COLORS['white-700']} />,
           }}/>
         <Tabs.Screen
           name="debts"
@@ -48,7 +56,7 @@ const Layout = () => {
             headerTitle: "Debts",
             headerShadowVisible: false,
             headerStyle: { backgroundColor: "#f3f3f7"},
-            tabBarIcon: ({color, size}) => <FontAwesome name="history" size={24} color="black" />,
+            tabBarIcon: ({color, size}) => <FontAwesome name="history" size={24} color={theme === 'light' ? COLORS['black-500'] : COLORS['white-700']} />,
           }}/>
           <Tabs.Screen
             name="(settings)"
@@ -58,7 +66,7 @@ const Layout = () => {
               headerShadowVisible: false,
               headerStyle: { backgroundColor: "#f3f3f7"},
               headerShown: false,
-              tabBarIcon: ({color, size}) => <Ionicons name="settings" size={24} color="black" />,
+              tabBarIcon: ({color, size}) => <Ionicons name="settings" size={24} color={theme === 'light' ? COLORS['black-500'] : COLORS['white-700']} />,
             }}/>
       </Tabs>
     </Provider>

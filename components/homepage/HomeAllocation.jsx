@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, Alert, Pressable } from 'react-native'
+
 import { getIcon } from '../../constants/icons';
 import { Icon } from '@rneui/themed';
+import { AntDesign } from '@expo/vector-icons';
+
 import { schedulePushNotification } from '../../utils/notification';
 import { deleteCategory } from '../../api/budget';
 import { useStorageState } from '../../hooks/useStorageState';
+
 import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/auth';
 import { useBudget } from '../../context/budget';
-import { AntDesign } from '@expo/vector-icons';
+import { useTheme } from '../../context/theme';
 
 
 const HomeAllocation = ({category, expenses, type, getAllocation}) => {
+  const { theme } = useTheme();
   const [ indiStyle, setIndiStyle ] = useState([styles.indicatorStyle]);
   const [ expense, setExpense ] = useState(0);
   const [ icon, setIcon ] = useState(null);
@@ -95,7 +100,7 @@ const HomeAllocation = ({category, expenses, type, getAllocation}) => {
   }, [expense])
 
   return (
-    <View style={styles.main}>
+    <View style={[styles.main, theme === 'dark' && styles.darkMode]}>
       <View style={styles.topWrapper}>
         {icon ?
         <View style={styles.iconStyle}>{icon}</View>
@@ -108,8 +113,8 @@ const HomeAllocation = ({category, expenses, type, getAllocation}) => {
               />
         }
         <View style={{flex: 1}}>
-          <Text style={[styles.topText]}>{category.name}</Text>
-          <Text style={[styles.bottomText]}>Php. {expense} / Php. {category.allocation}</Text>
+          <Text style={[styles.topText, theme === 'dark' && styles.whiteText]}>{category.name}</Text>
+          <Text style={[styles.bottomText, theme === 'dark' && styles.whiteText]}>Php. {expense} / Php. {category.allocation}</Text>
         </View>
         <Pressable onPress={() => deleteCategoryHandler()}>
           <AntDesign name="delete" size={25} color={COLORS['white-700']} style={[styles.iconStyle, styles.redIcon]} />
@@ -125,10 +130,12 @@ const styles = StyleSheet.create({
     width: "100%",
     alignSelf: 'center',
     backgroundColor: COLORS['white-500'],
-    // alignItems: 'center',
     padding: 8,
     borderRadius: 8,
     margin: 4
+  },
+  darkMode: {
+    backgroundColor: COLORS['dblue-600'],
   },
   redIcon: {
     backgroundColor: COLORS['red-500'],

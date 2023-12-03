@@ -6,10 +6,12 @@ import { AntDesign } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 
 import { useBudget } from '../../context/budget';
+import { useTheme } from '../../context/theme';
 import Button from '../common/Button';
 
 const BudgetList = ({isModalVisible, setModalVisible}) => {
-
+  const { theme } = useTheme();
+ 
   const toggleModal = () => {
     setModalVisible(false);
   };
@@ -26,9 +28,9 @@ const BudgetList = ({isModalVisible, setModalVisible}) => {
       isVisible={isModalVisible}
       animationIn="fadeIn"
       animationOut="fadeOut">
-        <View style={styles.modalWrapper}>
+        <View style={[styles.modalWrapper, theme === 'dark' && styles.darkMode]}>
             <View style={[styles.modalHeader]}>
-              <Text style={[styles.textBold, styles.textHeader]}>Budget List</Text>
+              <Text style={[styles.textBold, styles.textHeader, theme === 'dark' && styles.textWhite]}>Budget List</Text>
               <AntDesign name="close" size={24} color="#3A85AF" onPress={toggleModal}/>
             </View>
 
@@ -36,7 +38,7 @@ const BudgetList = ({isModalVisible, setModalVisible}) => {
                   flexDirection: 'row',
                   flexWrap: 'wrap',
                   gap: 16,
-                  borderBottomColor: 'black',
+                  borderBottomColor: theme === 'light' ? COLORS['black-500'] : COLORS['white-700'],
                   borderBottomWidth: 4,
                   paddingVertical: 16,
                 }}>  
@@ -64,6 +66,9 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
     overflow: 'scroll'
+  },
+  darkMode: {
+    backgroundColor: COLORS['dblue-550'],
   },
   modalHeader: {
     flexDirection: 'row',

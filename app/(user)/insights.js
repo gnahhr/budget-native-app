@@ -21,7 +21,9 @@ import {
   getDateTodayISO,
   getWeeklyStartEnd } from '../../utils/dateFunctions';
 import LogoS from '../../assets/logos/logo-s.png';
+import LogoSW from '../../assets/logos/logo-sw.png';
 import { COLORS } from '../../constants/theme';
+import { useTheme } from '../../context/theme';
 
 const Insights = () => {
   const [ parsedUser, setParsedUser ] = useState();
@@ -29,6 +31,7 @@ const Insights = () => {
   const [ isCompareOpen, setIsCompareOpen ] = useState(false);
   const [ data, setData ] = useState();
   const { user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const { activeBudget } = useBudget();
 
   // Drop Down States
@@ -106,19 +109,21 @@ const Insights = () => {
   }
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={[theme === 'dark' && {backgroundColor: COLORS['dblue-500']}, {flex: 1}]}>
         <Tabs.Screen 
           options={{
-            headerStyle: { backgroundColor: "white" },
+            headerStyle: { backgroundColor: theme === 'light' ? COLORS['white-700'] : COLORS['dblue-500'] },
             headerShadowVisible: false,
             headerLeft: () => (
-              <CustomIcon imageUrl={LogoS}/>
+              <Pressable onPress={() => toggleTheme()}>
+                <CustomIcon imageUrl={theme === 'light' ? LogoS : LogoSW}/>
+              </Pressable>
             ),
             headerTitle: "",
           }}
         />
       <View style={{width: '85%', alignSelf: 'center'}}>
-        <Text style={{fontSize: 32, fontWeight: '700'}}>Insights</Text>
+        <Text style={[{fontSize: 32, fontWeight: '700', color: theme === 'light' ? COLORS['black-500'] : COLORS['white-700']}]}>Insights</Text>
         <View style={{flexDirection: 'row', alignItems: 'center', marginVertical: 8}}>
           <DropDownPicker
                   open={open}
@@ -135,7 +140,7 @@ const Insights = () => {
           <BarChart data={data} type={activeType}/>
         </>
         :
-        <Text>No expenses yet.</Text>}
+        <Text style={[theme === 'dark' && {color: COLORS['white-700']}]}>No expenses yet.</Text>}
       </View>
 
       {!!data &&

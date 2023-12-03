@@ -5,12 +5,14 @@ import CustomIcon from '../../../components/common/CustomIcon';
 import { COLORS } from '../../../constants/theme';
 import LogoS from '../../../assets/logos/logo-sw.png';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { useTheme } from '../../../context/theme';
 
 const Notifications = () => {
   const [ toggleTerms, setToggleTerms ] = useState(false);
   const [ togglePrivacy, setTogglePrivacy ] = useState(false);
   const [ toggleContacts, setToggleContacts ] = useState(false);
   const [ toggleAboutUs, setToggleAboutUs ] = useState(false);
+  const { theme, toggleTheme } = useTheme();
   
   const router = useRouter();
 
@@ -21,11 +23,11 @@ const Notifications = () => {
     },
     {
       name: "Bucu, Myla G.",
-      image: null
+      image: require('../../../assets/images/members/bucu.jpg'),
     },
     {
       name: "Cañete, Shiela Marie",
-      image: null
+      image: require('../../../assets/images/members/canete.jpg'),
     },
     {
       name: "Ledesma, Catherine Mae S.",
@@ -33,15 +35,15 @@ const Notifications = () => {
     },
     {
       name: "Mangilit, Justin Ivan M.",
-      image: null
+      image: require('../../../assets/images/members/mangilit.jpg'),
     },
     {
       name: "Quirolgico, Christian Jake L.",
-      image: null
+      image: require('../../../assets/images/members/quirolgico.jpg'),
     },
     {
       name: "Sangalang, Jayar S.",
-      image: null
+      image: require('../../../assets/images/members/sangalang.jpg'),
       
     },
     {
@@ -57,29 +59,31 @@ const Notifications = () => {
   }
 
   return (
-    <ScrollView style={[{position: 'relative', height: '100%'}]} contentContainerStyle={{alignItems: 'center'}}>
+    <ScrollView style={[{position: 'relative', height: '100%'}, theme === 'dark' && styles.darkMode]} contentContainerStyle={{alignItems: 'center'}}>
       <Stack.Screen 
         options={{
-          headerStyle: { backgroundColor: "#1579b2"},
+          headerStyle: { backgroundColor: theme === 'light' ? COLORS['blue-500'] : COLORS['dblue-450']},
           headerShadowVisible: false,
           headerLeft: () => (
-            <FontAwesome5 name="backspace" size={24} color="#FFF" onPress={() => backHandler()}/>
+            <FontAwesome5 name="backspace" size={24} color={COLORS['white-500']} onPress={() => backHandler()}/>
           ),
           headerRight: () => (
-            <CustomIcon imageUrl={LogoS}/>
+            <Pressable onPress={() => toggleTheme()}>
+              <CustomIcon imageUrl={LogoS}/>
+            </Pressable>
           ),
           headerTitle: "",
         }}
       />
-      <View style={[styles.headerDesign, {justifyContent: 'flex-end', alignItems: 'flex-end'}]}>
+      <View style={[styles.headerDesign, theme === 'dark' && styles.darkHeader, {justifyContent: 'flex-end', alignItems: 'flex-end'}]}>
         <Text style={[styles.largeFont, styles.textBold, styles.textWhite, {alignSelf: 'center', marginBottom: 30}]}>HELP</Text>
       </View>
       
       <View style={{marginTop: 8, width: '90%', gap: 8}}>
         <Pressable onPress={() => setToggleTerms(!toggleTerms)}>
-          <View style={[styles.itemStyle]}>
-            <Text style={[styles.textBold, styles.textLg]}>Terms and Conditions</Text>
-            {toggleTerms && <Text style={styles.innerItem}>{`Terms and Conditions of bSmart Budget Planner App
+          <View style={[styles.itemStyle, theme === 'dark' && styles.whiteBorder]}>
+            <Text style={[styles.textBold, styles.textLg, theme === 'dark' && styles.textWhite]}>Terms and Conditions</Text>
+            {toggleTerms && <Text style={[styles.innerItem, theme === 'dark' && styles.textWhite]}>{`Terms and Conditions of bSmart Budget Planner App
 
 Please read the following Terms and Conditions carefully before using the bSmart Budget Planner App. By accessing or using the app, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these Terms and Conditions, please refrain from using the app.
 
@@ -125,9 +129,9 @@ Please read the following Terms and Conditions carefully before using the bSmart
         </Pressable>        
 
         <Pressable onPress={() => setTogglePrivacy(!togglePrivacy)}>
-          <View style={[styles.itemStyle]}>
-            <Text style={[styles.textBold, styles.textLg]}>Privacy and Policy</Text>
-            {togglePrivacy && <Text style={styles.innerItem}>{`Effective Date: 5/28/2023
+          <View style={[styles.itemStyle, theme === 'dark' && styles.whiteBorder]}>
+            <Text style={[styles.textBold, styles.textLg, theme === 'dark' && styles.textWhite]}>Privacy and Policy</Text>
+            {togglePrivacy && <Text style={[styles.innerItem, theme === 'dark' && styles.textWhite]}>{`Effective Date: 5/28/2023
 
 At bSmart, we value and respect your privacy. This Privacy Policy outlines how we collect, use, disclose, and protect your personal information when you use our bSmart Budget Planner App. By using the app, you consent to the terms of this Privacy Policy.
 
@@ -152,24 +156,24 @@ Send you important notifications, updates, and promotional materials related to 
         </Pressable>
 
         <Pressable onPress={() => setToggleContacts(!toggleContacts)}>
-          <View style={[styles.itemStyle]}>
-            <Text style={[styles.textBold, styles.textLg]}>Contact Us</Text>
+          <View style={[styles.itemStyle, theme === 'dark' && styles.whiteBorder]}>
+            <Text style={[styles.textBold, styles.textLg, theme === 'dark' && styles.textWhite]}>Contact Us</Text>
             {toggleContacts &&
             <View>
-              <Text style={[styles.innerItem, styles.textBold, styles.textLg, {alignSelf: 'center', marginVertical: 8}]}>bsmartapp23@gmail.com</Text>
+              <Text style={[styles.innerItem, styles.textBold, styles.textLg, theme === 'dark' && styles.textWhite, {alignSelf: 'center', marginVertical: 8}]}>bsmartapp23@gmail.com</Text>
             </View>}  
           </View>
         </Pressable>
 
         <Pressable onPress={() => setToggleAboutUs(!toggleAboutUs)}>
-          <View style={[styles.itemStyle]}>
-            <Text style={[styles.textBold, styles.textLg]}>About Us</Text>
+          <View style={[styles.itemStyle, theme === 'dark' && styles.whiteBorder]}>
+            <Text style={[styles.textBold, styles.textLg, theme === 'dark' && styles.textWhite]}>About Us</Text>
             {toggleAboutUs &&
             <View style={[{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-evenly', gap: 12}]}>
               {members.map((member, idx) =>
               <View key={idx} style={{width: '45%', alignItems: 'center'}}>
                 <Image source={member.image ? member.image : require('../../../assets/images/members/default.png')} style={[{height: 100, width: 100, borderRadius: 8, borderWidth: 2, borderColor: COLORS['white-500']}]}/>
-                <Text style={[styles.textBold]}>{member.name}</Text>
+                <Text style={[styles.textBold, theme === 'dark' && styles.textWhite]}>{member.name}</Text>
               </View>)}
             </View>}  
           </View>
@@ -182,20 +186,29 @@ Send you important notifications, updates, and promotional materials related to 
 
 const styles = StyleSheet.create({
   headerDesign: {
-    backgroundColor: '#1579b2',
+    backgroundColor: COLORS['blue-500'],
     width: '100%',
     alignSelf: 'center',
     height: 80,
     borderBottomLeftRadius: 1000,
     borderBottomRightRadius: 1000,
   },
+  darkMode: {
+    backgroundColor: COLORS['dblue-550']
+  },
+  darkHeader: {
+    backgroundColor: COLORS['dblue-450']
+  },
   itemStyle: {
-    borderColor: '#000',
+    borderColor: COLORS['black-500'],
     borderWidth: 2,
     width: '100%',
     paddingVertical: 16,
     alignItems: 'center',
     borderRadius: 16
+  },
+  whiteBorder: {
+    borderColor: COLORS['white-700']
   },
   innerItem: {
     marginTop: 4,
@@ -211,7 +224,7 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   textWhite: {
-    color: '#ffffff'
+    color: COLORS['white-700']
   },
   largeFont: {
     fontSize: 25

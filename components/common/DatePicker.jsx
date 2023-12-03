@@ -6,13 +6,13 @@ import { AntDesign } from '@expo/vector-icons';
 import Button from './Button';
 import { getDateTodayISO } from '../../utils/dateFunctions';
 import { COLORS } from '../../constants/theme';
+import { useTheme } from '../../context/theme';
 
 const DatePicker = ({isModalVisible, setModalVisible}) => {
   const [value, setValue] = useState(getDateTodayISO());
+  const { theme } = useTheme();
 
   const toggleModal = () => {
-    console.log("yey");
-    console.log(isModalVisible);
     setModalVisible();
   };
 
@@ -34,6 +34,16 @@ const DatePicker = ({isModalVisible, setModalVisible}) => {
           value={value}
           mode='date'
           onValueChange={(date) => setValue(date)}
+          calendarTextStyle={{
+            color: theme === 'light' ? COLORS['black-500'] : COLORS['white-700']
+          }}
+          weekDaysTextStyle={{
+            color: theme === 'light' ? COLORS['black-500'] : COLORS['white-700']
+          }}
+          headerTextStyle={{
+            color: theme === 'light' ? COLORS['black-500'] : COLORS['white-700']
+          }}
+          headerButtonColor={theme === 'light' ? COLORS['black-500'] : COLORS['white-700']}
         />
         <Button label={"Pick date"} action={toggleModal}/>
       </View>

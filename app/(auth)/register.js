@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react'
 import Logo from '../../assets/logos/logo.png';
+import LogoW from '../../assets/logos/logo-w.png';
 import { Stack, useRouter } from 'expo-router';
 import { register } from '../../api/login';
 import { useAuth } from '../../context/auth';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTheme } from '../../context/theme';
+import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { Text, Image, View, TextInput, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
 
 import Button from '../../components/common/Button';
 import styles from './authStyles';
+import { COLORS } from '../../constants/theme';
 
 const Register = () => {
   const router = useRouter();
   const { signIn } = useAuth();
+  const { theme } = useTheme();
   const [ username, setUsername ] = useState("");
   const [ isLoading, setIsLoading ] = useState(false);
   const [ email, setEmail ] = useState("");
@@ -19,6 +23,10 @@ const Register = () => {
   const [ conPassword, setConPassword ] = useState("");
   const [ alert, setAlert ] = useState("");
   const [ showPassword, setShowPassword ] = useState(false);
+
+  const handleBack = () => {
+    router.back();
+  }
 
   async function handleRegister () {
     if (!username || !password || !email) {
@@ -53,20 +61,26 @@ const Register = () => {
 
   return (
     <KeyboardAvoidingView
-      style={[styles.main]}
+      style={[styles.main, theme === 'dark' && styles.darkMode]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <Stack.Screen
         options={{
           headerShadowVisible: false,
           headerTitle: "",
+          headerStyle: theme === 'dark' && styles.darkWrap,
+          headerLeft: () => (
+            <Pressable onPress={() => handleBack()}>
+              <FontAwesome5 name="backspace" size={24} color={theme === 'light' ? COLORS['black-500'] : COLORS['white-700']} />
+            </Pressable>
+          ),
         }}
       />
 
-      <View style={styles.mainWrapper}>
+      <View style={[styles.mainWrapper, theme === 'dark' && styles.darkWrap]}>
         <View>
-          <Image source={Logo} style={styles.logo} />
-          <Text style={[styles.header, styles.textCenter]}>Register</Text>
+          <Image source={theme === 'light' ? Logo : LogoW} style={styles.logo} />
+          <Text style={[styles.header, styles.textCenter, theme === 'dark' && styles.textWhite]}>Register</Text>
         </View>
       </View>
 

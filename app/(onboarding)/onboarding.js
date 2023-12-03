@@ -4,6 +4,7 @@ import { SafeAreaView, StyleSheet, Pressable, Alert } from 'react-native';
 import { allocateBudget } from '../../api/budget';
 import { useAuth } from '../../context/auth';
 import { useStorageState } from '../../hooks/useStorageState';
+import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 
 import Intro from '../../components/onboarding/Intro';
 import Step1 from '../../components/onboarding/Step1';
@@ -14,11 +15,16 @@ import Instructions from '../../components/common/Instructions';
 
 import CustomIcon from '../../components/common/CustomIcon';
 import LogoS from '../../assets/logos/logo-s.png';
+import LogoSW from '../../assets/logos/logo-sw.png';
 import CloseIco from '../../assets/icons/X.png';
+
+import { COLORS } from '../../constants/theme';
+import { useTheme } from '../../context/theme';
 
 const Onboarding = () => {
   const { user, signIn, signOut } = useAuth();
   const router = useRouter();
+  const { theme, toggleTheme } = useTheme();
 
   const parsedUser = JSON.parse(user);
 
@@ -110,14 +116,15 @@ const Onboarding = () => {
   }, [isLoadingOnboarding, dontShowAgainOnboarding])
 
   return (
-    <SafeAreaView style={styles.main}>
-
+    <SafeAreaView style={[styles.main, theme === 'dark' && styles.darkMode]}>
       <Stack.Screen 
         options={{
-          headerStyle: { backgroundColor: "white"},
+          headerStyle: { backgroundColor: theme === 'light' ? COLORS['white-700'] : COLORS['dblue-500']},
           headerShadowVisible: false,
           headerLeft: () => (
-            <CustomIcon imageUrl={LogoS}/>
+            <Pressable onPress={() => toggleTheme()}>
+              <CustomIcon imageUrl={theme === 'light' ? LogoS : LogoSW}/>
+            </Pressable>
           ),
           headerRight: () => (
             <Pressable onPress={() => handleClose()}>
@@ -142,9 +149,12 @@ const Onboarding = () => {
 
 const styles = StyleSheet.create({
   main: {
-    backgroundColor: '#ffffff',
+    backgroundColor: COLORS['white-700'],
     alignItems: 'center',
     position: 'relative',
+  },
+  darkMode: {
+    backgroundColor: COLORS['dblue-500']
   },
 })
 

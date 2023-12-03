@@ -12,9 +12,12 @@ import Checkbox from '../../components/common/Checkbox';
 
 // Images
 import LogoS from '../../assets/logos/logo-s.png';
+import LogoSW from '../../assets/logos/logo-sw.png';
 
 // Context
 import { useAuth } from '../../context/auth';
+import { useTheme } from '../../context/theme';
+import { COLORS } from '../../constants/theme';
 
 const Debts = () => {
   const [ activeTab, setActiveTab ] = useState("Debt");
@@ -24,6 +27,7 @@ const Debts = () => {
   const [ totalBalance, setTotalBalance ] = useState(0);
   const [ nameList, setNameList ] = useState([]);
   const { user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const tabs = ["Debt", "Lend"];
 
   // Modals
@@ -89,13 +93,15 @@ const Debts = () => {
   }, [activeTab, borrowModalVisible, payDebtModalVisible])
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={[{ backgroundColor: theme === 'light' ? COLORS['white-700'] : COLORS['dblue-500'] }, {flex: 1}]}>
       <Tabs.Screen 
         options={{
-          headerStyle: { backgroundColor: "white" },
+          headerStyle: { backgroundColor: theme === 'light' ? COLORS['white-700'] : COLORS['dblue-500'] },
           headerShadowVisible: false,
           headerLeft: () => (
-            <CustomIcon imageUrl={LogoS} />
+            <Pressable onPress={() => toggleTheme()}>
+              <CustomIcon imageUrl={theme === 'light' ? LogoS : LogoSW}/>
+            </Pressable>
           ),
           headerTitle: "",
         }}
@@ -119,23 +125,23 @@ const Debts = () => {
           )}
       </View>
       
-      <View style={[styles.container, styles.border, {backgroundColor: '#ffffff'}]}>
-        <Text style={[styles.textCenter, styles.boldText, styles.normalText]}>BALANCE</Text>
-        <Text style={[styles.textCenter, styles.boldText, styles.bigFont]}>Php. {totalBalance}</Text>
+      <View style={[styles.container, styles.border, { backgroundColor: theme === 'light' ? COLORS['white-700'] : COLORS['dblue-600'] }]}>
+        <Text style={[styles.textCenter, styles.boldText, styles.normalText, theme === 'dark' && styles.whiteText]}>BALANCE</Text>
+        <Text style={[styles.textCenter, styles.boldText, styles.bigFont, theme === 'dark' && styles.whiteText]}>Php. {totalBalance}</Text>
       </View>
-      <View style={[styles.container, styles.border, styles.flexGrow, {backgroundColor: '#ffffff', maxHeight: '65%'}]}>
+      <View style={[styles.container, styles.border, styles.flexGrow, {backgroundColor: theme === 'light' ? COLORS['white-700'] : 'rgba(255,255,255,0.1)', maxHeight: '65%'}]}>
         <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.boldText, styles.normalText, {marginTop: 8, marginLeft: 8}]}>List</Text>
+          <Text style={[styles.boldText, styles.normalText, {marginTop: 8, marginLeft: 8}, theme === 'dark' && styles.whiteText]}>List</Text>
           <View style={{flexDirection: 'row', alignSelf: 'center', marginLeft: 'auto', gap: 8, marginTop: 8, marginRight: 8}}>
             <Checkbox checked={isFiltered} handleOnPress={() => toggleFiltered()} />
-            <Text>Fully Paid</Text>
+            <Text style={[theme === 'dark' && styles.whiteText]}>Fully Paid</Text>
           </View>
         </View>
         <ScrollView style={[styles.container]}>
           {filteredList.length > 0 ?
             filteredList.map(item => <ListItem key={item.name} name={item.name} balance={item.balance} history={item.payments} dueDate={item.dueDate} type={activeTab}/>)
             :
-            <Text style={[styles.boldText, styles.textCenter]}>Add person to track your debts/lends</Text>
+            <Text style={[styles.boldText, styles.textCenter, theme === 'dark' && styles.whiteText]}>Add person to track your debts/lends</Text>
           }
         </ScrollView>
 
@@ -178,7 +184,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   whiteText: {
-    color: '#ffffff',
+    color: COLORS['white-700'],
   },
   normalText: {
     fontSize: 19,
@@ -211,7 +217,7 @@ const styles = StyleSheet.create({
   },
   border: {
     borderRadius: 6,
-    borderColor: 'black',
+    borderColor: COLORS['black-500'],
     borderWidth: 1,
   },
   scrollHeight: {
@@ -226,7 +232,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   budgetWrapper: {
-    backgroundColor: '#d6ebe8',
+    backgroundColor: COLORS['bg-lblue-400'],
     borderRadius: 16,
     alignItems: 'center',
     padding: 8,
@@ -244,7 +250,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     textAlign: 'center',
-    backgroundColor: '#11588b',
+    backgroundColor: COLORS['blue-800'],
     borderRadius: 4,
   }
 });

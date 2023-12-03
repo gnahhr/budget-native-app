@@ -6,6 +6,12 @@ export default styles = StyleSheet.create({
     backgroundColor: '#0f5074',
     flex: 1,
   },
+  darkMode: {
+    backgroundColor: COLORS['dblue-450']
+  }, 
+  darkWrap: {
+    backgroundColor: COLORS['dblue-475'],
+  }, 
   mainWrapper: {
     backgroundColor: "white",
     justifyContent: 'center',
@@ -29,18 +35,18 @@ export default styles = StyleSheet.create({
     fontSize: 32,
   },
   textWhite: {
-    color: '#ffffff'
+    color: COLORS['white-700']
   },
   textRed: {
-    color: '#c01f28',
+    color: COLORS['red-500'],
     backgroundColor: 'rgba(255,255,255,0.5)',
     borderRadius: 8,
   },
   textHighlight: {
-    color: '#59BDF4',
+    color: COLORS['blue-300']
   },
   textInputStyle: {
-    backgroundColor: '#ffffff',
+    backgroundColor: COLORS['white-700'],
     borderRadius: 4,
     paddingVertical: 4,
     paddingHorizontal: 8,
@@ -50,6 +56,9 @@ export default styles = StyleSheet.create({
   },
   textBold: {
     fontWeight: '700',
+  },
+  textWhite: {
+    color: COLORS['white-700']
   },
   container: {
     width: '90%',

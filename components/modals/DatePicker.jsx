@@ -6,9 +6,11 @@ import { AntDesign } from '@expo/vector-icons';
 import Button from '../common/Button';
 import { getDateTodayISO, getWeeklyStartEnd } from '../../utils/dateFunctions';
 import { COLORS } from '../../constants/theme';
+import { useTheme } from '../../context/theme';
 
 const DatePicker = ({isModalVisible, setModalVisible, setDates, type="Daily", setDay}) => {
   const [value, setValue] = useState(getDateTodayISO());
+  const { theme } = useTheme();
 
   const toggleModal = () => {
     setModalVisible(false);
@@ -40,15 +42,25 @@ const DatePicker = ({isModalVisible, setModalVisible, setDates, type="Daily", se
     isVisible={isModalVisible}
     animationIn="fadeIn"
     animationOut="fadeOut">
-    <View style={styles.modalWrapper}>
+    <View style={[styles.modalWrapper, theme === 'dark' && styles.darkMode]}>
       <View style={[styles.modalHeader]}>
-        <Text style={[styles.textBold, styles.textHeader]}>Pick Date</Text>
+        <Text style={[styles.textBold, styles.textHeader, theme === 'dark' && styles.textWhite]}>Pick Date</Text>
         <AntDesign name="close" size={24} color="#3A85AF" onPress={toggleModal}/>
       </View>
       <DateTimePicker
         value={value}
         mode='date'
         onValueChange={(date) => setValue(date)}
+        calendarTextStyle={{
+          color: theme === 'light' ? COLORS['black-500'] : COLORS['white-700']
+        }}
+        weekDaysTextStyle={{
+          color: theme === 'light' ? COLORS['black-500'] : COLORS['white-700']
+        }}
+        headerTextStyle={{
+          color: theme === 'light' ? COLORS['black-500'] : COLORS['white-700']
+        }}
+        headerButtonColor={theme === 'light' ? COLORS['black-500'] : COLORS['white-700']}
       />
       <Button label={"Pick date"} action={saveDateHandler}/>
     </View>
@@ -66,6 +78,9 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
     overflow: 'scroll'
+  },
+  darkMode: {
+    backgroundColor: COLORS['dblue-550'],
   },
   modalHeader: {
     flexDirection: 'row',

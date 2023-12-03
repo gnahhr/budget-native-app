@@ -1,12 +1,15 @@
 import React from 'react'
 import { Text, View, Image, StyleSheet, Pressable } from 'react-native'
+import { useTheme } from '../../context/theme';
+import { COLORS } from '../../constants/theme';
 
 const BookItem = ({exert, bookImage, bookName, onPress}) => {
+  const { theme } = useTheme();
 
   return (
     <Pressable style={styles.bookWrapper} onPress={() => onPress(bookName)}>
       <View style={{width: '80%'}}>
-        <Text style={styles.exertStyle}>"{exert}"</Text>
+        <Text style={[styles.exertStyle, theme === 'dark' && {color: COLORS['white-700']}]}>"{exert}"</Text>
       </View>
       <Image source={bookImage} style={styles.imageStyle}/>
     </Pressable>

@@ -3,15 +3,19 @@ import { Stack, useRouter } from "expo-router";
 import { View, Text, StyleSheet, TextInput, Pressable, Image } from 'react-native'
 import CustomIcon from '../../../components/common/CustomIcon';
 import LogoS from '../../../assets/logos/logo-sw.png';
-import { useAuth } from '../../../context/auth';
 import { MaterialCommunityIcons, FontAwesome5, AntDesign } from '@expo/vector-icons';
 import { updateUser } from '../../../api/login';
 import Button from '../../../components/common/Button';
+
+import { useAuth } from '../../../context/auth';
+import { useTheme } from '../../../context/theme';
+import { COLORS } from '../../../constants/theme';
 
 import * as ImagePicker from 'expo-image-picker';
 
 const EditProfile = () => {
   const { user, signIn } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const router = useRouter();
 
   const [ userName, setUserName ] = useState();
@@ -121,21 +125,23 @@ const EditProfile = () => {
   }, [user])
 
   return (
-    <View style={[{position: 'relative', alignItems: 'center', height: '100%'}]}>
+    <View style={[{position: 'relative', alignItems: 'center', height: '100%'}, theme === 'dark' && styles.darkMode]}>
       <Stack.Screen 
         options={{
-          headerStyle: { backgroundColor: "#1579b2"},
+          headerStyle: { backgroundColor: theme === 'light' ? COLORS['blue-500'] : COLORS['dblue-450']},
           headerShadowVisible: false,
           headerLeft: () => (
             <FontAwesome5 name="backspace" size={24} color="#FFF" onPress={() => backHandler()}/>
           ),
           headerRight: () => (
-            <CustomIcon imageUrl={LogoS}/>
+            <Pressable onPress={() => toggleTheme()}>
+              <CustomIcon imageUrl={LogoS}/>
+            </Pressable>
           ),
           headerTitle: "",
         }}
       />
-      <View style={[styles.headerDesign, {justifyContent: 'flex-end', alignItems: 'flex-end'}]}>
+      <View style={[styles.headerDesign, theme === 'dark' && styles.darkHeader, {justifyContent: 'flex-end', alignItems: 'flex-end'}]}>
         <Text style={[styles.largeFont, styles.textBold, styles.textWhite, {alignSelf: 'center', marginBottom: 30}]}>EDIT USER</Text>
       </View>
       {msg && <Text>{msg}</Text>}
@@ -143,22 +149,62 @@ const EditProfile = () => {
       <View style={{gap: 8, width: '80%', marginTop: 20}}>
         <Pressable onPress={() => selectImage(true)}>
           <View style={{position: 'relative', alignSelf: 'flex-start'}}>
-            <Image source={{uri: displayImage}} width={80} height={80} style={{borderRadius: 50, borderWidth: 2, borderColor: 'black'}}/>
+            <Image source={{uri: displayImage}} width={80} height={80} style={{borderRadius: 50, borderWidth: 2, borderColor: theme === 'light' ? COLORS['black-500'] : COLORS['white-700']}}/>
             <View style={{position: 'absolute', backgroundColor: 'rgba(0,0,0,.5)', bottom: 0, right: 0, width: 30, height: 30, borderRadius: 50, alignItems: 'center', justifyContent: 'center'}} >
             <AntDesign name="camerao" size={16} color="white" />
             </View>
           </View>
         </Pressable>
-        <Text>Username</Text>
-        <TextInput style={[styles.textInputStyle]} placeholder='Username' defaultValue={userName} value={userName} onChangeText={setUserName}/>
-        <Text>Email</Text>
-        <TextInput style={[styles.textInputStyle]} placeholder='Email' value={email} onChangeText={setEmail} editable={false}/>
-        <Text>Old Password</Text>
-        <TextInput style={[styles.textInputStyle]} placeholder='Password' value={password} onChangeText={setPassword} secureTextEntry={!showPassword}/>
-        <Text>New Password</Text>
-        <TextInput style={[styles.textInputStyle]} placeholder='New Password' value={newPassword} onChangeText={setNewPassword} secureTextEntry={!showPassword}/>
-        <Text>Confirm New Password</Text>
-        <TextInput style={[styles.textInputStyle]} placeholder='Confirm New Password' value={conNewPassword} onChangeText={setConNewPassword} secureTextEntry={!showPassword}/>
+        <Text style={[theme === 'dark' && styles.textWhite]}>Username</Text>
+        <TextInput
+          style={[styles.textInputStyle]}
+          placeholder='Username'
+          defaultValue={userName}
+          value={userName}
+          onChangeText={setUserName}
+          backgroundColor={theme === 'dark' && COLORS['grey-500']}
+          color={theme === 'dark' && COLORS['white-700']}
+          placeholderTextColor={theme === 'dark' && COLORS['grey-300']}/>
+        <Text style={[theme === 'dark' && styles.textWhite]}>Email</Text>
+        <TextInput 
+          style={[styles.textInputStyle]} 
+          placeholder='Email' 
+          value={email} 
+          onChangeText={setEmail} 
+          editable={false}
+          backgroundColor={theme === 'dark' && COLORS['grey-500']}
+          color={theme === 'dark' && COLORS['white-700']}
+          placeholderTextColor={theme === 'dark' && COLORS['grey-300']}/>
+        <Text style={[theme === 'dark' && styles.textWhite]}>Old Password</Text>
+        <TextInput 
+          style={[styles.textInputStyle]} 
+          placeholder='Password' 
+          value={password} 
+          onChangeText={setPassword} 
+          secureTextEntry={!showPassword}
+          backgroundColor={theme === 'dark' && COLORS['grey-500']}
+          color={theme === 'dark' && COLORS['white-700']}
+          placeholderTextColor={theme === 'dark' && COLORS['grey-300']}/>
+        <Text style={[theme === 'dark' && styles.textWhite]}>New Password</Text>
+        <TextInput 
+          style={[styles.textInputStyle]} 
+          placeholder='New Password' 
+          value={newPassword} 
+          onChangeText={setNewPassword} 
+          secureTextEntry={!showPassword}
+          backgroundColor={theme === 'dark' && COLORS['grey-500']}
+          color={theme === 'dark' && COLORS['white-700']}
+          placeholderTextColor={theme === 'dark' && COLORS['grey-300']}/>
+        <Text style={[theme === 'dark' && styles.textWhite]}>Confirm New Password</Text>
+        <TextInput 
+          style={[styles.textInputStyle]} 
+          placeholder='Confirm New Password' 
+          value={conNewPassword} 
+          onChangeText={setConNewPassword} 
+          secureTextEntry={!showPassword}
+          backgroundColor={theme === 'dark' && COLORS['grey-500']}
+          color={theme === 'dark' && COLORS['white-700']}
+          placeholderTextColor={theme === 'dark' && COLORS['grey-300']}/>
         
         {/* <Button label="Photo Library" action={() => selectImage(true)} /> */}
 
@@ -166,11 +212,11 @@ const EditProfile = () => {
           <MaterialCommunityIcons 
                   name={!showPassword ? 'eye-off' : 'eye'} 
                   size={24} 
-                  color="#000"
+                  color={theme === 'light' ? COLORS['black-500'] : COLORS['white-700']}
                   style={{marginRight: 10}} 
                   onPress={() => setShowPassword(!showPassword)} 
           />
-          <Text>Show Password</Text>
+          <Text style={[theme === 'dark' && styles.textWhite]}>Show Password</Text>
         </View>
       </View>
 
@@ -183,13 +229,19 @@ const EditProfile = () => {
 
 const styles = StyleSheet.create({
   headerDesign: {
-    backgroundColor: '#1579b2',
+    backgroundColor: COLORS['blue-500'],
     width: '100%',
     alignSelf: 'center',
     height: 80,
     // top: '-80%',
     borderBottomLeftRadius: 1000,
     borderBottomRightRadius: 1000,
+  },
+  darkMode: {
+    backgroundColor: COLORS['dblue-550']
+  },
+  darkHeader: {
+    backgroundColor: COLORS['dblue-450']
   },
   flexRow: {
     flexDirection: 'row',
@@ -201,7 +253,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
     borderWidth: 1,
     borderRadius: 100,
-    borderColor: '#ffffff'
+    borderColor: COLORS['white-700']
   },
   textBold: {
     fontWeight: '700',
@@ -210,7 +262,7 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   textWhite: {
-    color: '#ffffff'
+    color: COLORS['white-700']
   },
   largeFont: {
     fontSize: 25
@@ -222,7 +274,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   textInputStyle: {
-    backgroundColor: '#ffffff',
+    backgroundColor: COLORS['white-700'],
     borderRadius: 4,
     paddingVertical: 4,
     paddingHorizontal: 8,

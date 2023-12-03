@@ -9,9 +9,13 @@ import * as Application from 'expo-application';
 import * as Network from 'expo-network';
 import AboutItem from '../../../components/common/AboutItem';
 
+import { COLORS } from '../../../constants/theme';
+import { useTheme } from '../../../context/theme';
+
 const About = () => {
   const router = useRouter();
   const [ connectionType, setConnectionType ] = useState("UNKNOWN");
+  const { theme, toggleTheme } = useTheme();
 
   const backHandler = () => {
     router.back();
@@ -27,21 +31,23 @@ const About = () => {
   }, [])
 
   return (
-    <ScrollView style={[{position: 'relative', height: '100%'}]} contentContainerStyle={{alignItems: 'center'}}>
+    <ScrollView style={[{position: 'relative', height: '100%'}, theme === 'dark' && styles.darkMode]} contentContainerStyle={{alignItems: 'center'}}>
       <Stack.Screen 
         options={{
-          headerStyle: { backgroundColor: "#1579b2"},
+          headerStyle: { backgroundColor: theme === 'light' ? COLORS['blue-500'] : COLORS['dblue-450']},
           headerShadowVisible: false,
           headerLeft: () => (
-            <FontAwesome5 name="backspace" size={24} color="#FFF" onPress={() => backHandler()}/>
+            <FontAwesome5 name="backspace" size={24} color={COLORS['white-700']} onPress={() => backHandler()}/>
           ),
           headerRight: () => (
-            <CustomIcon imageUrl={LogoS}/>
+            <Pressable onPress={() => toggleTheme()}>
+              <CustomIcon imageUrl={LogoS}/>
+            </Pressable>
           ),
           headerTitle: "",
         }}
       />
-      <View style={[styles.headerDesign, {justifyContent: 'flex-end', alignItems: 'flex-end'}]}>
+      <View style={[styles.headerDesign, theme === 'dark' && styles.darkHeader, {justifyContent: 'flex-end', alignItems: 'flex-end'}]}>
         <Text style={[styles.largeFont, styles.textBold, styles.textWhite, {alignSelf: 'center', marginBottom: 30}]}>ABOUT</Text>
       </View>
       
@@ -57,20 +63,29 @@ const About = () => {
 
 const styles = StyleSheet.create({
   headerDesign: {
-    backgroundColor: '#1579b2',
+    backgroundColor: COLORS['blue-500'],
     width: '100%',
     alignSelf: 'center',
     height: 80,
     borderBottomLeftRadius: 1000,
     borderBottomRightRadius: 1000,
   },
+  darkHeader: {
+    backgroundColor: COLORS['dblue-450']
+  },
+  darkMode: {
+    backgroundColor: COLORS['dblue-550']
+  },
   itemStyle: {
-    borderColor: '#000',
+    borderColor: COLORS['black-500'],
     borderWidth: 2,
     width: '100%',
     paddingVertical: 16,
     alignItems: 'center',
     borderRadius: 16
+  },
+  whiteBorder: {
+    borderColor: COLORS['white-700']
   },
   innerItem: {
     marginTop: 4,
@@ -86,7 +101,7 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   textWhite: {
-    color: '#ffffff'
+    color: COLORS['white-700']
   },
   largeFont: {
     fontSize: 25

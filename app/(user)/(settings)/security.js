@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import { Stack, useRouter } from "expo-router";
-import { View, Text, StyleSheet, Switch } from 'react-native'
+import { View, Text, StyleSheet, Switch, Pressable } from 'react-native'
 import CustomIcon from '../../../components/common/CustomIcon';
 import LogoS from '../../../assets/logos/logo-sw.png';
 import { toggle2FA } from '../../../api/login';
-import { useAuth } from '../../../context/auth';
 import { FontAwesome5 } from '@expo/vector-icons';
-
-import Button from '../../../components/common/Button';
+import { useAuth } from '../../../context/auth';
+import { useTheme } from '../../../context/theme';
+import { COLORS } from '../../../constants/theme';
 
 const Security = () => {
   const [ is2FAEnabled, setIs2FAEnabled ] = useState(false);
   const [ isLoading, setIsLoading ] = useState(false);
   const router = useRouter();
+  const { theme, toggleTheme } = useTheme();
 
   const { user, signIn } = useAuth(); 
 
@@ -43,28 +44,30 @@ const Security = () => {
     router.back();
   }
   return (
-    <View style={[{position: 'relative', alignItems: 'center', height: '100%'}]}>
+    <View style={[{position: 'relative', alignItems: 'center', height: '100%'}, theme === 'dark' && styles.darkMode]}>
       <Stack.Screen 
         options={{
-          headerStyle: { backgroundColor: "#1579b2"},
+          headerStyle: { backgroundColor: theme === 'light' ? COLORS['blue-500'] : COLORS['dblue-450']},
           headerShadowVisible: false,
           headerLeft: () => (
-            <FontAwesome5 name="backspace" size={24} color="#FFF" onPress={() => backHandler()}/>
+            <FontAwesome5 name="backspace" size={24} color={COLORS['white-700']} onPress={() => backHandler()}/>
           ),
           headerRight: () => (
-            <CustomIcon imageUrl={LogoS}/>
+            <Pressable onPress={() => toggleTheme()}>
+              <CustomIcon imageUrl={LogoS}/>
+            </Pressable>
           ),
           headerTitle: "",
         }}
       />
-      <View style={[styles.headerDesign, {justifyContent: 'flex-end', alignItems: 'flex-end'}]}>
+      <View style={[styles.headerDesign, theme === 'dark' && styles.headerDark, {justifyContent: 'flex-end', alignItems: 'flex-end'}]}>
         <Text style={[styles.largeFont, styles.textBold, styles.textWhite, {alignSelf: 'center', marginBottom: 30}]}>SECURITY</Text>
       </View>
       
-      <View style={[styles.settingsWrapper, styles.shadowProp, {marginTop: 20}]}>
+      <View style={[styles.settingsWrapper, styles.shadowProp, {marginTop: 20}, theme === 'dark' && styles.borderWhite]}>
         <View style={[styles.stretch]}>
-          <Text style={[styles.fontLg]}>Two-Factor Authentication</Text>
-          <Text style={[styles.fontMd]}>Authenticate with OTP</Text>
+          <Text style={[styles.fontLg, theme === 'dark' && styles.textWhite]}>Two-Factor Authentication</Text>
+          <Text style={[styles.fontMd, theme === 'dark' && styles.textWhite]}>Authenticate with OTP</Text>
         </View>
         <Switch
           trackColor={{false: '#767577', true: '#81b0ff'}}
@@ -81,13 +84,18 @@ const Security = () => {
 
 const styles = StyleSheet.create({
   headerDesign: {
-    backgroundColor: '#1579b2',
+    backgroundColor: COLORS['blue-500'],
     width: '100%',
     alignSelf: 'center',
     height: 80,
-    // top: '-80%',
     borderBottomLeftRadius: 1000,
     borderBottomRightRadius: 1000,
+  },
+  darkMode: {
+    backgroundColor: COLORS['dblue-550']
+  },
+  headerDark: {
+    backgroundColor: COLORS['dblue-450']
   },
   iconStyle: {
     height: 100,
@@ -96,7 +104,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
     borderWidth: 1,
     borderRadius: 100,
-    borderColor: '#ffffff'
+    borderColor: COLORS['white-700']
   },
   textBold: {
     fontWeight: '700',
@@ -105,7 +113,10 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   textWhite: {
-    color: '#ffffff'
+    color: COLORS['white-700']
+  },
+  borderWhite: {
+    borderColor: COLORS['white-700']
   },
   largeFont: {
     fontSize: 25

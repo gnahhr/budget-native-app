@@ -1,15 +1,21 @@
 import React, { useState } from 'react'
 import Logo from '../../assets/logos/logo.png';
+import LogoW from '../../assets/logos/logo-w.png';
+
 import { login } from '../../api/login';
 import { Stack, useRouter } from 'expo-router';
 import { Text, SafeAreaView, Image, View, TextInput, Pressable } from 'react-native';
 import { useAuth } from '../../context/auth'
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import Button from '../../components/common/Button';
 import styles from './authStyles';
 import { jwtDecode } from 'jwt-decode';
+import { useTheme } from '../../context/theme';
+import { COLORS } from '../../constants/theme';
+
 const Login = () => {
   const router = useRouter();
+  const { theme } = useTheme();
   const [ email, setEmail ] = useState("");
   const [ password, setPassword ] = useState(""); 
   const [ alert, setAlert ] = useState(""); 
@@ -20,6 +26,10 @@ const Login = () => {
 
   const handleRegister = () => {
     router.replace(`/register`)
+  }
+
+  const handleBack = () => {
+    router.back();
   }
 
   const handlePassword = () => {
@@ -59,18 +69,24 @@ const Login = () => {
   }
 
   return (
-    <SafeAreaView style={styles.main}>
+    <SafeAreaView style={[styles.main, theme === 'dark' && styles.darkMode]}>
       <Stack.Screen
         options={{
+          headerStyle: theme === 'dark' && styles.darkWrap,
+          headerLeft: () => (
+            <Pressable onPress={() => handleBack()}>
+              <FontAwesome5 name="backspace" size={24} color={theme === 'light' ? COLORS['black-500'] : COLORS['white-700']} />
+            </Pressable>
+          ),
           headerShadowVisible: false,
           headerTitle: "",
         }}
       />
 
-      <View style={styles.mainWrapper}>
+      <View style={[styles.mainWrapper, theme === 'dark' && styles.darkWrap]}>
         <View>
-          <Image source={Logo} style={styles.logo} />
-          <Text style={[styles.header, styles.textCenter]}>Login</Text>
+          <Image source={theme === 'light' ? Logo : LogoW} style={styles.logo} />
+          <Text style={[styles.header, styles.textCenter, theme === 'dark' && styles.textWhite]}>Login</Text>
         </View>
       </View>
       

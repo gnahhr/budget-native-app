@@ -1,10 +1,14 @@
 import React from 'react'
 import Logo from '../assets/logos/logo.png';
-import { Stack, useRouter } from 'expo-router';
+import LogoW from '../assets/logos/logo-w.png';
+import { useRouter } from 'expo-router';
 import { Text, SafeAreaView, Image, StyleSheet, View, Button } from 'react-native';
+import { useTheme } from '../context/theme';
+import { COLORS } from '../constants/theme';
 
 const Index = () => {
   const router = useRouter();
+  const { theme } = useTheme();
 
   const handleRegister = () => {
     router.push(`/register`)
@@ -15,16 +19,16 @@ const Index = () => {
   }
 
   return (
-    <SafeAreaView style={styles.main}>
-      <View style={styles.mainWrapper}>
-        <View styles={styles.viewContainer}>
-          <Image source={Logo} style={styles.logo} />
-          <Text style={styles.header}>Welcome</Text>
+    <SafeAreaView style={[styles.main, theme === 'dark' && styles.darkMode]}>
+      <View style={[styles.mainWrapper, theme === 'dark' && styles.darkWrap]}>
+        <View>
+          <Image source={theme === 'light' ? Logo : LogoW} style={styles.logo} />
+          <Text style={[styles.header, theme === 'dark' && styles.textWhite]}>Welcome</Text>
         </View>
         <View style={styles.buttonContainer}>
           <Button style={styles.buttonStyle} title="Login" onPress={() => handleLogin()}/>
           <Button style={styles.buttonStyle} title="Register" onPress={() => handleRegister()}/>
-          <Text style={styles.textAccount}>Don't have an account yet? <Text>Register for free!</Text></Text>
+          <Text style={[styles.textAccount, theme === 'dark' && styles.textWhite]}>Don't have an account yet? <Text>Register for free!</Text></Text>
         </View>
       </View>
 
@@ -47,8 +51,15 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 225,
     borderBottomRightRadius: 225,
   },
-  viewContainer: {
-  },
+  darkMode: {
+    backgroundColor: COLORS['dblue-450']
+  }, 
+  darkWrap: {
+    backgroundColor: COLORS['dblue-475'],
+  }, 
+  textWhite: {
+    color: COLORS['white-700'],
+  }, 
   logo: {
     alignSelf: "center",
   },
