@@ -10,13 +10,12 @@ export function useTheme() {
 
 export function Provider(props) {
   const [ [isLoading, cachedTheme], setCachedTheme ] = useStorageState('cachedTheme');
-  const [ theme, setTheme] = useState('dark');
+  const [ theme, setTheme] = useState('light');
 
   useEffect(() => {
     if (cachedTheme) {
       setTheme(cachedTheme);
     }
-    console.log("theme:", theme);
   }, [])
 
   const toggleTheme = () => {
