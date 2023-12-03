@@ -79,15 +79,13 @@ const HomeAllocation = ({category, expenses, type, getAllocation}) => {
 
   useEffect(()=> {
     const defaultStyle = styles.indicatorStyle;
-    if (!isLoading) {
-      if (expense > category.allocation) {
-        handleNotification();
-        setIndiStyle([defaultStyle, styles.indicatorRed])
-      } else if (expense / category.allocation > .8) {
-        setIndiStyle([defaultStyle, styles.indicatorYellow])
-      } else {
-        setIndiStyle([defaultStyle, styles.indicatorGreen])
-      }
+    if (expense > category.allocation) {
+      handleNotification();
+      setIndiStyle([defaultStyle, styles.indicatorRed])
+    } else if (expense / category.allocation > .8) {
+      setIndiStyle([defaultStyle, styles.indicatorYellow])
+    } else {
+      setIndiStyle([defaultStyle, styles.indicatorGreen])
     }
     percentageHandler();
   }, [expense, isLoading])
@@ -123,7 +121,7 @@ const HomeAllocation = ({category, expenses, type, getAllocation}) => {
           <AntDesign name="delete" size={25} color={COLORS['white-700']} style={[styles.iconStyle, styles.redIcon]} />
         </Pressable>
       </View>
-      {indiStyle && <View style={[indiStyle, styles.progressBar, { width: `${percentage}%`}]} />}
+      <View style={[indiStyle, styles.progressBar, { width: `${percentage}%`}]} />
     </View>
   )
 }

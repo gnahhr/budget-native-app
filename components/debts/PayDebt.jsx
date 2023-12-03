@@ -55,7 +55,7 @@ const PayDebt = ({nameList, isModalVisible, setModalVisible, type}) => {
     const email = JSON.parse(user).email;
     const data = await receiveAndPay(email, activeBudget.budgetName, payload);
     setIsLoading(false);
-    Alert.alert('Yey', data.message);
+    
     if (data?.statusCode === 200) {
       setModalVisible(false);
     }
