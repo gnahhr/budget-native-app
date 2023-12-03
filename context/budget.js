@@ -24,10 +24,6 @@ export function Provider(props) {
 
   const { user } = useAuth();
 
-  // useEffect(() => {
-  //   getBudgetListHandler();
-  // }, [])
-
   useEffect(() => {
     if (!isLoading) {
       if (cachedActiveBudget) setActiveBudget(JSON.parse(cachedActiveBudget));
@@ -45,13 +41,10 @@ export function Provider(props) {
     const list = data.response;
 
     setBudgetList(list);
-    console.log('yey1')
 
     if (cachedActiveBudget){
-      console.log(cachedActiveBudget)
       setActiveBudget(JSON.parse(cachedActiveBudget));
     } else {
-      console.log('yey')
       if (!cachedActiveBudget && !isLoading) setCachedActiveBudget(JSON.stringify(list[0]));
       setActiveBudget(list[0]);
     }

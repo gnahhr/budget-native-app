@@ -12,6 +12,7 @@ import styles from './authStyles';
 import { COLORS } from '../../constants/theme';
 import { useTheme } from '../../context/theme';
 import { useAuth } from '../../context/auth';
+
 const ForgotPassword = () => {
   const router = useRouter();
   const [ code, setCode ] = useState("");
@@ -74,7 +75,7 @@ const ForgotPassword = () => {
       <View style={[styles.container]}>
       {alert && <Text style={[styles.textRed, styles.textCenter, styles.textBold]}>{alert}</Text>}
         <View>
-          <Text style={[styles.textWhite, theme === 'dark' && styles.textWhite]}>Enter code:</Text>
+          <Text style={[styles.textWhite]}>Enter code:</Text>
           <View>
             <TextInput
               style={[styles.textInputStyle]}

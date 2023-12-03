@@ -90,7 +90,7 @@ const HomeAllocation = ({category, expenses, type, getAllocation}) => {
       }
     }
     percentageHandler();
-  }, [expense, isLoading, isSettingsLoading])
+  }, [expense, isLoading])
 
   useEffect(() => {
     expenses.map((expense) => {
@@ -123,7 +123,7 @@ const HomeAllocation = ({category, expenses, type, getAllocation}) => {
           <AntDesign name="delete" size={25} color={COLORS['white-700']} style={[styles.iconStyle, styles.redIcon]} />
         </Pressable>
       </View>
-      <View style={[indiStyle, styles.progressBar, { width: `${percentage}%`}]} />
+      {indiStyle && <View style={[indiStyle, styles.progressBar, { width: `${percentage}%`}]} />}
     </View>
   )
 }

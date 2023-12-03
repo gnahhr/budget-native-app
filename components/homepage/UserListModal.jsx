@@ -167,7 +167,7 @@ const UserListModal = ({isModalVisible, setModalVisible}) => {
                     <Image source={`https:${item.Images.split(":")[1]}`} style={{width: 40, height: 40, borderRadius: 50, justifyContent: 'center'}}/>
                     <Text style={[theme === 'dark' && styles.textWhite]}>{item.userName}</Text>
                   </View>
-                  {(item.userName !== activeUser && item.Email !== activeBudget.budgetOwner) && 
+                  {(item.userName !== activeUser && !(item.Email === activeBudget.budgetOwner) && (activeBudget.budgetOwner === JSON.parse(user).email)) && 
                   <Pressable onPress={() => removeUserHandler(item.userName, item.Email)}>
                     <View style={{width: 30, height:30, backgroundColor: COLORS['red-500'], borderRadius:8, alignItems: 'center', justifyContent: 'center'}}>
                       <AntDesign name="deleteuser" size={24} color={COLORS['white-500']} />
