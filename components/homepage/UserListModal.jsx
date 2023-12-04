@@ -198,6 +198,7 @@ const UserListModal = ({isModalVisible, setModalVisible}) => {
                 <View key={idx} style={{alignItems: 'center'}}>
                   <Image source={`https:${user.Images.split(":")[1]}`} style={{width: 65, height: 65, borderRadius: 50, justifyContent: 'center'}}/>
                   <Text style={[theme === 'dark' && styles.textWhite]}>{user.userName}</Text>
+                  <Text style={[theme === 'dark' && styles.textWhite]}>{user.Email === activeBudget.budgetOwner ? 'Owner' : 'Member'}</Text>
                 </View>)}
               </View>
               <View style={{

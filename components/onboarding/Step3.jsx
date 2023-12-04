@@ -45,7 +45,7 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, curRatio, nextStep, s
 
   // Constants
   const tabData = {
-    "NEED": {
+    "BILLS": {
       state: needAllocations,
       setAllocation: setNeedAllocations,
       ratio: needRatio,
@@ -61,7 +61,7 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, curRatio, nextStep, s
       default: savingsCategories,
       alt: "savings",
     },
-    "WANT": {
+    "EXPENSES": {
       state: wantAllocations,
       setAllocation: setWantAllocations,
       ratio: wantRatio,
@@ -71,7 +71,7 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, curRatio, nextStep, s
     }
   }
 
-  const Tabs = ["NEED", "SAVINGS", "WANT"];
+  const Tabs = ["BILLS", "SAVINGS", "EXPENSES"];
   // Check if exeeding na yung limit ng allocation, comparison ng new and current allocation sa total allocation
   const checkExceeding = (curAllocation = 0, newAllocation = 0) => {
     if (totalBudget){

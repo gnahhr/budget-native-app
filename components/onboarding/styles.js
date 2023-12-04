@@ -44,6 +44,9 @@ const styles = StyleSheet.create({
   buttonWrapper: {
     gap: 15
   },
+  smText: {
+    size: 12
+  },
   bigButton: {
     fontSize: 48,
     color: COLORS['white-700'],

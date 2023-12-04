@@ -13,24 +13,24 @@ import { useTheme } from '../../context/theme';
 
 const Summary = ({totalBudget, initialAllocation, prevStep, setAllocations, isLoading = false}) => {
   // Header Data
-  const [ activeTab, setActiveTab ] = useState("NEED");
+  const [ activeTab, setActiveTab ] = useState("BILLS");
   const { needs, wants, savings} = initialAllocation;
   const { theme } = useTheme();
 
   // Constants
   const tabData = {
-    "NEED": {
+    "BILLS": {
       state: needs,
     },
     "SAVINGS": {
       state: savings,
     },
-    "WANT": {
+    "EXPENSES": {
       state: wants,
     }
   }
 
-  const Tabs = ["NEED", "SAVINGS", "WANT"];
+  const Tabs = ["BILLS", "SAVINGS", "EXPENSES"];
   
   const setAllocationsHandler = () => {
     setAllocations({

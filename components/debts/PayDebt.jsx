@@ -118,6 +118,7 @@ const PayDebt = ({nameList, isModalVisible, setModalVisible, type}) => {
                   setOpen={setOpen}
                   setValue={setValue}
                   setItems={setItems}
+                  placeholder="Select a person"
                   style={{}}
                 />
               </View>

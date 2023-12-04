@@ -89,16 +89,16 @@ const HomepageIndex = () => {
   
 
   // Tab Constants
-  const [ activeTab, setActiveTab ] = useState("Needs");
-  const tabs = ['Needs', 'Savings', 'Wants'];
+  const [ activeTab, setActiveTab ] = useState("Bills");
+  const tabs = ['Bills', 'Savings', 'Expenses'];
   const tabData = {
-    'Needs': {
+    'Bills': {
       name: 'needs'
     },
     'Savings': {
       name: 'savings'
     },
-    'Wants': {
+    'Expenses': {
       name: 'wants'
     }
   }

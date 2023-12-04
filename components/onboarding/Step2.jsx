@@ -51,6 +51,7 @@ const Step2 = ({setBudget, setBudgetName, nextStep, prevStep}) => {
         />
         <Text style={[styles.textCenter, styles.textWhite]}>TOTAL BUDGET</Text>
         <TextInput style={styles.input} placeholder='Php. 00' keyboardType="numeric" onChangeText={onChangeNumInput}/>
+        <Text style={[styles.textCenter, styles.textWhite, styles.smText]}>Please indicate your side hustle as well.</Text>
         
         <View style={[styles.center, styles.buttonWrapper, styles.navWrapper]}>
           <Pressable onPress={prevStep}>

@@ -1,6 +1,6 @@
 const savingsCategories = [
   {
-    name: 'Emergency Fund',
+    name: 'Personal Funds',
     iconId: "money",
     allocation: 0,
     toggled: false,

@@ -73,7 +73,7 @@ const UpdateBudget = ({isModalVisible, totalBudget, setModalVisible, updateBudge
                   />
                 </View>
                 <View>
-                  <Text style={[styles.textBold, theme === 'dark' && styles.textWhite]}>Total Budget</Text>
+                  <Text style={[styles.textBold, theme === 'dark' && styles.textWhite]}>Total Budget - (Please include your side hustle.)</Text>
                   <TextInput
                     placeholder='Php. 00'
                     keyboardType="numeric"
