@@ -59,7 +59,12 @@ const Login = () => {
         twoAuthRequired: decoded.twoAuthRequired,        
       }));
 
-      router.replace(`/homepage`);
+      if (decoded.ifNewUser) {
+        router.replace(`/onboarding`);
+      } else {
+        router.replace(`/homepage`);
+      }
+
     } else if (data.statusCode === 200) {
       router.replace(`/authenticate?${email}`);
       setAuthEmail(email);
