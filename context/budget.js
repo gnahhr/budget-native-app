@@ -25,10 +25,10 @@ export function Provider(props) {
   const { user } = useAuth();
 
   useEffect(() => {
-    // if (!isLoading) {
-    //   if (cachedActiveBudget) setActiveBudget(JSON.parse(cachedActiveBudget));
-    // }
-    getBudgetListHandler();
+    if (!isLoading) {
+      if (cachedActiveBudget) setActiveBudget(JSON.parse(cachedActiveBudget));
+      getBudgetListHandler();
+    }
   }, [isLoading])
 
   // useEffect(() => {
@@ -41,13 +41,13 @@ export function Provider(props) {
     const list = data.response;
     
     setBudgetList(list);
-    setActiveBudget(list[0]);
 
-    // if (cachedActiveBudget){
-    //   setActiveBudget(JSON.parse(cachedActiveBudget));
-    // } else {
-    //   if (!cachedActiveBudget && !isLoading) setCachedActiveBudget(JSON.stringify(list[0]));
-    // }
+    if (cachedActiveBudget){
+      setActiveBudget(JSON.parse(cachedActiveBudget));
+    } else {
+      if (!cachedActiveBudget && !isLoading) setCachedActiveBudget(JSON.stringify(list[0]));
+      setActiveBudget(list[0]);
+    }
   }
 
   async function refreshBudgetList() {
