@@ -11,9 +11,8 @@ export function useBudget() {
 }
 
 export function Provider(props) {
-  const { user } = useAuth();
   const [ [isLoading, cachedActiveBudget], setCachedActiveBudget ] = useStorageState('activeBudget');
-  
+
   const [ activeBudget, setActiveBudget ] = useState({
     budgetName: 'myBudget',
     budgetType: 'weekly',
@@ -23,24 +22,33 @@ export function Provider(props) {
   const [ budgetList, setBudgetList ] = useState([]);
   const [ activeType, setActiveType ] = useState("weekly");
 
+  const { user } = useAuth();
 
   useEffect(() => {
-    refreshBudgetList();
-    if (!cachedActiveBudget) {
-      setActiveBudget({
-        budgetName: JSON.parse(user).defaultBudget,
-        budgetType: 'weekly',
-        budgetOwner: JSON.parse(user).email
-      });
-    } else {
-      setActiveBudget(JSON.parse(cachedActiveBudget));
-    }
+    // if (!isLoading) {
+    //   if (cachedActiveBudget) setActiveBudget(JSON.parse(cachedActiveBudget));
+    // }
+    getBudgetListHandler();
   }, [isLoading])
 
   // useEffect(() => {
   //   console.log("Changed active budget to", activeBudget);
   //   console.log("Changed budget list", budgetList);
   // }, [activeBudget]);
+
+  async function getBudgetListHandler() {
+    const data = await getBudgetList(JSON.parse(user).email);
+    const list = data.response;
+    
+    setBudgetList(list);
+    setActiveBudget(list[0]);
+
+    // if (cachedActiveBudget){
+    //   setActiveBudget(JSON.parse(cachedActiveBudget));
+    // } else {
+    //   if (!cachedActiveBudget && !isLoading) setCachedActiveBudget(JSON.stringify(list[0]));
+    // }
+  }
 
   async function refreshBudgetList() {
     const data = await getBudgetList(JSON.parse(user).email);
