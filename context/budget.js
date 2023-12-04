@@ -11,6 +11,7 @@ export function useBudget() {
 }
 
 export function Provider(props) {
+  const { user } = useAuth();
   const [ [isLoading, cachedActiveBudget], setCachedActiveBudget ] = useStorageState('activeBudget');
   
   const [ activeBudget, setActiveBudget ] = useState({
@@ -22,12 +23,15 @@ export function Provider(props) {
   const [ budgetList, setBudgetList ] = useState([]);
   const [ activeType, setActiveType ] = useState("weekly");
 
-  const { user } = useAuth();
 
   useEffect(() => {
     refreshBudgetList();
     if (!cachedActiveBudget) {
-      setActiveBudget(JSON.parse(user).defaultBudget);
+      setActiveBudget({
+        budgetName: JSON.parse(user).defaultBudget,
+        budgetType: 'weekly',
+        budgetOwner: JSON.parse(user).email
+      });
     } else {
       setActiveBudget(JSON.parse(cachedActiveBudget));
     }
