@@ -64,7 +64,6 @@ const Login = () => {
       } else {
         router.replace(`/homepage`);
       }
-
     } else if (data.statusCode === 200) {
       router.replace(`/authenticate?${email}`);
       setAuthEmail(email);

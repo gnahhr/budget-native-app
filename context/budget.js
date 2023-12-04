@@ -25,9 +25,12 @@ export function Provider(props) {
   const { user } = useAuth();
 
   useEffect(() => {
-    if (!isLoading) {
-      if (cachedActiveBudget) setActiveBudget(JSON.parse(cachedActiveBudget));
-      getBudgetListHandler();
+    getBudgetListHandler();
+  }, [])
+
+  useEffect(() => {
+    if (cachedActiveBudget && !isLoading) {
+      setActiveBudget(JSON.parse(cachedActiveBudget));
     }
   }, [isLoading])
 
