@@ -44,13 +44,18 @@ export function Provider(props) {
     const list = data.response;
     
     setBudgetList(list);
-
-    if (cachedActiveBudget){
-      setActiveBudget(JSON.parse(cachedActiveBudget));
-    } else {
-      if (!cachedActiveBudget && !isLoading) setCachedActiveBudget(JSON.stringify(list[0]));
+    if (!cachedActiveBudget) {
       setActiveBudget(list[0]);
+    } else {
+      setActiveBudget(JSON.parse(cachedActiveBudget));
     }
+    
+    // if (cachedActiveBudget){
+    //   setActiveBudget(JSON.parse(cachedActiveBudget));
+    // } else {
+    //   if (!cachedActiveBudget && !isLoading) setCachedActiveBudget(JSON.stringify(list[0]));
+    //   setActiveBudget(list[0]);
+    // }
   }
 
   async function refreshBudgetList() {
