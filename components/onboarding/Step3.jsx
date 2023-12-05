@@ -16,7 +16,7 @@ import { useTheme } from '../../context/theme';
 const Step3 = ({totalBudget, prevStep, currentAllocations, curRatio, nextStep, setAllocations, setBudgetRatio}) => {
   const { theme } = useTheme();
   // Header Data
-  const [ activeTab, setActiveTab ] = useState("NEED");
+  const [ activeTab, setActiveTab ] = useState("BILLS");
   const [ remaining, setRemaining ] = useState(totalBudget);
 
   // Modal States
@@ -170,7 +170,7 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, curRatio, nextStep, s
     //   return;
     // }
     
-    if (allocationChecker("WANT") || allocationChecker("SAVINGS") || allocationChecker("NEED")){
+    if (allocationChecker("BILLS") || allocationChecker("SAVINGS") || allocationChecker("EXPENSES")){
       Alert.alert('Warning', 'Finish allocating budget!', [
         {
           text: 'Okay',
@@ -223,7 +223,7 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, curRatio, nextStep, s
   // Ito yung function na ginagamit sa pag edit mismo nung edit categories bc
   // magkaiba sila compared sa fresh data
   const currentAllocationHandler = (curAllocation) => {
-    const types = ['WANT', 'NEED', 'SAVINGS'];
+    const types = ['EXPENSES', 'BILLS', 'SAVINGS'];
 
     types.map((type) => {
       // Ginawang isang array yung allocations na galing database to local
@@ -302,11 +302,11 @@ const Step3 = ({totalBudget, prevStep, currentAllocations, curRatio, nextStep, s
   }, [savingRatio])
 
   useEffect(() => {
-    computeAllocationRatio("WANT");
+    computeAllocationRatio("EXPENSES");
   }, [wantRatio])
 
   useEffect(() => {
-    computeAllocationRatio("NEED");
+    computeAllocationRatio("BILLS");
   }, [needRatio])
   
   useEffect(() => {
