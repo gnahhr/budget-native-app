@@ -195,7 +195,7 @@ const HomepageIndex = () => {
 
     // Kasama na rin dito yung pag compute nung makikita sa homepage which is yung remaining budget,
     // tska yung yung parang progress if malapit na maubos budget
-    const expenses = tabs.map(item => data[item.toLowerCase()]);
+    const expenses = tabs.map(item => data[tabData[item].name]);
     const expensesArray = [];
     
     expenses.forEach(item => {
